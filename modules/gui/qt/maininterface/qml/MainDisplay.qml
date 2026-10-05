@@ -505,44 +505,56 @@ FocusScope {
                 rightPadding: playlistLoader.shown ? 0 : VLCStyle.applicationHorizontalMargin
 
                 // Top-left corner rounding:
-                Widgets.AcrylicBackground {
+                // `RoundedCornerMask` replaces the area outside of the arc with anti-aliasing,
+                // regardless of the page content, but it requires RHI. Otherwise, we don't draw the rounded corner
+                Widgets.RoundedCornerMask {
                     id: topLeftCornerBackground
+
+                    anchors.left: stackView.left
+                    anchors.leftMargin: 0
+                    anchors.top: stackView.top
+
+                    z: 99
+
+                    width: VLCStyle.mainView_topLeftRadius
+                    height: VLCStyle.mainView_topLeftRadius
+
+                    visible: supported && sidebar.visible
+
+                    color: sidebar.background.color
+                }
+
+                // VLZ: without RHI (Qt's software renderer in Lite mode) `RoundedCornerMask` draws nothing, so keep the
+                // previous corner there: a square in the sidebar colour with the page colour rounded on top of it.
+                // Qt's software renderer paints the area outside a per-corner radius white, so the child uses a uniform
+                // radius on a larger rectangle, and this square clips it to its top-left corner.
+                Widgets.AcrylicBackground {
+                    id: vlzSoftwareCornerBackground
 
                     z: 99
                     color: sidebar.background.color
-                    visible: sidebar.visible && (stackViewTopLeftRadiusRectangle.topLeftRadius !== undefined)
+                    visible: !topLeftCornerBackground.supported && sidebar.visible
 
                     anchors.left: stackView.left
                     anchors.leftMargin: -1
                     anchors.top: stackView.top
 
                     // (-1) is to prevent seams
-                    width: stackViewTopLeftRadiusRectangle.implicitTopLeftRadius * 2 - 1 // VLZ: was the child's size, which grows below
-                    height: stackViewTopLeftRadiusRectangle.implicitTopLeftRadius * 2 - 1 // VLZ
+                    width: VLCStyle.mainView_topLeftRadius * 2 - 1
+                    height: VLCStyle.mainView_topLeftRadius * 2 - 1
 
-                    // VLZ: Qt's software renderer (Lite mode) paints the area outside a per-corner radius white.
-                    // There, the child uses a uniform radius on a larger rectangle, and this square clips it to its
-                    // top-left corner. The GPU path is unchanged.
-                    clip: stackViewTopLeftRadiusRectangle.vlzUniformRadius
+                    clip: true
 
                     Rectangle {
-                        id: stackViewTopLeftRadiusRectangle
-
-                        readonly property bool vlzUniformRadius: (GraphicsInfo.api === GraphicsInfo.Software) // VLZ
-
-                        width: (stackViewTopLeftRadiusRectangle.implicitTopLeftRadius * (vlzUniformRadius ? 4 : 2)) // VLZ: was topLeftRadius * 2
-                        height: (stackViewTopLeftRadiusRectangle.implicitTopLeftRadius * (vlzUniformRadius ? 4 : 2)) // VLZ
+                        width: VLCStyle.mainView_topLeftRadius * 4
+                        height: VLCStyle.mainView_topLeftRadius * 4
 
                         anchors.top: parent.top
                         anchors.left: parent.left
                         anchors.leftMargin: 1
 
                         color: stackViewParent.color
-
-                        property real implicitTopLeftRadius: VLCStyle.mainView_topLeftRadius
-
-                        radius: vlzUniformRadius ? implicitTopLeftRadius : 0 // VLZ
-                        topLeftRadius: vlzUniformRadius ? undefined : implicitTopLeftRadius // VLZ: undefined resets it to radius
+                        radius: VLCStyle.mainView_topLeftRadius
                     }
                 }
 
@@ -727,7 +739,7 @@ FocusScope {
                 atRight: true
 
                 resizeHandle.visible: (sidebar.state === "expanded") && !VLCStyle.isScreenSmall
-                visualBorder.visible: !topLeftCornerBackground.visible
+                visualBorder.visible: !topLeftCornerBackground.visible && !vlzSoftwareCornerBackground.visible // VLZ
 
                 minimumWidth: sidebar.minimumWidth
                 maximumWidth: sidebar.maximumWidth
