@@ -170,6 +170,7 @@ moc_headers = files(
     'widgets/native/viewblockingrectangle.hpp',
     'widgets/native/backdropblenditem.hpp',
     'widgets/native/roundedcornermask.hpp',
+    'widgets/native/fadingedgemask.hpp',
 )
 # VLZ: VLM is cut (extras/vlz/vlz.ini); its header has nothing to moc without ENABLE_VLM
 if get_option('videolan_manager')
@@ -555,6 +556,8 @@ qt_plugin_sources = files(
     'widgets/native/backdropblenditem.hpp',
     'widgets/native/roundedcornermask.cpp',
     'widgets/native/roundedcornermask.hpp',
+    'widgets/native/fadingedgemask.cpp',
+    'widgets/native/fadingedgemask.hpp',
 )
 
 if host_system == 'windows'
