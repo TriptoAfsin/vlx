@@ -1,140 +1,54 @@
-# VLC media player
+# VLX
 
-**VLC** is a libre and open source **media player** and **multimedia engine**,
-focused on **playing everything**, and **running everywhere**.
+**VLX is a personal, open source fork of [VLC media player](https://www.videolan.org/vlc/)**
+with a more modern, fluid UI and tuned defaults. Everything that makes VLC great (the engine,
+the codecs, "plays everything") is VLC's work. VLX only reskins and tunes it.
 
-**VLC** can play most multimedia files, discs, streams, devices and is also able to
-convert, encode, **stream** and manipulate streams into numerous formats.
+> VLX is **not** affiliated with or endorsed by VideoLAN. "VLC" and the cone logo are
+> trademarks of VideoLAN. VLX uses its own name and icon for that reason.
 
-VLC is used by many over the world, on numerous platforms, for very different use cases.
+## Goals
 
-The **engine of VLC** can be embedded into 3rd party applications, and is called *libVLC*.
+1. **UI first.** A calmer, more modern Qt/QML interface: consistent spacing, softer surfaces,
+   smooth transitions, a refreshed player view and media library.
+2. **Performance second.** Faster startup and snappier UI through build flags and defaults
+   (LTO, lazy-loaded views, sensible hardware-decoding defaults), never by dropping features.
+3. **Stay close to upstream.** Small, contained diffs so VLX can keep rebasing on VLC `master`.
 
-**VLC** is part of the [VideoLAN project](https://videolan.org) and
-is developed and supported by a community of volunteers.
+Features beyond that come later.
 
-The VideoLAN project was started at the university [École Centrale Paris](https://www.centralesupelec.fr/) who
-relicensed VLC under the GPLv2 license in February 2001. Since then, VLC has
-been downloaded **billions** of times.
+## Status
 
-## License
+Early. The repo is initialized, and the design direction and the icon are being chosen.
+See [`DESIGN.md`](DESIGN.md) once the direction is locked.
 
-**VLC** is released under the GPLv2 *(or later)* license.
-*On some platforms, it is de facto GPLv3, because of the licenses of dependencies*.
+## Building
 
-**libVLC**, the engine is released under the LGPLv2 *(or later)* license. \
-This allows embedding the engine in 3rd party applications, while letting them to be licensed under other licenses.
+VLX builds the same way VLC does. On Windows that means a mingw-w64 toolchain inside WSL, msys2
+or Docker. Start with [`doc/BUILD-win32.md`](doc/BUILD-win32.md). [`VERIFY.md`](VERIFY.md) lists
+the exact commands used to check a change.
 
-# Platforms
-
-VLC is available for the following platforms:
-- [Windows] *(from 7 and later, including UWP platforms and all versions of Windows 10)*
-- [macOS] *(10.10 and later)*
-- [GNU/Linux] and affiliated
-- [BSD] and affiliated
-- [Android] *(4.2 and later)*, including Android TV and Android Auto
-- [iOS] *(9 and later)*, including AppleTV and iPadOS
-- Haiku, OS/2 and a few others.
-
-[Windows]: https://www.videolan.org/vlc/download-windows.html
-[macOS]: https://www.videolan.org/vlc/download-macosx.html
-[GNU/Linux]: https://www.videolan.org/vlc/#download
-[BSD]: https://www.videolan.org/vlc/download-freebsd.html
-[Android]: https://www.videolan.org/vlc/download-android.html
-[iOS]: https://www.videolan.org/vlc/download-ios.html
-
-Not all platforms receive the same amount of care, due to our limited resources.
-
-**Nota Bene**: The [Android app](https://code.videolan.org/videolan/vlc-android/) and
-the [iOS app](https://code.videolan.org/videolan/vlc-ios/) are located in different repositories
-than the main one.
-
-# Contributing & Community
-
-**VLC** is maintained by a community of people, and VideoLAN is not paying any of them.\
-The community is composed of developers, helpers, maintainers, designers and writers that want
-this open source project to thrive.
-
-The main development of VLC is done in the C language, but this repository also contains
-plenty of C++, Obj-C, asm and Rust.
-
-Other repositories linked to vlc are done in languages including Kotlin/Java [(Android)](https://code.videolan.org/videolan/vlc-android/),
-Swift [(iOS)](https://code.videolan.org/videolan/vlc-ios/), and C# [(libVLCSharp)](https://code.videolan.org/videolan/libvlcsharp/).
-
-We need help with the following tasks:
-- Coding
-- Packaging for Windows, macOS and Linux distributions
-- Technical writing for the documentation
-- Design
-- Support
-- Community management and communication.
-
-Please contribute :)
-
-We are on IRC. You can find us on the **#videolan** channel on *[Libera.chat]*.
-
-[Libera.chat]: https://libera.chat
-
-## Contributions
-
-Contributions are now done through Merge Requests on our [GitLab repository](https://code.videolan.org/videolan/vlc/).
-
-CI and discussions should be resolved before a Merge Request can be merged.
-
-# libVLC
-
-**libVLC** is an embeddable engine for 3rd party applications and frameworks.
-
-It runs on the same platforms as VLC *(and sometimes on more)* and can provide playback,
-streaming and conversion of multimedia files and streams.
-
-
-**libVLC** has numerous bindings for other languages, such as C++, Python and C#.
-
-# Support
-
-## Links
-
-Some useful links that might help you:
-
-- [VLC web site](https://www.videolan.org/vlc/)
-- [Support](https://www.videolan.org/support/)
-- [Forums](https://forum.videolan.org/)
-- [Wiki](https://wiki.videolan.org/)
-- [Developer's Corner](https://wiki.videolan.org/Developers_Corner)
-- [VLC hacking guide](https://wiki.videolan.org/Hacker_Guide)
-- [Bugtracker](https://code.videolan.org/videolan/vlc/-/issues)
-- [VideoLAN web site](https://www.videolan.org/)
-
-## Source Code sitemap
+```sh
+# WSL / Linux, cross-compiling for Windows x64, with prebuilt contribs
+./extras/package/win32/build.sh -a x86_64 -p -m
 ```
-ABOUT-NLS          - Notes on the Free Translation Project.
-AUTHORS            - VLC authors.
-COPYING            - The GPL license.
-COPYING.LIB        - The LGPL license.
-INSTALL            - Installation and building instructions.
-NEWS               - Important modifications between the releases.
-README             - Project summary.
-THANKS             - VLC contributors.
 
-bin/               - VLC binaries.
-bindings/          - libVLC bindings to other languages.
-compat/            - compatibility library for operating systems missing
-                     essential functionalities.
-contrib/           - Facilities for retrieving external libraries and building
-                     them for systems that don't have the right versions.
-doc/               - Miscellaneous documentation.
-extras/analyser    - Code analyser and editor specific files.
-extras/buildsystem - Different build system specific files.
-extras/misc        - Files that don't fit in the other extras/ categories.
-extras/package     - VLC packaging specific files such as spec files.
-extras/tools/      - Facilities for retrieving external building tools needed
-                     for systems that don't have the right versions.
-include/           - Header files.
-lib/               - libVLC source code.
-modules/           - VLC plugins and modules. Most of the code is here.
-po/                - VLC translations.
-share/             - Common resource files.
-src/               - libvlccore source code.
-test/              - Testing system.
-```
+## Branches and remotes
+
+| Ref | What it is |
+|---|---|
+| `main` | VLX: upstream VLC plus the VLX changes |
+| `master` | Untouched mirror of `upstream/master` |
+| `upstream` remote | `https://github.com/videolan/vlc.git` |
+| `origin` remote | `https://github.com/TriptoAfsin/vlx.git` |
+
+To sync: `git fetch upstream && git rebase upstream/master` on `main`.
+
+## Credits and license
+
+All credit for the media engine, the codecs and the original interface goes to the
+[VideoLAN](https://www.videolan.org) team and VLC's contributors (see [`AUTHORS`](AUTHORS) and
+[`THANKS`](THANKS)). The original VLC README is kept at [`README.VLC.md`](README.VLC.md).
+
+VLX keeps VLC's licensing: the application is **GPLv2 or later** ([`COPYING`](COPYING)), and libVLC is
+**LGPLv2.1 or later** ([`COPYING.LIB`](COPYING.LIB)). Every VLX change is released under the same terms.
