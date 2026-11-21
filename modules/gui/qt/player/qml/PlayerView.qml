@@ -1326,6 +1326,9 @@ FocusScope {
         rightPadding: rootPlayer.vlxFloatingBar ? VLCStyle.margin_normal : VLCStyle.applicationHorizontalMargin // VLX
         leftPadding: rootPlayer.vlxFloatingBar ? VLCStyle.margin_normal : VLCStyle.applicationHorizontalMargin // VLX
         bottomPadding: rootPlayer.vlxFloatingBar ? VLCStyle.margin_xsmall : (VLCStyle.applicationVerticalMargin + VLCStyle.margin_xsmall) // VLX
+        // VLX: panel styles wrap the seek bar and times too, instead of starting at the seek line
+        topInset: (rootPlayer.vlxFloatingBar || rootPlayer.vlxBarStyle === "docked") ? 0 : sliderY
+        topPadding: rootPlayer.vlxFloatingBar ? VLCStyle.margin_xsmall : 0
 
         textPosition: (MainCtx.pinVideoControls)
                       ? ControlBar.TimeTextPosition.LeftRightSlider
