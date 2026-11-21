@@ -562,7 +562,7 @@ ${Endif}
 
 ReadRegStr "$INSTDIR" HKLM "${PRODUCT_DIR_REGKEY}" "InstallDir"
 StrCmp "$INSTDIR" "" 0 WinOk
-StrCpy "$INSTDIR" "$@PROGRAMFILES@\${PRODUCT_PUBLISHER}\VLC"
+StrCpy "$INSTDIR" "$@PROGRAMFILES@\${PRODUCT_NAME}" ; VLX: Program Files\VLX
 Goto WinOk
 
 WinTooOld:
