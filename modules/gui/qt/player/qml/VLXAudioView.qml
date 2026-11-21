@@ -72,6 +72,7 @@ FocusScope {
     component Cover: Item {
         id: cover
         property real radius: VLCStyle.dp(12, VLCStyle.scale)
+        property bool showNote: true // off on a record label, where the spindle sits in the middle
         // no cover art: a tile in one hue taken from the title, with a note so it reads as "no art"
         readonly property real hue: (root.hash(root.titleText) % 360) / 360
         readonly property color fallbackA: Qt.hsla(hue, 0.5, 0.42, 1)
@@ -89,6 +90,7 @@ FocusScope {
 
             Text {
                 anchors.centerIn: parent
+                visible: cover.showNote
                 text: VLCIcons.topbar_music
                 font.family: VLCIcons.fontFamily
                 font.pixelSize: Math.min(parent.width, parent.height) * 0.36
@@ -142,6 +144,7 @@ FocusScope {
                 width: platter.width * 0.38
                 height: width
                 radius: width / 2
+                showNote: false
             }
             Rectangle {
                 anchors.centerIn: parent
