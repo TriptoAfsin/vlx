@@ -32,6 +32,10 @@ STRINGS = [
     ('modules/gui/qt/dialogs/preferences/preferences.cpp', 'reset your VLC media player preferences?', 'reset your VLX preferences?'),
     ('modules/gui/qt/dialogs/firstrun/firstrunwizard.cpp', '<i>VLC media player</i>', '<i>VLX</i>'),
     ('modules/gui/qt/dialogs/preferences/preferences.cpp', 'qtr( "VLC needs to be restarted for the reset', 'qtr( "VLX needs to be restarted for the reset'),
+    # Start-up error and console
+    ('bin/winvlc.c', 'TEXT("VLC media player could not start.', 'TEXT("VLX could not start.'),
+    ('bin/winvlc.c', '                    TEXT("VLC media player"),', '                    TEXT("VLX"),'),
+    ('src/config/help.c', 'SetConsoleTitle (TEXT("VLC media player version ") TEXT(PACKAGE_VERSION));', 'SetConsoleTitle (TEXT("VLX version ") TEXT(PACKAGE_VERSION));'),
     # Windows executable resources
     ('bin/vlc_win32_rc.rc.in', 'VALUE "CompanyName", "VideoLAN"', 'VALUE "CompanyName", "VLX"'),
     ('bin/vlc_win32_rc.rc.in', 'VALUE "ProductName", "VLC media player"', 'VALUE "ProductName", "VLX"'),
