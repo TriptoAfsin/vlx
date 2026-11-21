@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <title>VLX</title>
+  <!-- VLX app icon: "Ripple, echo". Three play triangles stepping right on an orange squircle. -->
+  <path d="M128 8C40 8 8 40 8 128s32 120 120 120 120-32 120-120S216 8 128 8z" fill="#ff7a1a"/>
+  <path d="M52 80v96a12 12 0 0 0 18 10.44L141.2 134a12 12 0 0 0 0 -12L70 69.56A12 12 0 0 0 52 80z" fill="#ff9a4d"/>
+  <path d="M80 80v96a12 12 0 0 0 18 10.44L169.2 134a12 12 0 0 0 0 -12L98 69.56A12 12 0 0 0 80 80z" fill="#ffc28e"/>
+  <path d="M108 80v96a12 12 0 0 0 18 10.44L197.2 134a12 12 0 0 0 0 -12L126 69.56A12 12 0 0 0 108 80z" fill="#fff6ec"/>
+</svg>

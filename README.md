@@ -1,4 +1,6 @@
-# VLX
+<p align="center"><img src="extras/vlx/brand/vlx-icon-256.png" width="128" height="128" alt="VLX icon"></p>
+
+<h1 align="center">VLX</h1>
 
 **VLX is a personal, open source fork of [VLC media player](https://www.videolan.org/vlc/)**
 with a more modern, fluid UI and tuned defaults. Everything that makes VLC great (the engine,
@@ -19,8 +21,22 @@ Features beyond that come later.
 
 ## Status
 
-Early. The repo is initialized, and the design direction and the icon are being chosen.
-See [`DESIGN.md`](DESIGN.md) once the direction is locked.
+Early. The design direction (Lean) and the icon are chosen, and player defaults are being picked. The interface
+isn't built yet, so the screenshots below are design previews (HTML mock-ups), not the running app.
+
+## Screenshots (design previews)
+
+| Video | Audio |
+|---|---|
+| ![Player with a video: floating control island and the up-next queue](extras/vlx/screenshots/player-video.png) | ![Player with an audio file: cover art, track details, waveform seek bar and track list](extras/vlx/screenshots/player-audio.png) |
+| **Library** | **Settings search** |
+| ![Library: resume card and a sortable table](extras/vlx/screenshots/library.png) | ![Settings: searching "gpu" jumps to Hardware decoding](extras/vlx/screenshots/settings-search.png) |
+
+Themes and accents are user-chosen. Here's the library in the Paper theme with the Emerald accent:
+
+![Library in the Paper theme with an emerald accent](extras/vlx/screenshots/library-paper-emerald.png)
+
+Icon files (SVG, PNG from 16 to 512 px, and a Windows `.ico`) are in [`extras/vlx/brand/`](extras/vlx/brand/).
 
 ## Building
 
