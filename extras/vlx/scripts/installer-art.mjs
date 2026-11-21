@@ -13,16 +13,19 @@ import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_CORE || 'playwright-core');
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
-const W = 164, H = 314;
+// Drawn on NSIS's 164 x 314 grid, rendered at 3x: the installer is DPI-aware and scales the bitmap down to its
+// panel, so it stays sharp up to 300 % display scaling instead of being stretched up from 164 px.
+const DW = 164, DH = 314, SCALE = 3;
+const W = DW * SCALE, H = DH * SCALE;
 
-// The icon's three "echo" triangles, scaled up and bleeding off the bottom left, on the icon's orange.
+// The icon's three "echo" triangles, large and low, on the icon's orange; a small icon and wordmark on top.
 const tri = (x, fill) =>
   `<path d="M${x} 80v96a12 12 0 0 0 18 10.44L${x + 89.2} 134a12 12 0 0 0 0 -12L${x + 18} 69.56A12 12 0 0 0 ${x} 80z" fill="${fill}"/>`;
-const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${DW} ${DH}">
   <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
     <stop offset="0" stop-color="#ff8a33"/><stop offset="1" stop-color="#f26a0a"/></linearGradient></defs>
-  <rect width="${W}" height="${H}" fill="url(#bg)"/>
-  <g transform="translate(-58 78) scale(1.2)">${tri(52, '#ff9a4d')}${tri(80, '#ffc28e')}${tri(108, '#fff6ec')}</g>
+  <rect width="${DW}" height="${DH}" fill="url(#bg)"/>
+  <g transform="translate(-37 116) scale(0.95)">${tri(52, '#ff9a4d')}${tri(80, '#ffc28e')}${tri(108, '#fff6ec')}</g>
   <g transform="translate(22 26) scale(0.21)">
     <path d="M128 8C40 8 8 40 8 128s32 120 120 120 120-32 120-120S216 8 128 8z" fill="#fff6ec"/>
     ${tri(52, '#ffc28e')}${tri(80, '#ff9a4d')}${tri(108, '#ff7a1a')}
