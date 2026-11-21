@@ -34,12 +34,27 @@ jobs:
       # GitHub mounts its own /github/home, owned by another user; Wine (Meson runs its compiler checks through
       # it) refuses to start there, so give root its own home.
       HOME: /root
-      VLX_VERSION: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || format('dev-{0}', github.run_number) }}
     steps:
       - name: Check out
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
+
+      - name: Version
+        run: |
+          # extras/vlx/VERSION is the version; a v<version> tag must match it. Manual runs are <version>-dev.<run>.
+          v=$(tr -d '[:space:]' < extras/vlx/VERSION)
+          if [ "${GITHUB_REF_TYPE}" = tag ]; then
+            tag="${GITHUB_REF_NAME#v}"
+            case "$tag" in "$v"|"$v"-*) ;; *) echo "::error::Tag $GITHUB_REF_NAME doesn't match extras/vlx/VERSION ($v)"; exit 1;; esac
+            v="$tag"
+          else
+            v="$v-dev.${GITHUB_RUN_NUMBER}"
+          fi
+          echo "VLX_VERSION=$v" >> "$GITHUB_ENV"
+          # a plain x.y.z tag is a stable release; one with a suffix (-beta, -rc1) is a pre-release
+          case "$v" in *-*) echo "VLX_PRERELEASE=true" >> "$GITHUB_ENV";; *) echo "VLX_PRERELEASE=false" >> "$GITHUB_ENV";; esac
+          echo "Version $v"
 
       - name: Build
         run: |
@@ -68,7 +83,7 @@ jobs:
       - name: Collect files
         run: |
           mkdir -p dist
-          exe=$(find win64-meson -maxdepth 1 -name 'vlc-*-win64*.exe' ! -name '*spad*' | head -n 1)
+          exe=$(find win64-meson -maxdepth 1 -name 'vlc-*-win64*.exe' ! -name '*spad*' | head -n 1)  # named after the VLX version
           sz=$(find win64-meson -maxdepth 1 -name 'vlc-*-win64*.7z' ! -name '*debug*' | head -n 1)
           test -n "$exe" && test -n "$sz"
           cp "$exe" "dist/VLX-${VLX_VERSION}-windows-x64-setup.exe"
@@ -104,5 +119,5 @@ jobs:
         with:
           name: VLX ${{ env.VLX_VERSION }}
           body_path: notes.md
-          prerelease: true
+          prerelease: ${{ env.VLX_PRERELEASE == 'true' }}
           files: dist/*
