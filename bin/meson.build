@@ -27,7 +27,7 @@ if build_vlc and (host_system != 'darwin' or have_osx) and not have_win_store an
         vlc_rc = configure_file(
             input: 'vlc_win32_rc.rc.in',
             output: 'vlc_win32_rc.rc',
-            configuration: rc_conf,
+            configuration: vlx_rc_conf, # VLX
             install: false,
         )
 
