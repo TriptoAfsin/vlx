@@ -12,7 +12,7 @@ The goal is low upkeep: once the UI and the cut-down build feel right, VLX only 
 
 VLC 3.0.x is not an option: its interface is the old QWidget one, so the VLX redesign doesn't apply to it.
 
-The current base is written in [`.vlx-base`](.vlx-base) (one line: the upstream commit or tag).
+The current base is written in [`.vlx-base`](.vlx-base) (one line: the upstream commit or tag). [`.vlx-contrib-sha`](.vlx-contrib-sha) is the last upstream commit that changed the dependencies; builds use it to fetch VideoLAN's prebuilt dependencies (`VLC_PREBUILT_CONTRIBS_URL`) instead of compiling them for hours.
 
 ## One-time setup
 
@@ -29,7 +29,9 @@ git switch -c update/<new-base> main
 git merge <new-base>              # a master commit now, a tag like 4.0.1 later
 # resolve conflicts: `git grep -n "VLX:"` lists every hook in upstream files
 # build, then run VERIFY.md (screenshot pass + feature checks)
-echo <new-base> > .vlx-base && git commit -am "vlx: take upstream <new-base>"
+echo <new-base> > .vlx-base
+git rev-list -1 <new-base> -- extras/tools contrib extras/ci extras/package/win32 > .vlx-contrib-sha
+git commit -am "vlx: take upstream <new-base>"
 git switch main && git merge --ff-only update/<new-base>
 ```
 

@@ -41,6 +41,15 @@ jobs:
       - name: Build
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          # VideoLAN's prebuilt dependencies for VLX's upstream base (see UPSTREAM.md); without them
+          # every dependency, Qt included, is compiled from source, which takes hours.
+          url="https://artifacts.videolan.org/vlc/win64/vlc-contrib-x86_64-w64-mingw32-$(cat .vlx-contrib-sha).tar.zst"
+          if curl -sfI "$url" > /dev/null; then
+            export VLC_PREBUILT_CONTRIBS_URL="$url"
+            echo "Using prebuilt dependencies: $url"
+          else
+            echo "::warning::No prebuilt dependencies at $url; building them from source (slow)."
+          fi
           FLAGS="-a x86_64 -p -m -r"
           if [ "${{ github.event_name }}" != "workflow_dispatch" ] || [ "${{ inputs.lto }}" = "true" ]; then
             FLAGS="$FLAGS -t"
