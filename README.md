@@ -21,7 +21,7 @@ Features beyond that come later.
 
 ## Status
 
-Early. The design direction (Lean) and the icon are chosen, and player defaults are being picked. The interface
+Early. The design is locked in [`DESIGN.md`](DESIGN.md): the Lean direction, the Ripple echo icon and a fully customizable player. The interface
 isn't built yet, so the screenshots below are design previews (HTML mock-ups), not the running app.
 
 ## Screenshots (design previews)
