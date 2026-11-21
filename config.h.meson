@@ -544,6 +544,9 @@
 /* Simple version string */
 #mesondefine VERSION_MESSAGE
 
+/* VLX: VLX's own version (extras/vlx/VERSION) */
+#mesondefine VLX_VERSION
+
 /* compiler */
 #mesondefine VLC_COMPILER
 
