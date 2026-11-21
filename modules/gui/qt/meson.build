@@ -1064,7 +1064,7 @@ if qt6_dep.found()
                 endif
             endforeach
             module_cache += custom_target('qmlcache_loader_' + module['target'],
-                output: 'qmlcache_loader_' + module['target'] + '.cpp',
+                output: module['target'] + '_qmlcache_loader.cpp', # qmlcachegen picks loader mode from this name
                 depend_files: module.get('sources', []) + module.get('singletons', []),
                 command: [qmlcachegen, '--resource-name', module['target'] + '_cachegen',
                     '--resource=' + module_res_qrc, '-o', '@OUTPUT@', '@' + module_rsp])
