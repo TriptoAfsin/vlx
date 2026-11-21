@@ -65,6 +65,7 @@ foreach ($spec in $App) {
     # Install size
     $files = Get-ChildItem -Recurse -File $dir | Where-Object { $_.FullName -notlike "$portable*" }
     $sizeMB = [math]::Round(($files | Measure-Object Length -Sum).Sum / 1MB, 1)
+    $sizeNoLocaleMB = [math]::Round(($files | Where-Object { $_.FullName -notlike '*\locale\*' } | Measure-Object Length -Sum).Sum / 1MB, 1)
     $plugins = ($files | Where-Object { $_.FullName -like '*\plugins\*' -and $_.Extension -eq '.dll' }).Count
 
     # Start-up
@@ -95,7 +96,7 @@ foreach ($spec in $App) {
 
     $rows += [pscustomobject]@{
         App = $name; Version = Get-VlcVersion $exe
-        'Install size (MB)' = $sizeMB; Files = $files.Count; Plugins = $plugins
+        'Install size (MB)' = $sizeMB; 'Without translations (MB)' = $sizeNoLocaleMB; Files = $files.Count; Plugins = $plugins
         'Start-up, first (ms)' = $first; 'Start-up, warm median (ms)' = $warm
         'Idle private (MB)' = $idlePrivate; 'Idle working set (MB)' = $idleWs
         'Playing private (MB)' = $playPrivate; 'Playing peak working set (MB)' = [math]::Round($peakWs / 1MB, 1)
