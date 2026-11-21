@@ -87,7 +87,10 @@ FocusScope {
         if (History.previousEmpty) {
             History.update(["home"])
         }
-        if (VLXSettings.startView !== "" && VLXSettings.startView !== "palette") // VLX: --qt-vlx-start-view, for screenshots and tests
+        // VLX: --qt-vlx-start-view, for screenshots and tests ("palette" is handled by MainInterface)
+        if (VLXSettings.startView === "prefs")
+            Qt.callLater(DialogsProvider.prefsDialog)
+        else if (VLXSettings.startView !== "" && VLXSettings.startView !== "palette")
             History.update([VLXSettings.startView])
         loadCurrentHistoryView(Qt.OtherFocusReason)
     }
