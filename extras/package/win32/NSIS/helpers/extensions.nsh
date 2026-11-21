@@ -32,7 +32,23 @@ Function RegisterExtension
   WriteRegStr HKCR "VLC$R0\shell\Open" "" "$(ShellAssociation_Play)"
   WriteRegStr HKCR "VLC$R0\shell\Open" "MultiSelectModel" "Player"
   WriteRegStr HKCR "VLC$R0\shell\Open\command" "" '"$INSTDIR\vlc.exe" --started-from-file "%1"'
-  WriteRegStr HKCR "VLC$R0\DefaultIcon" "" '"$INSTDIR\vlc.exe",0'
+  ; VLX: the type's own icon (Page and band, light; VLX switches style and look at run time),
+  ; falling back to the icon for its kind
+  Push $R3
+  Push $R4
+  ${StrRep} $R3 $R0 "." ""
+  ${StrCase} $R3 $R3 "L"
+  StrCpy $R4 "$INSTDIR\filetypes\band-light\$R3.ico"
+  IfFileExists "$R4" vlx_icon_done
+  StrCpy $R4 "$INSTDIR\filetypes\band-light\playlist.ico"
+  StrCmp $R1 "Audio" 0 +2
+  StrCpy $R4 "$INSTDIR\filetypes\band-light\audio.ico"
+  StrCmp $R1 "Video" 0 +2
+  StrCpy $R4 "$INSTDIR\filetypes\band-light\video.ico"
+  vlx_icon_done:
+  WriteRegStr HKCR "VLC$R0\DefaultIcon" "" '"$R4"'
+  Pop $R4
+  Pop $R3
   WriteRegStr HKCR "Applications\vlc.exe\SupportedTypes" $0 ""
 
     WriteRegStr HKLM "Software\Clients\Media\VLC\Capabilities\FileAssociations" "$R0" "VLC$R0"

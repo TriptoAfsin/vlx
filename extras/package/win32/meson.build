@@ -6,6 +6,9 @@ install_data('../../../THANKS',    rename : 'THANKS.txt',  install_dir : '.')
 
 install_data('../../../share/icons/vlc.ico',  install_dir : '.')
 
+# VLX: file-type icons (DESIGN.md › File icons), installed as <prefix>/filetypes/<style>-<look>/<type>.ico
+install_subdir('../../vlx/brand/filetypes', install_dir : '.', exclude_files : ['manifest.json'])
+
 have_win64 = host_machine.cpu_family() == 'x86_64' or host_machine.cpu_family() == 'aarch64' or host_machine.cpu() == 'arm64'
 if have_win64
     if host_machine.cpu_family() == 'aarch64'

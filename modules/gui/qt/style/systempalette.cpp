@@ -383,6 +383,7 @@ void SystemPalette::setCtx(MainCtx* ctx)
 void SystemPalette::updatePalette()
 {
     m_palettePriv.reset();
+    if (!applyVlxTheme()) // VLX: theme presets (vlx/theme.cpp)
     switch(m_source)
     {
     case ColorSchemeModel::System:

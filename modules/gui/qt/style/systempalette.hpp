@@ -170,6 +170,7 @@ private:
 
     void makeLightPalette();
     void makeDarkPalette();
+    bool applyVlxTheme(); // VLX: theme presets, in vlx/theme.cpp
     void makeSystemPalette();
 
 private:

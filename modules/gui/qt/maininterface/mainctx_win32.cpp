@@ -32,6 +32,7 @@
 #include "dialogs/dialogs_provider.hpp"
 #include "widgets/native/interface_widgets.hpp"
 #include "util/csdbuttonmodel.hpp"
+#include "vlx/fileicons_win32.hpp" // VLX
 
 #include <QBitmap>
 #include <QTimer>
@@ -823,6 +824,7 @@ MainCtxWin32::MainCtxWin32(qt_intf_t * _p_intf )
     : MainCtx( _p_intf )
 {
     m_disableVolumeKeys = var_InheritBool( _p_intf, "qt-disable-volume-keys" );
+    new vlx::FileIconSync( _p_intf, this ); // VLX: file icons follow the style and theme
 }
 
 void MainCtxWin32::reloadPrefs()

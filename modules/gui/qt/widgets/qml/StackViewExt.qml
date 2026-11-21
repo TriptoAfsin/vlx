@@ -40,9 +40,17 @@ T.StackView {
 
     // Settings
 
-    replaceEnter: null
+    // VLX: views cross-fade with a short rise instead of switching instantly (DESIGN.md › Motion)
+    replaceEnter: Transition {
+        ParallelAnimation {
+            NumberAnimation { property: "opacity"; from: 0; to: 1; duration: VLCStyle.duration_view; easing.type: VLCStyle.easing_enter }
+            NumberAnimation { property: "y"; from: VLCStyle.margin_xsmall; to: 0; duration: VLCStyle.duration_view; easing.type: VLCStyle.easing_enter }
+        }
+    }
 
-    replaceExit: null
+    replaceExit: Transition {
+        NumberAnimation { property: "opacity"; from: 1; to: 0; duration: VLCStyle.duration_view * 0.6; easing.type: VLCStyle.easing_exit }
+    }
 
     //don't report this node
     Accessible.ignored: true

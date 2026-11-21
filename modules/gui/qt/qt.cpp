@@ -294,6 +294,18 @@ static void ShowDialog   ( intf_thread_t *, int, int, intf_dialog_args_t * );
 #define ACCENT_COLOR_TEXT N_( "Accent color" )
 #define ACCENT_COLOR_LONGTEXT N_( "Adjusts the accent color, special values are 'default' and 'system'." )
 
+/* VLX: theme presets (DESIGN.md › Colour) */
+#define VLX_THEME_TEXT N_( "Theme" )
+#define VLX_THEME_LONGTEXT N_( "VLX colour theme. 'VLC default' keeps VLC's own palette and colour scheme setting." )
+static const char *const vlx_theme_values[] = { "default", "dark", "light", "paper", "ink", "nord", "mocha", "tokyo" };
+static const char *const vlx_theme_texts[] = { N_("VLC default"), N_("Dark"), N_("Light"), N_("Paper"), N_("Ink"), N_("Nord"), N_("Mocha"), N_("Tokyo") };
+
+/* VLX: file-type icons (DESIGN.md › File icons) */
+#define VLX_FILE_ICONS_TEXT N_( "File icons" )
+#define VLX_FILE_ICONS_LONGTEXT N_( "Icon style for the media files VLX opens in Explorer." )
+#define VLX_FILE_ICON_LOOK_TEXT N_( "File icon look" )
+#define VLX_FILE_ICON_LOOK_LONGTEXT N_( "Light or dark file icons, or follow the Windows app theme." )
+
 static const int initial_prefs_view_list[] = { 0, 1, 2 };
 static const char *const initial_prefs_view_list_texts[] =
     { N_("Simple"), N_("Advanced"), N_("Expert") };
@@ -310,6 +322,13 @@ static const int i_raise_list[] =
 
 static const char *const psz_raise_list_text[] =
     { N_( "Never" ), N_( "Video" ), N_( "Audio" ), _( "Audio/Video" ) };
+
+#ifdef _WIN32 /* VLX: file icon choices */
+static const char *const vlx_file_icons_values[] = { "band", "echo" };
+static const char *const vlx_file_icons_texts[] = { N_("Page and band"), N_("Echo") };
+static const char *const vlx_file_icon_look_values[] = { "auto", "light", "dark" };
+static const char *const vlx_file_icon_look_texts[] = { N_("Follow Windows"), N_("Light"), N_("Dark") };
+#endif
 
 static const char *const compositor_vlc[] = {
     "auto",
@@ -475,7 +494,16 @@ vlc_module_begin ()
 
     add_float_with_range( "qt-safe-area", 0, 0, 100.0, SAFE_AREA_TEXT, SAFE_AREA_LONGTEXT )
 
-    add_string( "qt-accent-color", "default", ACCENT_COLOR_TEXT, ACCENT_COLOR_LONGTEXT )
+    add_string( "qt-accent-color", "#10B981", ACCENT_COLOR_TEXT, ACCENT_COLOR_LONGTEXT ) // VLX: Emerald by default
+    add_string( "qt-vlx-theme", "ink", VLX_THEME_TEXT, VLX_THEME_LONGTEXT ) // VLX
+        change_string_list( vlx_theme_values, vlx_theme_texts )
+
+#ifdef _WIN32 /* VLX: file icons */
+    add_string( "qt-vlx-file-icons", "band", VLX_FILE_ICONS_TEXT, VLX_FILE_ICONS_LONGTEXT )
+        change_string_list( vlx_file_icons_values, vlx_file_icons_texts )
+    add_string( "qt-vlx-file-icon-look", "auto", VLX_FILE_ICON_LOOK_TEXT, VLX_FILE_ICON_LOOK_LONGTEXT )
+        change_string_list( vlx_file_icon_look_values, vlx_file_icon_look_texts )
+#endif
 
     cannot_unload_broken_library()
 

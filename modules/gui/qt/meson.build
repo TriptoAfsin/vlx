@@ -405,6 +405,7 @@ qt_plugin_sources = files(
     'style/colorcontext.cpp',
     'style/colorcontext.hpp',
     'style/systempalette.cpp',
+    'vlx/theme.cpp', # VLX: theme presets and accent
     'style/systempalette.hpp',
     'style/vlcicons.cpp',
     'style/vlcicons.hpp',
@@ -544,6 +545,8 @@ if host_system == 'windows'
         'maininterface/compositor_win7.cpp',
         'maininterface/compositor_win7.hpp',
         'style/windowsthemeprovider.cpp',
+        'vlx/fileicons_win32.cpp', # VLX: file icons that follow the theme
+        'vlx/fileicons_win32.hpp', # VLX
         'util/csdmenu_win32.c',
         'util/csdmenu_win32.h',
         'maininterface/compositor_dcomp.cpp',
@@ -1090,6 +1093,7 @@ if qt6_dep.found()
         qt_extra_deps += [
             cc.find_library('dwmapi'),
             cc.find_library('comctl32'),
+            cc.find_library('shell32'), # VLX: SHChangeNotify for file icons
         ]
     endif
 
