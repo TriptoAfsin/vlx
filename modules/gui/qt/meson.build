@@ -412,6 +412,8 @@ qt_plugin_sources = files(
     'style/systempalette.cpp',
     'vlx/theme.cpp', # VLX: theme presets and accent
     'vlx/vlxsettings.cpp', # VLX: look-and-layout settings for QML
+    'vlx/lookpanel.cpp', # VLX: look settings in the preferences dialog
+    'vlx/lookpanel.hpp',
     'style/systempalette.hpp',
     'vlx/vlxsettings.hpp', # VLX
     'style/vlcicons.cpp',

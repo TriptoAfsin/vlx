@@ -24,6 +24,7 @@
 #include "style/systempalette.hpp"
 #include "maininterface/mainctx.hpp"
 #include "vlx/vlxsettings.hpp"
+#include "vlx/lookpanel.hpp"
 
 #include <QApplication>
 #include <QPalette>
@@ -81,6 +82,30 @@ QColor readableAccent(const QColor &accent, const QColor &bg, bool dark)
 }
 
 } // namespace
+
+/* For previews (the preferences dialog): a theme's colours as the app would apply them. "default" is VLC's own
+ * dark palette with its orange. */
+vlx::ThemeColors vlx::themeColors(const QString &themeId, const QString &accentOption)
+{
+    static const VlxTheme vlcDefault = { "default", true, "#1E1E1E", "#212121", "#272727", "#303030",
+                                         "#FFFFFF", "#AAAAAA", "#FF8800" };
+    const VlxTheme *theme = &vlcDefault;
+    for (const VlxTheme &t : kThemes)
+        if (themeId == QLatin1String(t.id))
+            theme = &t;
+
+    ThemeColors c;
+    c.dark = theme->dark;
+    c.bg = QColor(theme->bg); c.panel = QColor(theme->panel); c.raised = QColor(theme->raised);
+    c.line = QColor(theme->line); c.text = QColor(theme->text); c.muted = QColor(theme->muted);
+    QColor accent(theme->accent);
+    if (accentOption == QLatin1String("system") && qApp)
+        accent = qApp->palette().color(QPalette::Normal, QPalette::Accent);
+    else if (accentOption != QLatin1String("default") && QColor::isValidColorName(accentOption))
+        accent = QColor(accentOption);
+    c.accent = theme == &vlcDefault ? accent : readableAccent(accent, c.bg, c.dark);
+    return c;
+}
 
 /* VLX: called from updatePalette(). Returns false to keep VLC's own palette. */
 bool SystemPalette::applyVlxTheme()

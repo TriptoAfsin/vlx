@@ -79,6 +79,8 @@
 #endif
 #include <vlc_modules.h>
 
+#include "vlx/lookpanel.hpp" // VLX
+
 static struct {
     const char iso[6];
     const char name[34];
@@ -699,6 +701,7 @@ SPrefsPanel::SPrefsPanel( qt_intf_t *_p_intf, QWidget *_parent,
             auto& ui = m_interfaceUI;
             ui.setupUi( panel );
             panel_label->setText( qtr("Interface Settings") );
+            ui.verticalLayout->insertWidget( 0, vlx::createLookPanel( p_intf, panel ) ); // VLX: theme, bar, skins with preview
 
 #ifndef _WIN32
             ui.langBox->hide();
