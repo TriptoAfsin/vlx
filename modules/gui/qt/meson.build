@@ -743,6 +743,7 @@ qml_modules += {
        'player/qml/MiniPlayer.qml',
        'player/qml/PIPPlayer.qml',
        'player/qml/PlayerView.qml',
+       'player/qml/VLXAudioView.qml', # VLX: audio skins
        'player/qml/PlayerControlLayout.qml',
        'player/qml/PlayerPlaylistVisibilityFSM.qml',
        'player/qml/PlayerToolbarVisibilityFSM.qml',

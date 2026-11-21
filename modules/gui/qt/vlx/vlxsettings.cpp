@@ -32,6 +32,7 @@
 namespace {
 const QStringList kBarStyles { "island", "docked", "minimal", "pill", "classic" };
 const QStringList kBarPositions { "bottom", "top" };
+const QStringList kAudioSkins { "classic", "albumcompact", "album", "turntable", "turntablecompact", "mini" };
 }
 
 VLXSettings::VLXSettings(qt_intf_t *intf, QObject *parent)
@@ -44,6 +45,9 @@ VLXSettings::VLXSettings(qt_intf_t *intf, QObject *parent)
     m_barPosition = readString("qt-vlx-bar-position", "bottom");
     if (!kBarPositions.contains(m_barPosition))
         m_barPosition = "bottom";
+    m_audioSkin = readString("qt-vlx-audio-skin", "albumcompact");
+    if (!kAudioSkins.contains(m_audioSkin))
+        m_audioSkin = "albumcompact";
 }
 
 QString VLXSettings::readString(const char *name, const QString &fallback) const
@@ -75,4 +79,13 @@ void VLXSettings::setBarPosition(const QString &position)
     m_barPosition = position;
     writeString("qt-vlx-bar-position", position);
     emit barPositionChanged();
+}
+
+void VLXSettings::setAudioSkin(const QString &skin)
+{
+    if (!kAudioSkins.contains(skin) || skin == m_audioSkin)
+        return;
+    m_audioSkin = skin;
+    writeString("qt-vlx-audio-skin", skin);
+    emit audioSkinChanged();
 }

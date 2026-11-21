@@ -308,6 +308,9 @@ static const char *const vlx_bar_style_values[] = { "island", "docked", "minimal
 static const char *const vlx_bar_style_texts[] = { N_("Island"), N_("Docked bar"), N_("Minimal"), N_("Compact pill"), N_("Classic") };
 static const char *const vlx_bar_position_values[] = { "bottom", "top" };
 static const char *const vlx_bar_position_texts[] = { N_("Bottom"), N_("Top") };
+#define VLX_AUDIO_SKIN_TEXT N_( "Audio player skin" )
+static const char *const vlx_audio_skin_values[] = { "albumcompact", "album", "turntable", "turntablecompact", "mini", "classic" };
+static const char *const vlx_audio_skin_texts[] = { N_("Album compact"), N_("Album"), N_("Turntable"), N_("Turntable compact"), N_("Mini player"), N_("VLC classic") };
 
 /* VLX: file-type icons (DESIGN.md › File icons) */
 #define VLX_FILE_ICONS_TEXT N_( "File icons" )
@@ -510,6 +513,8 @@ vlc_module_begin ()
         change_string_list( vlx_bar_style_values, vlx_bar_style_texts )
     add_string( "qt-vlx-bar-position", "bottom", VLX_BAR_POSITION_TEXT, nullptr ) // VLX
         change_string_list( vlx_bar_position_values, vlx_bar_position_texts )
+    add_string( "qt-vlx-audio-skin", "albumcompact", VLX_AUDIO_SKIN_TEXT, nullptr ) // VLX
+        change_string_list( vlx_audio_skin_values, vlx_audio_skin_texts )
 
 #ifdef _WIN32 /* VLX: file icons */
     add_string( "qt-vlx-file-icons", "band", VLX_FILE_ICONS_TEXT, VLX_FILE_ICONS_LONGTEXT )

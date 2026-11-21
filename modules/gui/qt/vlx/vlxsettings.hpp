@@ -38,6 +38,8 @@ class VLXSettings : public QObject
     Q_PROPERTY(QString barStyle READ barStyle WRITE setBarStyle NOTIFY barStyleChanged FINAL)
     // bottom, top
     Q_PROPERTY(QString barPosition READ barPosition WRITE setBarPosition NOTIFY barPositionChanged FINAL)
+    // classic (VLC), albumcompact, album, turntable, turntablecompact, mini
+    Q_PROPERTY(QString audioSkin READ audioSkin WRITE setAudioSkin NOTIFY audioSkinChanged FINAL)
 
 public:
     explicit VLXSettings(qt_intf_t *intf, QObject *parent = nullptr);
@@ -48,9 +50,13 @@ public:
     QString barPosition() const { return m_barPosition; }
     void setBarPosition(const QString &position);
 
+    QString audioSkin() const { return m_audioSkin; }
+    void setAudioSkin(const QString &skin);
+
 signals:
     void barStyleChanged();
     void barPositionChanged();
+    void audioSkinChanged();
 
 private:
     QString readString(const char *name, const QString &fallback) const;
@@ -59,6 +65,7 @@ private:
     qt_intf_t *m_intf;
     QString m_barStyle;
     QString m_barPosition;
+    QString m_audioSkin;
 };
 
 #endif

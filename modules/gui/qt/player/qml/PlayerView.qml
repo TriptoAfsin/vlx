@@ -194,7 +194,9 @@ FocusScope {
             bottom: (MainCtx.hasEmbededVideo && rootPlayer._controlsUnderVideo) ? controlBar.top : parent.bottom
         }
 
-        sourceComponent: MainCtx.hasEmbededVideo ? videoComponent : audioComponent
+        // VLX: the VLX music view replaces VLC's audio screen unless the skin is "classic"
+        sourceComponent: MainCtx.hasEmbededVideo ? videoComponent
+                       : (VLXSettings.audioSkin === "classic" ? audioComponent : vlxAudioComponent)
 
         property int cursorShape
 
@@ -350,6 +352,16 @@ FocusScope {
 
                     visible: rootPlayer.displayFadeRectangles && !(controlBar.background && controlBar.background.visible)
                 }
+            }
+        }
+
+        Component {
+            id: vlxAudioComponent // VLX
+
+            VLXAudioView {
+                focus: true
+                topPadding: playerSpecializationLoader.topPadding
+                bottomPadding: playerSpecializationLoader.bottomPadding
             }
         }
 
