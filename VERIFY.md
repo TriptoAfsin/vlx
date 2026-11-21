@@ -9,7 +9,10 @@ VLX builds with a mingw-w64 toolchain inside **WSL (Ubuntu)**. The machine has `
 
 - Install the packages listed in `doc/BUILD-win32.md` (Ubuntu section).
 - Build from a Linux path (e.g. `~/src/vlx`, a clone of this repo), not `/mnt/l/...`. Builds on the Windows drive are many times slower.
-- Copy each finished build to a Windows scratch folder to run it, e.g. `T:\dev\vlx\build-<HHmm>\`.
+- Bring commits into the WSL clone with `git fetch /mnt/l/personal-projects/vlx/vlc main && git checkout -f FETCH_HEAD`,
+  not by copying files: the Windows checkout has CRLF line endings, which break the shell scripts.
+- After the first full build, rebuild only what changed with `ninja -C win64-meson` (a minute or two), then copy
+  `win64-meson/vlc-win64` to a Windows scratch folder to run it, e.g. `T:\dev\vlx\build-<HHmm>\`.
 
 ## 1. Every change
 
