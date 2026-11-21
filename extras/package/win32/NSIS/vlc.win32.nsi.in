@@ -3,16 +3,16 @@
 ; (http://nsis.sourceforge.net) ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-!define PRODUCT_NAME "VLC media player"
+!define PRODUCT_NAME "VLX"
 !define VERSION @VERSION@
 !define PRODUCT_VERSION @VERSION@
-!define PRODUCT_GROUP "VideoLAN"
-!define PRODUCT_PUBLISHER "VideoLAN"
-!define PRODUCT_WEB_SITE "https://www.videolan.org/"
+!define PRODUCT_GROUP "VLX"
+!define PRODUCT_PUBLISHER "VLX"
+!define PRODUCT_WEB_SITE "https://github.com/TriptoAfsin/vlx"
 !define PRODUCT_DIR_REGKEY "Software\VideoLAN\VLC"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
-!define PRODUCT_ID "{ea92ef52-afe4-4212-bacb-dfe9fca94cd6}"
+!define PRODUCT_ID "{6b1f3c2e-4d7a-4f6e-9a8b-5c2d1e0f7a91}"
 
 !define MUI_LANGDLL_REGISTRY_ROOT "HKLM"
 !define MUI_LANGDLL_REGISTRY_KEY "${PRODUCT_DIR_REGKEY}"
@@ -52,7 +52,7 @@ Name "${PRODUCT_NAME}"
 @HAVE_WIN64_TRUE@ @HAVE_ARM64_FALSE@ CPU "amd64"
 @HAVE_WIN64_TRUE@ @HAVE_ARM64_TRUE@  CPU "x86"  ; use x86 until arm64 is supported
 
-InstallDir "$@PROGRAMFILES@\${PRODUCT_PUBLISHER}\VLC"
+InstallDir "$@PROGRAMFILES@\${PRODUCT_NAME}"
 !ifdef NSIS_LZMA_COMPRESS_WHOLE
 SetCompressor lzma
 !else
@@ -61,7 +61,7 @@ SetCompressor /SOLID lzma
 
 SetOverwrite ifdiff
 CRCCheck on
-BrandingText "${PRODUCT_GROUP} ${PRODUCT_NAME}"
+BrandingText "${PRODUCT_NAME}, based on VLC media player"
 
 InstType "$(Name_InstTypeRecommended)"
 InstType "$(Name_InstTypeMinimum)"
@@ -338,10 +338,7 @@ skip_uninstall32_cleanup:
   ; URLs
   WriteIniStr "$INSTDIR\${PRODUCT_GROUP} Website.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
   FileWrite $UninstallLog "${PRODUCT_GROUP} Website.url$\r$\n"
-  WriteIniStr "$INSTDIR\Documentation.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}/doc/"
-  FileWrite $UninstallLog "Documentation.url$\r$\n"
-  WriteIniStr "$INSTDIR\New_Skins.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}/vlc/skins.php"
-  FileWrite $UninstallLog "New_Skins.url$\r$\n"
+  ; VLX: removed the VideoLAN documentation and skins links
 
   !insertmacro CloseUninstallLog
 
@@ -360,7 +357,7 @@ skip_uninstall32_cleanup:
   ; Windows default programs Registration
     WriteRegStr HKLM "Software\RegisteredApplications" "VLC" "Software\Clients\Media\VLC\Capabilities"
     WriteRegStr HKLM "Software\Clients\Media\VLC\Capabilities" "ApplicationName" "${PRODUCT_NAME}"
-    WriteRegStr HKLM "Software\Clients\Media\VLC\Capabilities" "ApplicationDescription" "VLC - The video swiss knife"
+    WriteRegStr HKLM "Software\Clients\Media\VLC\Capabilities" "ApplicationDescription" "VLX, a modern media player based on VLC"
     WriteRegStr HKLM "Software\Clients\Media\VLC" "" "${PRODUCT_NAME}"
     WriteRegStr HKLM "Software\Clients\Media\VLC\InstallInfo" "HideIconsCommand" "$\"$INSTDIR\spad-setup.exe$\" /HideIcons /S"
     WriteRegStr HKLM "Software\Clients\Media\VLC\InstallInfo" "ShowIconsCommand" "$\"$INSTDIR\spad-setup.exe$\" /ShowIcons /S"
@@ -373,12 +370,7 @@ ${MementoSection} "$(Name_Section02a)" SEC02a
   CreateDirectory "$SMPROGRAMS\${PRODUCT_PUBLISHER}"
   CreateShortCut "$SMPROGRAMS\${PRODUCT_PUBLISHER}\${PRODUCT_NAME}.lnk" \
     "$INSTDIR\vlc.exe" ""
-  CreateShortCut "$SMPROGRAMS\${PRODUCT_PUBLISHER}\${PRODUCT_NAME} skinned.lnk" \
-    "$INSTDIR\vlc.exe" "-Iskins"
-  CreateShortCut "$SMPROGRAMS\${PRODUCT_PUBLISHER}\Documentation.lnk" \
-    "$INSTDIR\Documentation.url"
-  CreateShortCut "$SMPROGRAMS\${PRODUCT_PUBLISHER}\Release Notes.lnk" \
-    "$INSTDIR\NEWS.txt" ""
+  ; VLX: removed the skinned, documentation and VLC release-notes shortcuts
   CreateShortCut "$SMPROGRAMS\${PRODUCT_PUBLISHER}\${PRODUCT_GROUP} Website.lnk" \
     "$INSTDIR\${PRODUCT_GROUP} Website.url"
   CreateShortCut "$SMPROGRAMS\${PRODUCT_PUBLISHER}\${PRODUCT_NAME} - reset preferences and cache files.lnk" \

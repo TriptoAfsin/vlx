@@ -92,10 +92,10 @@ AboutDialog::AboutDialog( qt_intf_t *_p_intf)
     setWindowModality( Qt::WindowModal );
 
     ui.version->setText(qfu( " " VERSION_MESSAGE ) );
-    ui.title->setText("<html><head/><body><p><span style=\" font-size:26pt; color:#353535;\"> " + qtr( "VLC media player" ) + " </span></p></body></html>");
+    ui.title->setText("<html><head/><body><p><span style=\" font-size:26pt; color:#353535;\"> " + qtr( "VLX" ) + " </span></p></body></html>");
 
     ui.MainBlabla->setText("<html><head/><body>" +
-    qtr( "<p>VLC media player is a free and open source media player, encoder, and streamer made by the volunteers of the <a href=\"https://www.videolan.org/\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</span></a> community.</p><p>VLC uses its internal codecs, works on essentially every popular platform, and can read almost all files, CDs, DVDs, network streams, capture cards and other media formats!</p><p><a href=\"https://www.videolan.org/contribute/\"><span style=\" text-decoration: underline; color:#0057ae;\">Help and join us!</span></a>" ) +
+    qtr( "<p>VLX is a personal, open source fork of <a href=\"https://www.videolan.org/vlc/\">VLC media player</a>. All credit for the engine and codecs goes to the volunteers of the <a href=\"https://www.videolan.org/\">VideoLAN</a> community.</p><p>VLX is not affiliated with VideoLAN.</p><p><a href=\"https://github.com/TriptoAfsin/vlx\">VLX on GitHub</a>" ) +
     "</p></body> </html>");
 
     const QDate today = QDate::currentDate();
