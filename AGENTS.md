@@ -6,7 +6,9 @@ Guidance for coding agents (and humans) working on VLX, a personal fork of VLC.
 
 - Upstream VLC `master` (4.0-dev) plus VLX changes on `main`. `master` mirrors `upstream/master` and is never edited.
 - The VLX goal, in order: **modern, fluid UI**, then **performance**, then (later) features.
-- The design system is in [`DESIGN.md`](DESIGN.md). Check changes the way [`VERIFY.md`](VERIFY.md) says.
+- The design system is in [`DESIGN.md`](DESIGN.md) (once locked). Check changes the way [`VERIFY.md`](VERIFY.md) says. Take upstream VLC the way [`UPSTREAM.md`](UPSTREAM.md) says.
+- Feature cuts live in [`extras/vlx/vlx.ini`](extras/vlx/vlx.ini) (Meson options). Never delete upstream code to cut a feature.
+- Every UI setting (theme, accent, size, bar style, positions) shows a live preview of its effect in Settings.
 
 ## Where things live
 
@@ -40,5 +42,5 @@ Guidance for coding agents (and humans) working on VLX, a personal fork of VLC.
 ## Git
 
 - Work on `main` or a feature branch off it. Never commit to `master`.
-- Sync: `git fetch upstream && git rebase upstream/master`.
+- Taking upstream VLC: merge, never rebase. Steps in [`UPSTREAM.md`](UPSTREAM.md).
 - Commit messages follow upstream style: `module: short summary` (e.g. `qt: soften control bar surfaces`).

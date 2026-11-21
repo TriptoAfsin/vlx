@@ -1,65 +1,94 @@
 # VERIFY.md
 
-How to check a VLX change before calling it done. Run the steps that apply to what changed.
+What "checked" means for each kind of VLX change. A change is committed only after it builds cleanly and passes
+the checks for its kind. Modelled on tTorrent's flow.
 
-## 0. Environment
+## 0. Environment (once per machine)
 
-VLX builds on Windows with a mingw-w64 toolchain inside **WSL (Ubuntu)**. That's the recommended route, and the
-dev machine already has `Ubuntu-26.04` under WSL 2. Msys2 and Docker also work (see `doc/BUILD-win32.md`).
+VLX builds with a mingw-w64 toolchain inside **WSL (Ubuntu)**. The machine has `Ubuntu-26.04` under WSL 2.
 
-One-time setup inside WSL: install the packages listed in `doc/BUILD-win32.md` (Ubuntu section), plus
-`llvm-mingw` if you want PDBs for debugging.
+- Install the packages listed in `doc/BUILD-win32.md` (Ubuntu section).
+- Build from a Linux path (e.g. `~/src/vlx`, a clone of this repo), not `/mnt/l/...`. Builds on the Windows drive are many times slower.
+- Copy each finished build to a Windows scratch folder to run it, e.g. `T:\dev\vlx\build-<HHmm>\`.
 
-Build from a Linux filesystem path (e.g. `~/src/vlx`), not `/mnt/l/...`. Builds on the Windows drive are many times slower.
+## 1. Every change
 
-## 1. Build
+1. **Build** with no errors and no new warnings in the files you touched:
+   ```sh
+   ./extras/package/win32/build.sh -a x86_64 -p -m          # debug
+   ./extras/package/win32/build.sh -a x86_64 -p -m -r -t    # release + LTO, what VLX ships
+   ```
+2. **Tests:** `meson test --suite qt` from the build directory (Qt models and QML tests). Run all of `meson test` before taking an upstream update.
+3. **Start it in a scratch profile.** VLC uses a `portable` folder next to `vlc.exe` as its whole profile when one
+   exists (`src/win32/dirs.c`). So run from the scratch copy with an empty `portable\` folder beside the exe:
+   ```powershell
+   New-Item -ItemType Directory T:\dev\vlx\build-<HHmm>\portable
+   T:\dev\vlx\build-<HHmm>\vlc.exe --verbose=2 --file-logging --logfile=T:\dev\vlx\build-<HHmm>\vlx.log
+   ```
+   It must reach the main window, and the log must have no QML errors or binding loops. Never run a test build
+   against the owner's real profile (`%APPDATA%\vlc`).
 
-```sh
-# Debug build, prebuilt contribs, Meson
-./extras/package/win32/build.sh -a x86_64 -p -m
+## 2. UI changes: screenshots
 
-# Release build with LTO (what VLX ships)
-./extras/package/win32/build.sh -a x86_64 -p -m -r -t
+*Planned, built with the first UI change (same idea as tTorrent's `TTORRENT_UISHOT_DIR`):* with `VLX_UISHOT_DIR`
+set, VLX renders each main screen off-screen, 1.5 s apart, saves a PNG of each and quits. Nothing on the owner's
+screen is captured.
+
+```powershell
+$env:VLX_UISHOT_DIR = "<empty folder>"
+T:\dev\vlx\build-<HHmm>\vlc.exe <sample video> <sample audio>
+Remove-Item Env:VLX_UISHOT_DIR
 ```
 
-Pass: the build finishes with no new warnings in the files you touched.
+Screens: library home, video grid and table, music, browse; player with a video (controls shown); player with an
+audio file (the audio view); playlist open; settings first page, a searched setting, Advanced; the main menus;
+About; mini player.
 
-## 2. Tests
+Look at every screen the change touches in a dark and a light theme (and two accents), and for spacing changes in
+each density. Check for:
 
-```sh
-# From the build directory
-meson test --suite qt          # Qt/QML model and component tests (modules/gui/qt/tests)
-meson test                     # whole suite, before merging larger changes
-```
+- clipped text;
+- borders colliding;
+- missing hover and focus states;
+- the system title bar showing anywhere;
+- horizontal scrolling;
+- colours that ignore the theme or the accent.
 
-Pass: no new failures compared with `master`.
+**Sample media:** open films only (Big Buck Bunny, Sintel, Tears of Steel) and Creative Commons music, kept in
+`T:\dev\vlx\samples\`. Never the owner's files.
 
-## 3. QML
+For a visible change, show the owner a before/after image.
 
-For QML changes, also:
-- Run `qmllint` on the changed `.qml` files (it ships with Qt 6). No new warnings.
-- Launch with `--verbose=2` and check the log for QML errors and binding loops.
+## 3. Feature checks
 
-## 4. Run it
+Each feature gets a real-run check when it's built. Run the ones your change touches.
 
-Run the built `vlc.exe` from the build's install directory on Windows and check by hand:
+| Feature | Check |
+|---|---|
+| Theme and accent | Each preset theme × 3 accents in the screenshot pass. A custom accent that fails 3:1 on the background is adjusted (shown in Settings). |
+| Settings search | Search `gpu`, `subs`, `dark`, `buffer`: each jumps to the right setting and outlines it. Esc closes the results. |
+| Audio view | Play an MP3 with cover art and a FLAC without: art or a generated fallback, title, artist, album, the queue. |
+| Control island | Hides after the timeout in fullscreen, comes back on mouse move, never covers subtitles. |
+| Feature cuts | `extras/vlx/vlx.ini` build: the cut modules are absent from `plugins\`, and their menu entries are hidden. |
+| Upstream update | Full `meson test`, the screenshot pass, and play the sample set (H.264, HEVC 10-bit, AV1, VP9, FLAC, Opus, a subtitle file). |
 
-- [ ] App starts. Note the cold-start time to the first frame of the UI.
-- [ ] Play a local file. Seek, pause, change volume, toggle fullscreen.
-- [ ] Open the playlist and the media library. Switch between grid and list.
-- [ ] Light and dark theme both look right (Settings → Interface → colour scheme).
-- [ ] Window resize, maximize and snap work. Client-side decorations aren't broken.
-- [ ] Changed screens animate smoothly, with no jumps or flicker.
+## 4. Benchmarks
 
-For UI changes, take before/after screenshots of each changed screen and attach them to the PR.
+Any claim that VLX is lighter or faster needs numbers, before and after, from the same machine and the same files.
 
-## 5. Performance changes
+- **Start-up:** launch to first UI frame, from the log. Median of 5 cold and 5 warm runs, in a scratch profile.
+- **Memory:** private working set at idle in the library, and while playing the 4K HEVC sample for 10 minutes.
+- **Playback:** CPU and GPU use, and dropped frames (Tools > Media Information > Statistics), on the 4K HEVC sample.
+- **Install size:** size of the release folder and the `plugins\` count.
 
-Measure before and after, on the same machine and file, and report both numbers:
+Report one table with each build's median and peak, plus the machine, date and build each column came from.
+Single runs vary, so call small differences "within noise" unless they repeat.
 
-- **Startup:** time from launch to the first UI frame, median of 5 runs, cold and warm.
-- **Playback:** CPU and GPU use while playing a 4K HEVC file (Task Manager or `perfmon`), and dropped frames
-  (Tools → Media Information → Statistics).
-- **UI:** frame rate while scrolling a large media library grid (`QSG_RENDER_TIMING=1` prints frame timings).
+## 5. Releases
 
-A performance change without numbers isn't done.
+Only when the owner asks.
+
+1. Bump the VLX version, build the release with LTO, run the screenshot pass and check About shows the new version.
+2. Zip the release folder as `VLX-<version>-windows-x64.zip` and write `sha256.txt`.
+3. Unzip into an empty folder with a `portable\` folder and play the sample set.
+4. Tag `v<version>`, push, and `gh release create v<version> -R TriptoAfsin/vlx` with notes that credit VLC and name the upstream base.

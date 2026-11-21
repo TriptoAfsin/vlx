@@ -655,7 +655,8 @@ if [ -n "$BUILD_MESON" ]; then
         -Dcmake_prefix_path="${BUILD_PATH}/contrib/$CONTRIB_PREFIX" \
         $MCONFIGFLAGS \
         --cross-file ${BUILD_PATH}/$SHORTARCH-meson/crossfile.meson \
-        --cross-file ${BUILD_PATH}/contrib/$CONTRIB_PREFIX/share/meson/cross/contrib.ini
+        --cross-file ${BUILD_PATH}/contrib/$CONTRIB_PREFIX/share/meson/cross/contrib.ini \
+        --cross-file ${VLC_ROOT_PATH}/extras/vlx/vlx.ini  # VLX: feature cuts (extras/vlx/vlx.ini)
 
     info "Compiling"
     meson compile -j $JOBS -C ${BUILD_PATH}/$SHORTARCH-meson ${MCOMPILEFLAGS}

@@ -13,7 +13,7 @@ the codecs, "plays everything") is VLC's work. VLX only reskins and tunes it.
    smooth transitions, a refreshed player view and media library.
 2. **Performance second.** Faster startup and snappier UI through build flags and defaults
    (LTO, lazy-loaded views, sensible hardware-decoding defaults), never by dropping features.
-3. **Stay close to upstream.** Small, contained diffs so VLX can keep rebasing on VLC `master`.
+3. **Low upkeep.** Small, contained diffs, so a new VLC release merges in with little work.
 
 Features beyond that come later.
 
@@ -42,7 +42,7 @@ the exact commands used to check a change.
 | `upstream` remote | `https://github.com/videolan/vlc.git` |
 | `origin` remote | `https://github.com/TriptoAfsin/vlx.git` |
 
-To sync: `git fetch upstream && git rebase upstream/master` on `main`.
+To take a newer VLC, follow [`UPSTREAM.md`](UPSTREAM.md). VLX follows pinned 4.0-dev commits until VLC 4.0 ships, then release tags.
 
 ## Credits and license
 
