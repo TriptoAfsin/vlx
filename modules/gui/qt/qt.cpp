@@ -513,6 +513,8 @@ vlc_module_begin ()
         change_string_list( vlx_bar_style_values, vlx_bar_style_texts )
     add_string( "qt-vlx-bar-position", "bottom", VLX_BAR_POSITION_TEXT, nullptr ) // VLX
         change_string_list( vlx_bar_position_values, vlx_bar_position_texts )
+    add_string( "qt-vlx-start-view", "", N_("Start page"), N_("Page to open at start, for screenshots and tests (e.g. vlxsettings).") ) // VLX
+        change_volatile()
     add_string( "qt-vlx-audio-skin", "albumcompact", VLX_AUDIO_SKIN_TEXT, nullptr ) // VLX
         change_string_list( vlx_audio_skin_values, vlx_audio_skin_texts )
 

@@ -49,6 +49,7 @@ VLXSettings::VLXSettings(qt_intf_t *intf, QObject *parent)
     m_accent = readString("qt-accent-color", "default");
     m_fileIcons = readString("qt-vlx-file-icons", "band");
     m_fileIconLook = readString("qt-vlx-file-icon-look", "auto");
+    m_startView = readString("qt-vlx-start-view", "");
     m_barStyle = readString("qt-vlx-bar-style", "classic");
     if (!kBarStyles.contains(m_barStyle))
         m_barStyle = "classic";

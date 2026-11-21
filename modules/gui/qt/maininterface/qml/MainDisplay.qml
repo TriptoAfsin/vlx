@@ -87,6 +87,8 @@ FocusScope {
         if (History.previousEmpty) {
             History.update(["home"])
         }
+        if (VLXSettings.startView !== "") // VLX: --qt-vlx-start-view, for screenshots and tests
+            History.update([VLXSettings.startView])
         loadCurrentHistoryView(Qt.OtherFocusReason)
     }
 

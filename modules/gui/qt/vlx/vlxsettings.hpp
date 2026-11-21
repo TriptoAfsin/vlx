@@ -47,6 +47,8 @@ class VLXSettings : public QObject
     // band, echo / auto, light, dark
     Q_PROPERTY(QString fileIcons READ fileIcons WRITE setFileIcons NOTIFY fileIconsChanged FINAL)
     Q_PROPERTY(QString fileIconLook READ fileIconLook WRITE setFileIconLook NOTIFY fileIconsChanged FINAL)
+    // page to open at start (--qt-vlx-start-view), for screenshots and tests; empty for the usual home
+    Q_PROPERTY(QString startView READ startView CONSTANT FINAL)
 
 public:
     explicit VLXSettings(qt_intf_t *intf, QObject *parent = nullptr);
@@ -68,6 +70,7 @@ public:
     QString fileIcons() const { return m_fileIcons; }
     void setFileIcons(const QString &style);
     QString fileIconLook() const { return m_fileIconLook; }
+    QString startView() const { return m_startView; }
     void setFileIconLook(const QString &look);
 
     /* VLC's own integer options (e.g. "mouse-hide-timeout"), for the settings page. */
@@ -96,6 +99,7 @@ private:
     QString m_accent;
     QString m_fileIcons;
     QString m_fileIconLook;
+    QString m_startView;
 
     static VLXSettings *s_instance;
 };
