@@ -49,6 +49,7 @@ FocusScope {
     // the interface's own window shortcuts (menus/qml/GlobalShortcuts.qml), plus VLX pages
     readonly property var appCommands: [
         { id: "app-settings", label: qsTr("Open VLX settings"), keys: [], run: () => History.push(["vlxsettings"]) },
+        { id: "app-toolbar", label: qsTr("Customise player buttons"), keys: [], run: () => DialogsProvider.showToolbarEditorDialog() },
         { id: "app-open", label: qsTr("Open file"), keys: ["Ctrl+O"], run: () => DialogsProvider.simpleOpenDialog() },
         { id: "app-open-adv", label: qsTr("Open file (advanced)"), keys: ["Ctrl+Shift+O"], run: () => DialogsProvider.openFileDialog() },
         { id: "app-folder", label: qsTr("Open folder"), keys: ["Ctrl+F"], run: () => DialogsProvider.PLOpenDir() },

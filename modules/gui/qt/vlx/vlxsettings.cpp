@@ -22,6 +22,7 @@
 #endif
 
 #include "vlxsettings.hpp"
+#include "lookpanel.hpp" // VLX: themeColors for themePalette()
 
 #include "qt.hpp"
 
@@ -61,6 +62,10 @@ VLXSettings::VLXSettings(qt_intf_t *intf, QObject *parent)
     m_barPosition = readString("qt-vlx-bar-position", "bottom");
     if (!kBarPositions.contains(m_barPosition))
         m_barPosition = "bottom";
+    m_audioBackground = readString("qt-vlx-audio-background", "plain") == "tinted" ? "tinted" : "plain";
+    m_audioTheme = readString("qt-vlx-audio-theme", "app");
+    if (m_audioTheme != "app" && !kThemes.contains(m_audioTheme))
+        m_audioTheme = "app";
     m_audioSkin = readString("qt-vlx-audio-skin", "albumcompact");
     if (!kAudioSkins.contains(m_audioSkin))
         m_audioSkin = "albumcompact";
@@ -104,6 +109,31 @@ void VLXSettings::setAudioSkin(const QString &skin)
     m_audioSkin = skin;
     writeString("qt-vlx-audio-skin", skin);
     emit audioSkinChanged();
+}
+
+void VLXSettings::setAudioBackground(const QString &background)
+{
+    if ((background != "plain" && background != "tinted") || background == m_audioBackground)
+        return;
+    m_audioBackground = background;
+    writeString("qt-vlx-audio-background", background);
+    emit audioLookChanged();
+}
+
+void VLXSettings::setAudioTheme(const QString &theme)
+{
+    if ((theme != "app" && (!kThemes.contains(theme) || theme == "default")) || theme == m_audioTheme)
+        return;
+    m_audioTheme = theme;
+    writeString("qt-vlx-audio-theme", theme);
+    emit audioLookChanged();
+}
+
+QVariantMap VLXSettings::themePalette(const QString &theme) const
+{
+    const vlx::ThemeColors c = vlx::themeColors(theme, QStringLiteral("default"));
+    return { { "bg", c.bg }, { "panel", c.panel }, { "raised", c.raised }, { "line", c.line },
+             { "text", c.text }, { "muted", c.muted }, { "accent", c.accent }, { "dark", c.dark } };
 }
 
 void VLXSettings::setTheme(const QString &theme)

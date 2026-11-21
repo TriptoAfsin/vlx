@@ -64,12 +64,21 @@ FocusScope {
         { id: "barPosition", section: "player", name: qsTr("Controls position"), help: qsTr("Dock the player controls at the bottom or at the top, under the title."), keys: "top bottom dock controls position",
           options: [["bottom", qsTr("Bottom")], ["top", qsTr("Top")]],
           get: () => VLXSettings.barPosition, set: (v) => { VLXSettings.barPosition = v } },
+        { id: "buttons", section: "player", name: qsTr("Player buttons"), help: qsTr("Choose and arrange the buttons on the video, audio and mini player bars, with profiles."),
+          keys: "toolbar buttons customise customize editor controls layout bar profile drag",
+          action: qsTr("Customise"), run: () => DialogsProvider.showToolbarEditorDialog() },
         { id: "hideDelay", section: "player", name: qsTr("Hide controls after"), help: qsTr("How long the controls and the mouse pointer stay after the mouse stops moving."), keys: "auto hide timeout mouse pointer cursor",
           options: [["1000", "1 s"], ["2000", "2 s"], ["3000", "3 s"], ["5000", "5 s"], ["86400000", qsTr("Never")]],
           get: () => String(VLXSettings.intOption("mouse-hide-timeout")), set: (v) => VLXSettings.setIntOption("mouse-hide-timeout", +v) },
         { id: "audioSkin", section: "audio", name: qsTr("Audio player skin"), help: qsTr("What the player shows for files without video."), keys: "music skin album turntable vinyl record mini",
           options: [["albumcompact", qsTr("Album compact")], ["album", qsTr("Album")], ["turntable", qsTr("Turntable")], ["turntablecompact", qsTr("Turntable compact")], ["mini", qsTr("Mini player")], ["classic", qsTr("VLC classic")]],
           get: () => VLXSettings.audioSkin, set: (v) => { VLXSettings.audioSkin = v } },
+        { id: "audioBackground", section: "audio", name: qsTr("Background"), help: qsTr("The theme's plain background, or a soft wash of the cover art's colours."), keys: "tint tinted blur cover art colour color background",
+          options: [["plain", qsTr("Plain theme")], ["tinted", qsTr("Tinted from the cover art")]],
+          get: () => VLXSettings.audioBackground, set: (v) => { VLXSettings.audioBackground = v } },
+        { id: "audioTheme", section: "audio", name: qsTr("Colours"), help: qsTr("Follow the app theme, or give the audio player a theme of its own."), keys: "theme colour color dark light own audio music",
+          options: [["app", qsTr("Follow the app theme")], ["dark", qsTr("Dark")], ["light", qsTr("Light")], ["paper", qsTr("Paper")], ["ink", qsTr("Ink")], ["nord", qsTr("Nord")], ["mocha", qsTr("Mocha")], ["tokyo", qsTr("Tokyo")]],
+          get: () => VLXSettings.audioTheme, set: (v) => { VLXSettings.audioTheme = v } },
         { id: "fileIcons", section: "files", name: qsTr("File icon style"), help: qsTr("Icons for media files in Explorer."), keys: "explorer icons file types association",
           options: [["band", qsTr("Page and band")], ["echo", qsTr("Echo")]],
           get: () => VLXSettings.fileIcons, set: (v) => { VLXSettings.fileIcons = v } },
@@ -255,6 +264,118 @@ FocusScope {
                                 topPadding: index === 0 ? 0 : VLCStyle.margin_normal
                                 text: root.sectionName(modelData.section)
                                 color: theme.fg.primary
+                            }
+
+                            Item { // audio player preview: the chosen skin in the chosen colours and background
+                                id: audioPreview
+                                visible: modelData.id === "audioSkin"
+                                width: Math.min(parent.width, VLCStyle.dp(420, VLCStyle.scale))
+                                height: visible ? width * 0.42 : 0
+                                readonly property var own: VLXSettings.audioTheme !== "app" ? VLXSettings.themePalette(VLXSettings.audioTheme) : null
+                                readonly property color cBg: own ? own.bg : theme.bg.primary
+                                readonly property color cPanel: own ? own.panel : theme.bg.secondary
+                                readonly property color cLine: own ? own.line : theme.border
+                                readonly property color cText: own ? own.text : theme.fg.primary
+                                readonly property color cMuted: own ? own.muted : theme.fg.secondary
+                                readonly property color cAccent: own ? own.accent : theme.accent
+                                readonly property string sk: VLXSettings.audioSkin
+                                readonly property bool disc: sk === "turntable" || sk === "turntablecompact"
+                                readonly property bool compact: sk === "albumcompact" || sk === "turntablecompact"
+                                readonly property real u: width / 42 // layout unit
+
+                                Rectangle {
+                                    anchors.fill: parent
+                                    radius: VLCStyle.dp(12, VLCStyle.scale)
+                                    color: audioPreview.cBg
+                                    border.color: audioPreview.cLine
+                                    border.width: VLCStyle.border
+                                    clip: true
+                                    Behavior on color { ColorAnimation { duration: VLCStyle.duration_long } }
+
+                                    Rectangle { // "tinted from the cover art"
+                                        anchors.fill: parent
+                                        radius: parent.radius
+                                        visible: VLXSettings.audioBackground === "tinted"
+                                        gradient: Gradient {
+                                            GradientStop { position: 0; color: Qt.hsla(0.06, 0.6, 0.5, 0.45) }
+                                            GradientStop { position: 1; color: Qt.alpha(audioPreview.cBg, 0.6) }
+                                        }
+                                    }
+
+                                    Rectangle { // compact skins sit in a card
+                                        visible: audioPreview.compact
+                                        anchors.centerIn: parent
+                                        width: parent.width * 0.7; height: parent.height * 0.52
+                                        radius: audioPreview.u
+                                        color: audioPreview.cPanel
+                                        border.color: audioPreview.cLine; border.width: VLCStyle.border
+                                    }
+
+                                    Item { // cover or record
+                                        id: art
+                                        readonly property real side: audioPreview.sk === "mini" ? parent.height * 0.18
+                                                                   : audioPreview.compact ? parent.height * 0.38 : parent.height * 0.66
+                                        visible: audioPreview.sk !== "classic"
+                                        width: side; height: side
+                                        x: audioPreview.sk === "mini" ? parent.width * 0.12 + audioPreview.u * 0.6
+                                           : audioPreview.compact ? parent.width * 0.15 + audioPreview.u * 1.2 : audioPreview.u * 3
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        anchors.verticalCenterOffset: audioPreview.compact || audioPreview.sk === "mini" ? 0 : -audioPreview.u
+                                        Rectangle { // record
+                                            visible: audioPreview.disc
+                                            anchors.fill: parent; radius: width / 2
+                                            color: Qt.rgba(0.07, 0.07, 0.08, 1)
+                                            Rectangle { anchors.centerIn: parent; width: parent.width * 0.4; height: width; radius: width / 2; color: audioPreview.cAccent }
+                                            RotationAnimator on rotation { from: 0; to: 360; duration: 3200; loops: Animation.Infinite; running: audioPreview.visible && audioPreview.disc }
+                                        }
+                                        Rectangle { // cover
+                                            visible: !audioPreview.disc
+                                            anchors.fill: parent; radius: audioPreview.u * 0.6
+                                            gradient: Gradient {
+                                                GradientStop { position: 0; color: Qt.hsla(0.06, 0.62, 0.52, 1) }
+                                                GradientStop { position: 1; color: Qt.hsla(0.1, 0.5, 0.25, 1) }
+                                            }
+                                        }
+                                    }
+
+                                    Column { // title, artist
+                                        visible: audioPreview.sk !== "classic"
+                                        anchors.verticalCenter: art.verticalCenter
+                                        x: art.x + art.width + audioPreview.u * (audioPreview.sk === "mini" ? 0.8 : 1.5)
+                                        spacing: audioPreview.u * 0.5
+                                        Rectangle { width: audioPreview.u * (audioPreview.sk === "mini" ? 7 : 10); height: audioPreview.u * 0.9; radius: height / 2; color: audioPreview.cText }
+                                        Rectangle { width: audioPreview.u * 6; height: audioPreview.u * 0.7; radius: height / 2; color: audioPreview.cMuted; visible: audioPreview.sk !== "mini" }
+                                        Repeater { // up next / the album
+                                            model: audioPreview.sk === "album" || audioPreview.sk === "turntable" ? 3 : 0
+                                            Rectangle { width: audioPreview.u * 12; height: audioPreview.u * 0.6; radius: height / 2; color: Qt.alpha(audioPreview.cMuted, 0.5) }
+                                        }
+                                    }
+
+                                    Rectangle { // the mini player is one slim strip
+                                        visible: audioPreview.sk === "mini"
+                                        z: -1
+                                        anchors.centerIn: parent
+                                        width: parent.width * 0.76; height: parent.height * 0.3
+                                        radius: height / 2
+                                        color: audioPreview.cPanel
+                                        border.color: audioPreview.cLine; border.width: VLCStyle.border
+                                    }
+
+                                    Widgets.IconLabel { // VLC classic: the plain music view
+                                        visible: audioPreview.sk === "classic"
+                                        anchors.centerIn: parent
+                                        text: VLCIcons.topbar_music
+                                        font.pixelSize: parent.height * 0.3
+                                        color: audioPreview.cMuted
+                                    }
+
+                                    Rectangle { // seek line
+                                        anchors { left: parent.left; right: parent.right; bottom: parent.bottom; margins: audioPreview.u * 2 }
+                                        height: Math.max(2, audioPreview.u * 0.35); radius: height / 2
+                                        color: Qt.alpha(audioPreview.cText, 0.2)
+                                        Rectangle { width: parent.width * 0.38; height: parent.height; radius: height / 2; color: audioPreview.cAccent }
+                                    }
+                                }
                             }
 
                             Item { // bar style preview

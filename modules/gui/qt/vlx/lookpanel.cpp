@@ -24,6 +24,7 @@
 #include "vlx/lookpanel.hpp"
 #include "vlx/vlxsettings.hpp"
 #include "maininterface/mainctx.hpp"
+#include "dialogs/dialogs_provider.hpp"
 
 #include <QComboBox>
 #include <QFormLayout>
@@ -33,6 +34,7 @@
 #include <QLinearGradient>
 #include <QPainter>
 #include <QPainterPath>
+#include <QPushButton>
 #include <QVBoxLayout>
 
 #include <cmath>
@@ -191,6 +193,133 @@ protected:
     }
 };
 
+/* The audio player: the chosen skin in its colours (the app theme or the skin's own) and background. */
+class AudioPreview : public QWidget
+{
+public:
+    explicit AudioPreview(QWidget *parent) : QWidget(parent)
+    {
+        setFixedSize(320, 136);
+        setAccessibleName(qtr("Audio player preview"));
+    }
+
+    QString skin, background, audioTheme, appTheme, accent;
+
+protected:
+    void paintEvent(QPaintEvent *) override
+    {
+        const vlx::ThemeColors c = audioTheme == QLatin1String("app")
+                ? vlx::themeColors(appTheme, accent) : vlx::themeColors(audioTheme, QStringLiteral("default"));
+        QPainter p(this);
+        p.setRenderHint(QPainter::Antialiasing);
+        p.setPen(Qt::NoPen);
+
+        const QRectF r = QRectF(rect()).adjusted(1, 1, -1, -1);
+        QPainterPath frame;
+        frame.addRoundedRect(r, 10, 10);
+        p.fillPath(frame, c.bg);
+        p.setClipPath(frame);
+        if (background == QLatin1String("tinted"))
+        {
+            QLinearGradient tint(r.topLeft(), r.bottomRight());
+            tint.setColorAt(0, QColor::fromHslF(0.06, 0.6, 0.5, 0.45));
+            QColor fade = c.bg;
+            fade.setAlphaF(0.6);
+            tint.setColorAt(1, fade);
+            p.fillPath(frame, tint);
+        }
+
+        const qreal u = r.width() / 42;
+        const bool disc = skin == QLatin1String("turntable") || skin == QLatin1String("turntablecompact");
+        const bool compact = skin == QLatin1String("albumcompact") || skin == QLatin1String("turntablecompact");
+        const bool mini = skin == QLatin1String("mini");
+
+        if (skin == QLatin1String("classic"))
+        {
+            // VLC's plain music view: a note in the middle
+            p.setBrush(c.muted);
+            const QPointF m = r.center();
+            p.drawEllipse(QPointF(m.x() - 9, m.y() + 10), 7, 5.5);
+            p.drawEllipse(QPointF(m.x() + 11, m.y() + 6), 7, 5.5);
+            p.drawRect(QRectF(m.x() - 3.5, m.y() - 18, 2.5, 28));
+            p.drawRect(QRectF(m.x() + 16.5, m.y() - 22, 2.5, 28));
+            QPolygonF beam;
+            beam << QPointF(m.x() - 3.5, m.y() - 18) << QPointF(m.x() + 19, m.y() - 24)
+                 << QPointF(m.x() + 19, m.y() - 18) << QPointF(m.x() - 3.5, m.y() - 12);
+            p.drawPolygon(beam);
+        }
+        else
+        {
+            if (compact || mini)
+            {
+                const QRectF card = mini ? QRectF(r.center().x() - r.width() * 0.38, r.center().y() - r.height() * 0.15,
+                                                  r.width() * 0.76, r.height() * 0.3)
+                                         : QRectF(r.center().x() - r.width() * 0.35, r.center().y() - r.height() * 0.26,
+                                                  r.width() * 0.7, r.height() * 0.52);
+                p.setBrush(c.panel);
+                p.setPen(QPen(c.line, 1));
+                p.drawRoundedRect(card, mini ? card.height() / 2 : u, mini ? card.height() / 2 : u);
+                p.setPen(Qt::NoPen);
+            }
+            const qreal side = mini ? r.height() * 0.18 : compact ? r.height() * 0.38 : r.height() * 0.66;
+            const qreal ax = mini ? r.left() + r.width() * 0.12 + u * 0.8
+                       : compact ? r.left() + r.width() * 0.15 + u * 1.2 : r.left() + u * 3;
+            const qreal ay = r.center().y() - side / 2 - ((compact || mini) ? 0 : u);
+            const QRectF art(ax, ay, side, side);
+            if (disc)
+            {
+                p.setBrush(QColor(18, 18, 20));
+                p.drawEllipse(art);
+                p.setBrush(c.accent);
+                p.drawEllipse(art.center(), side * 0.2, side * 0.2);
+                p.setBrush(c.bg);
+                p.drawEllipse(art.center(), 1.6, 1.6);
+                p.setPen(QPen(QColor(170, 170, 175), 2, Qt::SolidLine, Qt::RoundCap)); // tone arm
+                p.drawLine(QPointF(art.right() + u * 0.4, art.top()), QPointF(art.right() - side * 0.18, art.center().y() + side * 0.12));
+                p.setPen(Qt::NoPen);
+            }
+            else
+            {
+                QLinearGradient cover(art.topLeft(), art.bottomLeft());
+                cover.setColorAt(0, QColor::fromHslF(0.06, 0.62, 0.52));
+                cover.setColorAt(1, QColor::fromHslF(0.1, 0.5, 0.25));
+                p.setBrush(cover);
+                p.drawRoundedRect(art, u * 0.6, u * 0.6);
+            }
+
+            const qreal tx = art.right() + u * (mini ? 0.8 : 1.5);
+            qreal ty = art.center().y() - (mini ? u * 0.45 : u * 1.2);
+            p.setBrush(c.text);
+            p.drawRoundedRect(QRectF(tx, ty, u * (mini ? 7 : 10), u * 0.9), u * 0.45, u * 0.45);
+            if (!mini)
+            {
+                ty += u * 1.4;
+                p.setBrush(c.muted);
+                p.drawRoundedRect(QRectF(tx, ty, u * 6, u * 0.7), u * 0.35, u * 0.35);
+            }
+            if (skin == QLatin1String("album") || skin == QLatin1String("turntable"))
+            {
+                QColor list = c.muted;
+                list.setAlphaF(0.5);
+                p.setBrush(list);
+                for (int i = 0; i < 3; ++i)
+                    p.drawRoundedRect(QRectF(tx, ty + u * (1.6 + i * 1.2), u * 12, u * 0.6), u * 0.3, u * 0.3);
+            }
+        }
+
+        if (!mini) // seek line
+        {
+            const QRectF seek(r.left() + u * 2, r.bottom() - u * 2 - 2, r.width() - u * 4, 3);
+            QColor track = c.text;
+            track.setAlphaF(0.2);
+            p.setBrush(track);
+            p.drawRoundedRect(seek, 1.5, 1.5);
+            p.setBrush(c.accent);
+            p.drawRoundedRect(QRectF(seek.left(), seek.top(), seek.width() * 0.38, 3), 1.5, 1.5);
+        }
+    }
+};
+
 QComboBox *addChoice(QFormLayout *form, const QString &label, const Options &options, const QString &current,
                      const std::function<void(const QString &)> &apply)
 {
@@ -225,17 +354,23 @@ QWidget *vlx::createLookPanel(qt_intf_t *intf, QWidget *parent)
     preview->accent = s->accent();
     preview->barStyle = s->barStyle();
     preview->barPosition = s->barPosition();
+    auto *audio = new AudioPreview(group);
+    audio->skin = s->audioSkin();
+    audio->background = s->audioBackground();
+    audio->audioTheme = s->audioTheme();
+    audio->appTheme = s->theme();
+    audio->accent = s->accent();
 
     addChoice(form, qtr("Theme"),
               { { "default", qtr("VLC default") }, { "dark", qtr("Dark") }, { "light", qtr("Light") },
                 { "paper", qtr("Paper") }, { "ink", qtr("Ink") }, { "nord", qtr("Nord") },
                 { "mocha", qtr("Mocha") }, { "tokyo", qtr("Tokyo") } },
-              s->theme(), [s, preview](const QString &v) { s->setTheme(v); preview->theme = v; preview->update(); });
+              s->theme(), [s, preview, audio](const QString &v) { s->setTheme(v); preview->theme = v; preview->update(); audio->appTheme = v; audio->update(); });
     QComboBox *accent = addChoice(form, qtr("Accent colour"),
               { { "default", qtr("Theme's own") }, { "#FF8800", qtr("VLC orange") }, { "#E6B450", qtr("Amber") },
                 { "#E0466A", qtr("Rose") }, { "#5B8CFF", qtr("Blue") }, { "#10B981", qtr("Emerald") },
                 { "#8B5CF6", qtr("Grape") }, { "#9F234A", qtr("Wine") }, { "system", qtr("Windows accent") } },
-              s->accent(), [s, preview](const QString &v) { s->setAccent(v); preview->accent = v; preview->update(); });
+              s->accent(), [s, preview, audio](const QString &v) { s->setAccent(v); preview->accent = v; preview->update(); audio->accent = v; audio->update(); });
     for (int i = 0; i < accent->count(); ++i) // a swatch next to each colour
     {
         const QString v = accent->itemData(i).toString();
@@ -275,7 +410,15 @@ QWidget *vlx::createLookPanel(qt_intf_t *intf, QWidget *parent)
               { { "albumcompact", qtr("Album compact") }, { "album", qtr("Album") }, { "turntable", qtr("Turntable") },
                 { "turntablecompact", qtr("Turntable compact") }, { "mini", qtr("Mini player") },
                 { "classic", qtr("VLC classic") } },
-              s->audioSkin(), [s](const QString &v) { s->setAudioSkin(v); });
+              s->audioSkin(), [s, audio](const QString &v) { s->setAudioSkin(v); audio->skin = v; audio->update(); });
+    addChoice(form, qtr("Audio background"),
+              { { "plain", qtr("Plain theme") }, { "tinted", qtr("Tinted from the cover art") } },
+              s->audioBackground(), [s, audio](const QString &v) { s->setAudioBackground(v); audio->background = v; audio->update(); });
+    addChoice(form, qtr("Audio colours"),
+              { { "app", qtr("Follow the app theme") }, { "dark", qtr("Dark") }, { "light", qtr("Light") },
+                { "paper", qtr("Paper") }, { "ink", qtr("Ink") }, { "nord", qtr("Nord") },
+                { "mocha", qtr("Mocha") }, { "tokyo", qtr("Tokyo") } },
+              s->audioTheme(), [s, audio](const QString &v) { s->setAudioTheme(v); audio->audioTheme = v; audio->update(); });
 #ifdef _WIN32
     addChoice(form, qtr("File icon style"), { { "band", qtr("Page and band") }, { "echo", qtr("Echo") } },
               s->fileIcons(), [s](const QString &v) { s->setFileIcons(v); });
@@ -287,13 +430,27 @@ QWidget *vlx::createLookPanel(qt_intf_t *intf, QWidget *parent)
     auto *note = new QLabel(qtr("Changes apply at once. The same settings, with search, are on the Settings page."));
     note->setWordWrap(true);
     note->setEnabled(false);
+    // VLC 4's toolbar editor: the buttons on the video, audio and mini player bars, with profiles
+    auto *buttons = new QPushButton(qtr("Customise player buttons..."));
+    QObject::connect(buttons, &QPushButton::clicked, DialogsProvider::getInstance(), &DialogsProvider::showToolbarEditorDialog);
+    form->addRow(qtr("Player buttons"), buttons);
+
     auto *left = new QVBoxLayout;
     left->addLayout(form);
     left->addWidget(note);
     left->addStretch(1);
 
+    auto *previews = new QVBoxLayout;
+    previews->addWidget(preview);
+    auto *audioLabel = new QLabel(qtr("Audio player"));
+    audioLabel->setEnabled(false);
+    previews->addSpacing(6);
+    previews->addWidget(audioLabel);
+    previews->addWidget(audio);
+    previews->addStretch(1);
+
     row->addLayout(left, 1);
     row->addSpacing(12);
-    row->addWidget(preview, 0, Qt::AlignTop);
+    row->addLayout(previews);
     return group;
 }

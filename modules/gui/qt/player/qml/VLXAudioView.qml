@@ -56,6 +56,20 @@ FocusScope {
         colorSet: ColorContext.View
     }
 
+    // VLX: the skin's colours: the app theme, or the skin's own theme (Settings › Audio player › Colours)
+    readonly property var ownPalette: VLXSettings.audioTheme !== "app" ? VLXSettings.themePalette(VLXSettings.audioTheme) : null
+    readonly property QtObject palette_: QtObject {
+        id: pal
+        readonly property color bg: root.ownPalette ? root.ownPalette.bg : theme.bg.primary
+        readonly property color panel: root.ownPalette ? root.ownPalette.panel : theme.bg.secondary
+        readonly property color line: root.ownPalette ? root.ownPalette.line : theme.border
+        readonly property color text: root.ownPalette ? root.ownPalette.text : theme.fg.primary
+        readonly property color muted: root.ownPalette ? root.ownPalette.muted : theme.fg.secondary
+        readonly property color accent: root.ownPalette ? root.ownPalette.accent : theme.accent
+        readonly property color highlight: root.ownPalette ? Qt.tint(root.ownPalette.panel, Qt.alpha(root.ownPalette.accent, 0.18))
+                                                          : theme.bg.highlight
+    }
+
     PlaylistListModel {
         id: playlistModel
         playlist: MainPlaylistController.playlist
@@ -63,7 +77,42 @@ FocusScope {
 
     Rectangle {
         anchors.fill: parent
-        color: theme.bg.primary
+        color: pal.bg
+    }
+
+    // VLX: "Tinted from the cover art": the cover drawn tiny and scaled up, so it blurs into a wash of its colours;
+    // without art, the title's hue. A veil of the background keeps text readable.
+    Item {
+        anchors.fill: parent
+        visible: VLXSettings.audioBackground === "tinted"
+
+        Image {
+            id: tintArt
+            anchors.fill: parent
+            source: parent.visible ? Player.artwork : ""
+            sourceSize: Qt.size(12, 12)
+            smooth: true
+            fillMode: Image.PreserveAspectCrop
+            asynchronous: true
+            opacity: status === Image.Ready ? 0.55 : 0
+            Behavior on opacity { NumberAnimation { duration: VLCStyle.duration_long } }
+        }
+        Rectangle {
+            anchors.fill: parent
+            visible: tintArt.status !== Image.Ready
+            readonly property real hue: (root.hash(root.titleText) % 360) / 360
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: Qt.hsla(parent.hue, 0.55, 0.45, 0.42) }
+                GradientStop { position: 1.0; color: Qt.hsla((parent.hue + 0.08) % 1, 0.5, 0.3, 0.12) }
+            }
+        }
+        Rectangle {
+            anchors.fill: parent
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: Qt.alpha(pal.bg, 0.25) }
+                GradientStop { position: 1.0; color: Qt.alpha(pal.bg, 0.8) }
+            }
+        }
     }
 
     // ---------- shared parts ----------
@@ -151,7 +200,7 @@ FocusScope {
                 width: platter.width * 0.03
                 height: width
                 radius: width / 2
-                color: theme.bg.primary
+                color: pal.bg
             }
 
             RotationAnimator on rotation {
@@ -176,7 +225,7 @@ FocusScope {
             Rectangle {
                 width: VLCStyle.dp(16, VLCStyle.scale); height: width; radius: width / 2
                 anchors.right: parent.right; anchors.top: parent.top
-                color: theme.bg.secondary; border.color: theme.border; border.width: VLCStyle.border
+                color: pal.panel; border.color: pal.line; border.width: VLCStyle.border
             }
             Rectangle {
                 width: VLCStyle.dp(4, VLCStyle.scale)
@@ -184,7 +233,7 @@ FocusScope {
                 x: parent.width - width - VLCStyle.dp(6, VLCStyle.scale)
                 y: VLCStyle.dp(8, VLCStyle.scale)
                 radius: width / 2
-                color: theme.fg.secondary
+                color: pal.muted
                 transformOrigin: Item.Top
                 rotation: 18
             }
@@ -198,7 +247,7 @@ FocusScope {
         Widgets.CaptionLabel {
             text: root.trackText
             visible: text !== ""
-            color: theme.accent
+            color: pal.accent
             font.weight: Font.DemiBold
         }
         Widgets.SubtitleLabel {
@@ -209,14 +258,14 @@ FocusScope {
             wrapMode: Text.Wrap
             maximumLineCount: 2
             elide: Text.ElideRight
-            color: theme.fg.primary
+            color: pal.text
         }
         Widgets.ListLabel {
             Layout.fillWidth: true
             text: root.byText
             visible: text !== ""
             elide: Text.ElideRight
-            color: theme.fg.secondary
+            color: pal.muted
         }
     }
 
@@ -232,21 +281,21 @@ FocusScope {
 
             width: ListView.view.width
             height: VLCStyle.dp(36, VLCStyle.scale)
-            color: isCurrent ? theme.bg.highlight : (hover.hovered ? theme.bg.secondary : "transparent")
+            color: isCurrent ? pal.highlight : (hover.hovered ? pal.panel : "transparent")
             Behavior on color { ColorAnimation { duration: VLCStyle.duration_short } }
 
             Rectangle { // current-track bar
                 width: VLCStyle.dp(2, VLCStyle.scale); height: parent.height
-                color: theme.accent; visible: isCurrent
+                color: pal.accent; visible: isCurrent
             }
             RowLayout {
                 anchors.fill: parent
                 anchors.leftMargin: VLCStyle.margin_normal
                 anchors.rightMargin: VLCStyle.margin_normal
                 spacing: VLCStyle.margin_small
-                Widgets.CaptionLabel { text: index + 1; color: isCurrent ? theme.accent : theme.fg.secondary; Layout.preferredWidth: VLCStyle.dp(24, VLCStyle.scale) }
-                Widgets.ListLabel { text: title; elide: Text.ElideRight; Layout.fillWidth: true; color: theme.fg.primary; font.weight: isCurrent ? Font.DemiBold : Font.Normal }
-                Widgets.CaptionLabel { text: duration.formatHMS(); color: theme.fg.secondary }
+                Widgets.CaptionLabel { text: index + 1; color: isCurrent ? pal.accent : pal.muted; Layout.preferredWidth: VLCStyle.dp(24, VLCStyle.scale) }
+                Widgets.ListLabel { text: title; elide: Text.ElideRight; Layout.fillWidth: true; color: pal.text; font.weight: isCurrent ? Font.DemiBold : Font.Normal }
+                Widgets.CaptionLabel { text: duration.formatHMS(); color: pal.muted }
             }
             HoverHandler { id: hover }
             TapHandler { onDoubleTapped: MainPlaylistController.goTo(index, true) }
@@ -255,9 +304,9 @@ FocusScope {
 
     // A raised card for the compact skins
     component Card: Rectangle {
-        color: theme.bg.secondary
+        color: pal.panel
         radius: VLCStyle.dp(16, VLCStyle.scale)
-        border.color: theme.border
+        border.color: pal.line
         border.width: VLCStyle.border
     }
 
@@ -300,7 +349,7 @@ FocusScope {
             Rectangle {
                 Layout.preferredWidth: Math.min(VLCStyle.dp(340, VLCStyle.scale), area.width * 0.35)
                 Layout.fillHeight: true
-                color: theme.bg.secondary
+                color: pal.panel
                 visible: playlistModel.count > 1
                 ColumnLayout {
                     anchors.fill: parent
@@ -308,7 +357,7 @@ FocusScope {
                     Widgets.SubtitleLabel {
                         text: Player.album !== "" ? Player.album : qsTr("Up next")
                         Layout.margins: VLCStyle.margin_normal
-                        color: theme.fg.primary
+                        color: pal.text
                     }
                     TrackList { Layout.fillWidth: true; Layout.fillHeight: true }
                 }

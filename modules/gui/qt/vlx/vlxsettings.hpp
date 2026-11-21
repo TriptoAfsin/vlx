@@ -41,6 +41,9 @@ class VLXSettings : public QObject
     Q_PROPERTY(QString barPosition READ barPosition WRITE setBarPosition NOTIFY barPositionChanged FINAL)
     // classic (VLC), albumcompact, album, turntable, turntablecompact, mini
     Q_PROPERTY(QString audioSkin READ audioSkin WRITE setAudioSkin NOTIFY audioSkinChanged FINAL)
+    // audio view background ("plain", "tinted") and colours ("app" or a theme id)
+    Q_PROPERTY(QString audioBackground READ audioBackground WRITE setAudioBackground NOTIFY audioLookChanged FINAL)
+    Q_PROPERTY(QString audioTheme READ audioTheme WRITE setAudioTheme NOTIFY audioLookChanged FINAL)
     // default (VLC), dark, light, paper, ink, nord, mocha, tokyo
     Q_PROPERTY(QString theme READ theme WRITE setTheme NOTIFY themeChanged FINAL)
     // "default" (the theme's own), "system", or a colour such as "#10B981"
@@ -62,6 +65,12 @@ public:
 
     QString audioSkin() const { return m_audioSkin; }
     void setAudioSkin(const QString &skin);
+    QString audioBackground() const { return m_audioBackground; }
+    void setAudioBackground(const QString &background);
+    QString audioTheme() const { return m_audioTheme; }
+    void setAudioTheme(const QString &theme);
+    // a theme's colours (bg, panel, raised, line, text, muted, accent, dark), for views with their own theme
+    Q_INVOKABLE QVariantMap themePalette(const QString &theme) const;
 
     QString theme() const { return m_theme; }
     void setTheme(const QString &theme);
@@ -91,6 +100,7 @@ signals:
     void barStyleChanged();
     void barPositionChanged();
     void audioSkinChanged();
+    void audioLookChanged();
     void themeChanged();
     void fileIconsChanged();
 
@@ -102,6 +112,8 @@ private:
     QString m_barStyle;
     QString m_barPosition;
     QString m_audioSkin;
+    QString m_audioBackground;
+    QString m_audioTheme;
     QString m_theme;
     QString m_accent;
     QString m_fileIcons;

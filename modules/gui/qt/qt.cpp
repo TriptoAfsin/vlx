@@ -311,6 +311,12 @@ static const char *const vlx_bar_position_texts[] = { N_("Bottom"), N_("Top") };
 #define VLX_AUDIO_SKIN_TEXT N_( "Audio player skin" )
 static const char *const vlx_audio_skin_values[] = { "albumcompact", "album", "turntable", "turntablecompact", "mini", "classic" };
 static const char *const vlx_audio_skin_texts[] = { N_("Album compact"), N_("Album"), N_("Turntable"), N_("Turntable compact"), N_("Mini player"), N_("VLC classic") };
+#define VLX_AUDIO_BG_TEXT N_( "Audio player background" )
+static const char *const vlx_audio_bg_values[] = { "plain", "tinted" };
+static const char *const vlx_audio_bg_texts[] = { N_("Plain theme"), N_("Tinted from the cover art") };
+#define VLX_AUDIO_THEME_TEXT N_( "Audio player colours" )
+static const char *const vlx_audio_theme_values[] = { "app", "dark", "light", "paper", "ink", "nord", "mocha", "tokyo" };
+static const char *const vlx_audio_theme_texts[] = { N_("Follow the app theme"), N_("Dark"), N_("Light"), N_("Paper"), N_("Ink"), N_("Nord"), N_("Mocha"), N_("Tokyo") };
 
 /* VLX: file-type icons (DESIGN.md › File icons) */
 #define VLX_FILE_ICONS_TEXT N_( "File icons" )
@@ -517,6 +523,10 @@ vlc_module_begin ()
         change_volatile()
     add_string( "qt-vlx-audio-skin", "albumcompact", VLX_AUDIO_SKIN_TEXT, nullptr ) // VLX
         change_string_list( vlx_audio_skin_values, vlx_audio_skin_texts )
+    add_string( "qt-vlx-audio-background", "plain", VLX_AUDIO_BG_TEXT, nullptr ) // VLX
+        change_string_list( vlx_audio_bg_values, vlx_audio_bg_texts )
+    add_string( "qt-vlx-audio-theme", "app", VLX_AUDIO_THEME_TEXT, nullptr ) // VLX
+        change_string_list( vlx_audio_theme_values, vlx_audio_theme_texts )
 
 #ifdef _WIN32 /* VLX: file icons */
     add_string( "qt-vlx-file-icons", "band", VLX_FILE_ICONS_TEXT, VLX_FILE_ICONS_LONGTEXT )
