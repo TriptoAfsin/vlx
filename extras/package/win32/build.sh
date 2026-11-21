@@ -674,7 +674,7 @@ if [ -n "$BUILD_MESON" ]; then
             ninja -C ${BUILD_PATH}/$SHORTARCH-meson package-msi
         fi
     elif [ "$INSTALLER" = "r" ]; then
-        meson dist -C ${BUILD_PATH}/$SHORTARCH-meson -j$JOBS --no-tests
+        meson dist -C ${BUILD_PATH}/$SHORTARCH-meson -j$JOBS --no-tests || echo "meson dist skipped"  # VLX: the source archive isn't needed, and newer Meson rejects -j here
         meson install -C ${BUILD_PATH}/$SHORTARCH-meson ${MINSTALLFLAGS}
         ninja -C ${BUILD_PATH}/$SHORTARCH-meson package-win32-7zip
 
