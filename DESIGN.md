@@ -119,6 +119,25 @@ A grid view stays available. Artwork stays small, so untagged folders still look
 - Groups are `panel` cards with the title above. Every look and layout setting shows its live preview at the top of its page (a mini player that redraws as you change theme, accent, size, bar style, positions and buttons).
 - **Advanced › Show every VLC setting** opens VLC's full preferences tree, for the rare deep change.
 
+## File icons
+
+Chosen 21 November 2026 (https://claude.ai/artifact/YBZzFeVgBZK83hguPHDNxF). Both styles ship; Settings ›
+Interface › File icons switches them, with an Explorer-style preview.
+
+| Setting | Options | Default |
+|---|---|---|
+| Style | **Page and band** (page, kind glyph, coloured band with the extension), **Echo** (page with the Ripple echo triangles tinted per kind) | Page and band |
+| Look | Follow Windows, Light, Dark | Follow Windows |
+| Colour | By file kind, All orange | By file kind |
+| Extension label | Shown, Hidden (always dropped at 16 and 24 px) | Shown |
+
+- Kinds and colours: video `#FF7A1A`, audio `#10B981`, playlist `#4F7CFF`, subtitles `#8B5CF6`, disc image `#64748B`.
+- Light look: white page. Dark look: charcoal page (Page and band) or near-black page (Echo), with a lighter edge so it holds on dark Explorer.
+- **Follow Windows:** Windows has no theme-aware icons for desktop-app file types, so VLX re-registers each type's
+  `DefaultIcon` (light or dark `.ico`) when Windows switches theme while VLX runs (`WM_SETTINGCHANGE`,
+  `ImmersiveColorSet`), checks again at start-up, then calls `SHChangeNotify(SHCNE_ASSOCCHANGED)`.
+- Files: one multi-size `.ico` (16 to 256 px) per kind, style and look, generated from SVG into `extras/vlx/brand/filetypes/` (planned).
+
 ## Components
 
 - **Buttons:** primary is accent-filled with `onAccent` text; secondary is `raised` with a `line` border; icon buttons are transparent until hovered. Every control has hover, pressed, focus (2 px accent ring) and disabled states.
