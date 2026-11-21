@@ -70,6 +70,10 @@ public:
     QString fileIconLook() const { return m_fileIconLook; }
     void setFileIconLook(const QString &look);
 
+    /* VLC's own integer options (e.g. "mouse-hide-timeout"), for the settings page. */
+    Q_INVOKABLE int intOption(const QString &name) const;
+    Q_INVOKABLE void setIntOption(const QString &name, int value);
+
     /* The interface's instance, for C++ code that reacts to changes (the palette). */
     static VLXSettings *instance() { return s_instance; }
 

@@ -135,3 +135,15 @@ void VLXSettings::setFileIconLook(const QString &look)
     writeString("qt-vlx-file-icon-look", look);
     emit fileIconsChanged();
 }
+
+int VLXSettings::intOption(const QString &name) const
+{
+    return static_cast<int>(var_InheritInteger(m_intf, qtu(name)));
+}
+
+void VLXSettings::setIntOption(const QString &name, int value)
+{
+    config_PutInt(qtu(name), value);
+    /* the video output reads it per window; update the live variable too */
+    var_SetInteger(vlc_object_instance(m_intf), qtu(name), value);
+}
