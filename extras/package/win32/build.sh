@@ -656,7 +656,7 @@ if [ -n "$BUILD_MESON" ]; then
         $MCONFIGFLAGS \
         --cross-file ${BUILD_PATH}/$SHORTARCH-meson/crossfile.meson \
         --cross-file ${BUILD_PATH}/contrib/$CONTRIB_PREFIX/share/meson/cross/contrib.ini \
-        --cross-file ${VLC_ROOT_PATH}/extras/vlx/vlx.ini  # VLX: feature cuts (extras/vlx/vlx.ini)
+        $(sh ${VLC_ROOT_PATH}/extras/vlx/meson-flags.sh)  # VLX: feature cuts (extras/vlx/vlx.ini), last so they win
 
     info "Compiling"
     meson compile -j $JOBS -C ${BUILD_PATH}/$SHORTARCH-meson ${MCOMPILEFLAGS}

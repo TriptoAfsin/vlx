@@ -8,6 +8,8 @@ the checks for its kind. Modelled on tTorrent's flow.
 VLX builds with a mingw-w64 toolchain inside **WSL (Ubuntu)**. The machine has `Ubuntu-26.04` under WSL 2.
 
 - Install the packages listed in `doc/BUILD-win32.md` (Ubuntu section).
+- Link `/opt/tools` to the clone's `contrib` folder (`sudo ln -s ~/src/vlx/contrib /opt/tools`): VideoLAN's prebuilt
+  Qt looks for its native tools (qmake6, moc) there, as on their build machines.
 - Build from a Linux path (e.g. `~/src/vlx`, a clone of this repo), not `/mnt/l/...`. Builds on the Windows drive are many times slower.
 - Bring commits into the WSL clone with `git fetch /mnt/l/personal-projects/vlx/vlc main && git checkout -f FETCH_HEAD`,
   not by copying files: the Windows checkout has CRLF line endings, which break the shell scripts.
