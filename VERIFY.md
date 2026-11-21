@@ -70,7 +70,8 @@ Each feature gets a real-run check when it's built. Run the ones your change tou
 | Audio view | Play an MP3 with cover art and a FLAC without: art or a generated fallback, title, artist, album, the queue. |
 | Control island | Hides after the timeout in fullscreen, comes back on mouse move, never covers subtitles. |
 | Feature cuts | `extras/vlx/vlx.ini` build: the cut modules are absent from `plugins\`, and their menu entries are hidden. |
-| Upstream update | Full `meson test`, the screenshot pass, and play the sample set (H.264, HEVC 10-bit, AV1, VP9, FLAC, Opus, a subtitle file). |
+| Keyboard and mouse | After any player or library change: walk the mouse table in `extras/vlx/input.md` by hand and try the common keys (Space, f, Esc, arrows with Shift/Alt/Ctrl, Ctrl+Up/Down, m, n, p, e, t, [ ] = + -) in every bottom bar style. |
+| Upstream update | Regenerate `extras/vlx/hotkeys.md` and diff it, then run the full `meson test` and the screenshot pass, and play the sample set (H.264, HEVC 10-bit, AV1, VP9, FLAC, Opus, a subtitle file). |
 
 ## 4. Benchmarks
 

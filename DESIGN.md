@@ -18,6 +18,7 @@ page). Upstream files only get hooks marked `VLX:` (see [`UPSTREAM.md`](UPSTREAM
 - **Yours to arrange.** Theme, accent, size, bar style, positions and buttons are all user settings, and **every UI setting shows a live preview** of its effect before you leave the page.
 - **Motion is state.** Things fade and slide when they change state. Nothing decorates.
 - **Plain copy.** Sentence case, short sentences, no tracked capitals.
+- **Nothing VLC users rely on is lost.** Every keyboard shortcut and mouse behaviour VLC has keeps working with the same default, in every layout option. The list is [`extras/vlx/input.md`](extras/vlx/input.md).
 
 ## Colour
 
