@@ -70,7 +70,6 @@ moc_headers = files(
     'dialogs/toolbar/controlbar_profile.hpp',
     'dialogs/toolbar/controlbar_profile_model.hpp',
     'dialogs/playlists/playlists.hpp',
-    'dialogs/vlm/vlm.hpp',
     'maininterface/compositor.hpp',
     'maininterface/compositor_common.hpp',
     'maininterface/compositor_dummy.hpp',
@@ -169,6 +168,10 @@ moc_headers = files(
     'widgets/native/searchlineedit.hpp',
     'widgets/native/viewblockingrectangle.hpp',
 )
+# VLX: VLM is cut (extras/vlx/vlx.ini); its header has nothing to moc without ENABLE_VLM
+if get_option('videolan_manager')
+    moc_headers += files('dialogs/vlm/vlm.hpp')
+endif
 
 if host_system == 'windows'
     moc_headers += files(
