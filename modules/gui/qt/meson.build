@@ -3,6 +3,7 @@
 #
 
 qt6 = import('qt6')
+fs = import('fs') # VLX: qmlcachegen file names
 
 qt_include_dir = include_directories('.')
 
