@@ -38,7 +38,15 @@ FocusScope {
     property real bottomPadding: 0
 
     readonly property bool playing: Player.playingState === Player.PLAYING_STATE_PLAYING
-    readonly property string titleText: Player.title !== "" ? Player.title : Player.name
+    // without a title tag, the file name without its extension (Player.name adds the artist)
+    readonly property string titleText: {
+        if (Player.title !== "")
+            return Player.title
+        const path = decodeURIComponent(Player.url.toString())
+        const file = path.substring(path.lastIndexOf("/") + 1)
+        const dot = file.lastIndexOf(".")
+        return (dot > 0 ? file.substring(0, dot) : file) || Player.name
+    }
     readonly property string byText: [Player.artist, Player.album].filter(s => s !== "").join(", ")
     readonly property string trackText: (playlistModel.count > 1)
         ? qsTr("Track %1 of %2").arg(playlistModel.currentIndex + 1).arg(playlistModel.count) : ""
@@ -64,8 +72,10 @@ FocusScope {
     component Cover: Item {
         id: cover
         property real radius: VLCStyle.dp(12, VLCStyle.scale)
-        readonly property color fallbackA: Qt.hsla((root.hash(root.titleText) % 360) / 360, 0.55, 0.45, 1)
-        readonly property color fallbackB: Qt.hsla(((root.hash(root.titleText) + 140) % 360) / 360, 0.45, 0.22, 1)
+        // no cover art: a tile in one hue taken from the title, with a note so it reads as "no art"
+        readonly property real hue: (root.hash(root.titleText) % 360) / 360
+        readonly property color fallbackA: Qt.hsla(hue, 0.5, 0.42, 1)
+        readonly property color fallbackB: Qt.hsla((hue + 0.07) % 1, 0.45, 0.2, 1)
 
         Rectangle {
             anchors.fill: parent
@@ -75,6 +85,14 @@ FocusScope {
                 orientation: Gradient.Vertical
                 GradientStop { position: 0.0; color: cover.fallbackA }
                 GradientStop { position: 1.0; color: cover.fallbackB }
+            }
+
+            Text {
+                anchors.centerIn: parent
+                text: VLCIcons.topbar_music
+                font.family: VLCIcons.fontFamily
+                font.pixelSize: Math.min(parent.width, parent.height) * 0.36
+                color: Qt.rgba(1, 1, 1, 0.55)
             }
         }
 
