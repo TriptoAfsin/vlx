@@ -990,6 +990,20 @@ if qt6_dep.found()
 
     prog_python = find_program('python3')
     modules_qrc = []
+
+    # VLX: precompile QML with qmlcachegen, as the autotools build does (faster start-up)
+    qmlcachegen = disabler()
+    qt_bindir = qt6_dep.get_variable(pkgconfig: 'bindir', configtool: '-query QT_INSTALL_BINS', default_value: '')
+    qt_qmake_prog = find_program(qt_bindir / 'qmake6', 'qmake6', required: false)
+    if qt_qmake_prog.found()
+        qt_host_libexec = run_command(qt_qmake_prog, '-query', 'QT_HOST_LIBEXECS', check: false).stdout().strip()
+        qmlcachegen = find_program(qt_host_libexec / 'qmlcachegen', 'qmlcachegen', native: true, required: false)
+    endif
+    if qmlcachegen.found()
+        qt_extra_flags += '-DQT_USE_QMLCACHEGEN'
+    endif
+    qml_cache_index = 0
+
     foreach module : qml_modules
         #generates 'res.qrc', 'qmldir.qrc', 'qmldir',
         run_command(
@@ -1031,9 +1045,33 @@ if qt6_dep.found()
 
         #FIXME copy every files to the outdir module so they can be used by qt tooling
 
+        # VLX: one compiled unit per QML/JS file, plus the loader that maps qrc URLs to them
+        module_cache = []
+        if qmlcachegen.found()
+            module_res_qrc = meson.current_build_dir() / module['outdir'] / 'res.qrc'
+            module_rsp = meson.current_build_dir() / module['outdir'] / 'qmlcachegen.rsp'
+            run_command(prog_python, meson.current_source_dir() / 'scripts/qrc2rsp.py',
+                '--output', module_rsp, module_res_qrc, check: true)
+            foreach f : module.get('sources', []) + module.get('singletons', [])
+                fname = fs.name(f)
+                if fname.endswith('.qml') or fname.endswith('.js') or fname.endswith('.mjs')
+                    qml_cache_index += 1
+                    module_cache += custom_target('qmlcache_' + module['target'] + '_' + qml_cache_index.to_string(),
+                        input: f,
+                        output: 'qmlcache_' + module['target'] + '_' + qml_cache_index.to_string() + '_@BASENAME@.cpp',
+                        command: [qmlcachegen, '--validate-basic-blocks', '--resource=' + module_res_qrc, '-o', '@OUTPUT@', '@INPUT@'])
+                endif
+            endforeach
+            module_cache += custom_target('qmlcache_loader_' + module['target'],
+                output: 'qmlcache_loader_' + module['target'] + '.cpp',
+                depend_files: module.get('sources', []) + module.get('singletons', []),
+                command: [qmlcachegen, '--resource-name', module['target'] + '_cachegen',
+                    '--resource=' + module_res_qrc, '-o', '@OUTPUT@', '@' + module_rsp])
+        endif
+
         qmllibs += static_library(
             'qml_module' + module['target'],
-            module_qrc,
+            module_qrc, module_cache,
             dependencies: qt6_dep)
     endforeach
 
