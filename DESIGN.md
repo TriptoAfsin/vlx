@@ -103,7 +103,7 @@ Defaults are the owner's picks.
 
 - Subtitles move up while the controls show, so the bar never covers them.
 - In fullscreen only the bar (and top bar, if set) shows, and both hide on the timer. The mouse pointer hides with them.
-- **Audio view:** when a file has no video, the player shows cover art (or a tile coloured from the file name), title, artist and album, format chips (codec, bit depth, sample rate, ReplayGain), and a waveform seek bar. The album or queue sits on the right. The mini player (Ctrl M) keeps the art and the controls.
+- **Audio player:** see the Audio player section below.
 
 ## Library
 
@@ -118,6 +118,30 @@ A grid view stays available. Artwork stays small, so untagged folders still look
 - **Search** at the top (Ctrl F): results list the setting and its section; Up/Down and Enter, Esc closes. Choosing one scrolls to the setting and outlines it in `accent` for 1.4 s. It matches everyday words too ("gpu" finds Hardware decoding, "subs" finds subtitles, "buffer" finds Network caching).
 - Groups are `panel` cards with the title above. Every look and layout setting shows its live preview at the top of its page (a mini player that redraws as you change theme, accent, size, bar style, positions and buttons).
 - **Advanced › Show every VLC setting** opens VLC's full preferences tree, for the rare deep change.
+
+## Audio player
+
+When a file has no video, the player becomes a music view with its own skins (chosen 21 November 2026,
+https://claude.ai/artifact/VkbX65YvQVoABugZxe3sWz). Settings › Player › Audio skin switches them, with a preview,
+and a skin button in the player cycles through them.
+
+| Skin | What it shows |
+|---|---|
+| **Album compact** (default) | A small window: cover, title, artist, seek line and controls, with a short track list under them that grows or hides as the window is resized |
+| **Album** | Large cover, title, artist and album, format chips (codec, bit depth, sample rate), the album or queue always on the right |
+| **Turntable** | The cover is the label of a record that spins while playing; the arm lifts on pause; up next under the title |
+| **Turntable compact** | The record spinning beside the title and controls in a small window |
+| **Mini player** | A slim strip (cover, title, seek line, previous, play, next) that can stay on top (Ctrl M) |
+
+| Setting | Options | Default |
+|---|---|---|
+| Background | Plain theme, Tinted from the cover art | Plain theme |
+| Seek bar | Line, Waveform | Line |
+| Colours | Follow the app theme, Its own theme | Follow the app theme |
+
+- Cover art comes from the file or folder; without one, a tile coloured from the file name.
+- Spinning and the arm stop with Windows' "Animation effects" off. The record turns at one revolution per 3.2 s.
+- Format chips: codec, bit depth, sample rate, channels, ReplayGain when present.
 
 ## File icons
 
