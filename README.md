@@ -12,7 +12,7 @@ the codecs, "plays everything") is VLC's work. VLX only reskins and tunes it.
 1. **UI first.** A calmer, more modern Qt/QML interface: consistent spacing, softer surfaces,
    smooth transitions, a refreshed player view and media library.
 2. **Performance second.** Faster startup and snappier UI through build flags and defaults
-   (LTO, lazy-loaded views, sensible hardware-decoding defaults), never by dropping features.
+   (LTO, lazy-loaded views) and by not building rarely used modules (see `extras/vlx/vlx.ini`).
 3. **Low upkeep.** Small, contained diffs, so a new VLC release merges in with little work.
 
 Features beyond that come later.

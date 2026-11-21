@@ -28,10 +28,10 @@ Guidance for coding agents (and humans) working on VLX, a personal fork of VLC.
 
 ## Rules
 
-1. **Keep diffs small and contained.** VLX rebases on upstream regularly. Prefer changing tokens in `VLCStyle.qml`
+1. **Keep diffs small and contained.** VLX takes in new VLC versions by merge. Prefer changing tokens in `VLCStyle.qml`
    and theme providers over rewriting components. Prefer new files over large edits to upstream files.
-2. **Mark VLX changes** in upstream files with a short `// VLX:` comment so rebases are easy to resolve.
-3. **Don't drop features or formats** for speed. Performance work changes defaults, build flags or lazy loading.
+2. **Mark VLX changes** in upstream files with a short `// VLX:` comment so upstream merges are easy to resolve (`git grep -n "VLX:"`).
+3. **Cut features only through `extras/vlx/vlx.ini`**, and only the ones the owner picked. Never delete upstream code.
 4. **Follow upstream style:** C/C++ as in the surrounding code (4-space indent, C11/C++17), QML as in the
    surrounding components. Respect `VLCStyle` tokens; no hard-coded colours or pixel sizes in components.
 5. **Licensing:** VLX code is GPLv2+ (LGPLv2.1+ inside `lib/`, `src/`, `include/`). Keep existing copyright headers.
