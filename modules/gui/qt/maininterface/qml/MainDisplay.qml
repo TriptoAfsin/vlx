@@ -91,7 +91,7 @@ FocusScope {
         if (VLXSettings.startView === "prefs")
             Qt.callLater(DialogsProvider.prefsDialog)
         else if (VLXSettings.startView !== "" && VLXSettings.startView !== "palette")
-            History.update([VLXSettings.startView])
+            History.update([VLXSettings.startView.split(":")[0]]) // "vlxsettings:<setting>" also scrolls to it
         loadCurrentHistoryView(Qt.OtherFocusReason)
     }
 

@@ -123,6 +123,13 @@ FocusScope {
 
     Timer { id: flashTimer; interval: 1400; onTriggered: root.flashId = "" }
 
+    // --qt-vlx-start-view=vlxsettings:<setting id> opens here scrolled to that setting, for screenshots and tests
+    Timer {
+        interval: 600
+        running: VLXSettings.startView.startsWith("vlxsettings:")
+        onTriggered: root.jumpTo(VLXSettings.startView.split(":")[1])
+    }
+
     Rectangle { anchors.fill: parent; color: theme.bg.primary }
 
     RowLayout {
