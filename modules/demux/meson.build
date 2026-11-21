@@ -455,9 +455,10 @@ if host_system == 'windows' and gme_dep.found() and gme_dep.type_name() == 'pkgc
     # VLX: libgme.pc links -lgcc_s, a DLL nobody ships, so the plugin failed to load (error 126).
     # Link the GCC and C++ runtimes statically instead.
     gme_dep = declare_dependency(
-        dependencies: gme_dep.partial_dependency(compile_args: true, includes: true),
-        link_args: ['-L' + gme_dep.get_variable(pkgconfig: 'libdir'), '-lgme', '-static-libgcc',
-                    '-Wl,-Bstatic', '-lstdc++', '-lpthread', '-Wl,-Bdynamic', '-lz'])
+        dependencies: [gme_dep.partial_dependency(compile_args: true, includes: true),
+                       cc.find_library('stdc++', static: true),
+                       cc.find_library('pthread', static: true, required: false)],
+        link_args: ['-L' + gme_dep.get_variable(pkgconfig: 'libdir'), '-lgme', '-static-libgcc', '-lz'])
 endif
 vlc_modules += {
     'name' : 'gme',
