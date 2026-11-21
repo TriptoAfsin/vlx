@@ -41,6 +41,8 @@ FocusScope {
     // VLX: player bar style (DESIGN.md › Player): island, docked, minimal, pill or classic
     readonly property string vlxBarStyle: VLXSettings.barStyle
     readonly property bool vlxFloatingBar: vlxBarStyle === "island" || vlxBarStyle === "pill"
+    // VLX: controls docked at the top, under the top bar, instead of the bottom
+    readonly property bool vlxBarTop: VLXSettings.barPosition === "top"
     readonly property real vlxBarSideMargin: (vlxBarStyle === "pill")
         ? Math.max(VLCStyle.margin_normal, (width - VLCStyle.dp(640, VLCStyle.scale)) / 2)
         : Math.max(VLCStyle.margin_normal, width * 0.1)
@@ -201,8 +203,8 @@ FocusScope {
         property int cursorShape
 
         // Have padding here, so that the content (unlike background) does not go behind the top bar or the control bar:
-        property real topPadding: (anchors.top === parent.top) ? topBar.height : 0
-        property real bottomPadding: (anchors.bottom === parent.bottom) ? controlBar.height : 0
+        property real topPadding: (anchors.top === parent.top) ? (topBar.height + (rootPlayer.vlxBarTop ? controlBar.height : 0)) : 0 // VLX
+        property real bottomPadding: (anchors.bottom === parent.bottom && !rootPlayer.vlxBarTop) ? controlBar.height : 0 // VLX
 
         component TouchDragHandler : DragHandler {
             id: touchDragHandler
@@ -1054,13 +1056,14 @@ FocusScope {
 
         anchors {
             // NOTE: When the controls are pinned we display the playqueue under the topBar.
-            top: (rootPlayer._controlsUnderVideo) ? topBar.bottom
+            top: rootPlayer.vlxBarTop ? controlBar.bottom // VLX: under the controls when they're at the top
+               : (rootPlayer._controlsUnderVideo) ? topBar.bottom
                                                   : parent.top
 
             right: parent.right
             bottom: parent.bottom
 
-            bottomMargin: parent.height - rootPlayer.positionSliderY
+            bottomMargin: rootPlayer.vlxBarTop ? 0 : (parent.height - rootPlayer.positionSliderY) // VLX
         }
 
         focus: false
@@ -1303,14 +1306,17 @@ FocusScope {
         id: controlBar
 
         anchors {
-            bottom: parent.bottom
+            // VLX: at the bottom (default) or at the top, under the top bar
+            bottom: rootPlayer.vlxBarTop ? undefined : parent.bottom
+            top: rootPlayer.vlxBarTop ? topBar.bottom : undefined
             left: parent.left
             right: parent.right
 
-            // VLX: floating styles sit above the bottom edge, inside the video
+            // VLX: floating styles sit away from the edge, inside the video
             leftMargin: rootPlayer.vlxFloatingBar ? rootPlayer.vlxBarSideMargin : 0
             rightMargin: rootPlayer.vlxFloatingBar ? rootPlayer.vlxBarSideMargin : 0
-            bottomMargin: rootPlayer.vlxFloatingBar ? (VLCStyle.margin_normal + VLCStyle.applicationVerticalMargin) : 0
+            bottomMargin: (rootPlayer.vlxFloatingBar && !rootPlayer.vlxBarTop) ? (VLCStyle.margin_normal + VLCStyle.applicationVerticalMargin) : 0
+            topMargin: (rootPlayer.vlxFloatingBar && rootPlayer.vlxBarTop) ? VLCStyle.margin_normal : 0
         }
 
         hoverEnabled: true

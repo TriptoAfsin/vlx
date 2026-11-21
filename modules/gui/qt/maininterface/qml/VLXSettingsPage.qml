@@ -61,6 +61,9 @@ FocusScope {
         { id: "barStyle", section: "player", name: qsTr("Bar style"), help: qsTr("How the player controls look."), keys: "controls toolbar island docked minimal pill classic bottom bar",
           options: [["island", qsTr("Island")], ["docked", qsTr("Docked bar")], ["minimal", qsTr("Minimal")], ["pill", qsTr("Compact pill")], ["classic", qsTr("Classic")]],
           get: () => VLXSettings.barStyle, set: (v) => { VLXSettings.barStyle = v } },
+        { id: "barPosition", section: "player", name: qsTr("Controls position"), help: qsTr("Dock the player controls at the bottom or at the top, under the title."), keys: "top bottom dock controls position",
+          options: [["bottom", qsTr("Bottom")], ["top", qsTr("Top")]],
+          get: () => VLXSettings.barPosition, set: (v) => { VLXSettings.barPosition = v } },
         { id: "audioSkin", section: "audio", name: qsTr("Audio player skin"), help: qsTr("What the player shows for files without video."), keys: "music skin album turntable vinyl record mini",
           options: [["albumcompact", qsTr("Album compact")], ["album", qsTr("Album")], ["turntable", qsTr("Turntable")], ["turntablecompact", qsTr("Turntable compact")], ["mini", qsTr("Mini player")], ["classic", qsTr("VLC classic")]],
           get: () => VLXSettings.audioSkin, set: (v) => { VLXSettings.audioSkin = v } },
@@ -267,8 +270,11 @@ FocusScope {
                                     readonly property string s: VLXSettings.barStyle
                                     readonly property bool floating: s === "island" || s === "pill"
                                     anchors.horizontalCenter: parent.horizontalCenter
-                                    anchors.bottom: parent.bottom
+                                    readonly property bool atTop: VLXSettings.barPosition === "top"
+                                    anchors.bottom: atTop ? undefined : parent.bottom
+                                    anchors.top: atTop ? parent.top : undefined
                                     anchors.bottomMargin: floating ? parent.height * 0.08 : 0
+                                    anchors.topMargin: floating ? parent.height * 0.08 : 0
                                     width: s === "pill" ? parent.width * 0.5 : s === "island" ? parent.width * 0.8 : parent.width
                                     height: s === "pill" ? parent.height * 0.16 : parent.height * 0.26
                                     radius: s === "pill" ? height / 2 : s === "island" ? VLCStyle.dp(10, VLCStyle.scale) : 0
@@ -353,6 +359,7 @@ FocusScope {
         target: VLXSettings
         function onThemeChanged() { root.revision++ }
         function onBarStyleChanged() { root.revision++ }
+        function onBarPositionChanged() { root.revision++ }
         function onAudioSkinChanged() { root.revision++ }
         function onFileIconsChanged() { root.revision++ }
     }
