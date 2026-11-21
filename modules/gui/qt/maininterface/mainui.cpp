@@ -59,6 +59,7 @@
 #include "util/accessible_compat_attached.hpp"
 
 #include "dialogs/help/aboutmodel.hpp"
+#include "vlx/vlxsettings.hpp" // VLX
 #include "dialogs/dialogs_provider.hpp"
 #include "dialogs/dialogs/dialogmodel.hpp"
 #ifdef UPDATE_CHECK
@@ -237,6 +238,7 @@ void MainUI::registerQMLTypes()
         qmlRegisterTypesAndRevisions<CSDMenu>( uri, versionMajor);
         qmlRegisterUncreatableType<NavigationAttached>( uri, versionMajor, versionMinor, "Navigation", "Navigation is only available via attached properties");
         qmlRegisterTypesAndRevisions<AboutModel>( uri, versionMajor );
+        qmlRegisterSingletonInstance<VLXSettings>( uri, versionMajor, versionMinor, "VLXSettings", new VLXSettings( m_intf, this ) ); // VLX
 #ifdef UPDATE_CHECK
         qmlRegisterSingletonInstance<UpdateModel>( uri, versionMajor, versionMinor, "UpdateModel", m_mainCtx->getUpdateModel() );
 #endif

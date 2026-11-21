@@ -696,8 +696,8 @@ FocusScope {
 
                 NumberAnimation {
                     property: "width"
-                    duration: VLCStyle.duration_short
-                    easing.type: Easing.InOutSine
+                    duration: VLCStyle.duration_long // VLX: was duration_short
+                    easing.type: VLCStyle.easing_enter // VLX: was InOutSine
                 }
             }
 
@@ -778,8 +778,8 @@ FocusScope {
 
                     NumberAnimation {
                         property: "width"
-                        duration: VLCStyle.duration_short
-                        easing.type: Easing.InOutSine
+                        duration: VLCStyle.duration_long // VLX: was duration_short
+                        easing.type: VLCStyle.easing_enter // VLX: was InOutSine
                     }
                 }
             }

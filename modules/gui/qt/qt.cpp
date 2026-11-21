@@ -300,6 +300,15 @@ static void ShowDialog   ( intf_thread_t *, int, int, intf_dialog_args_t * );
 static const char *const vlx_theme_values[] = { "default", "dark", "light", "paper", "ink", "nord", "mocha", "tokyo" };
 static const char *const vlx_theme_texts[] = { N_("VLC default"), N_("Dark"), N_("Light"), N_("Paper"), N_("Ink"), N_("Nord"), N_("Mocha"), N_("Tokyo") };
 
+/* VLX: player bar (DESIGN.md › Player) */
+#define VLX_BAR_STYLE_TEXT N_( "Player bar style" )
+#define VLX_BAR_STYLE_LONGTEXT N_( "How the player controls look: a floating island, a docked bar, minimal, a compact pill or classic." )
+#define VLX_BAR_POSITION_TEXT N_( "Player bar position" )
+static const char *const vlx_bar_style_values[] = { "island", "docked", "minimal", "pill", "classic" };
+static const char *const vlx_bar_style_texts[] = { N_("Island"), N_("Docked bar"), N_("Minimal"), N_("Compact pill"), N_("Classic") };
+static const char *const vlx_bar_position_values[] = { "bottom", "top" };
+static const char *const vlx_bar_position_texts[] = { N_("Bottom"), N_("Top") };
+
 /* VLX: file-type icons (DESIGN.md › File icons) */
 #define VLX_FILE_ICONS_TEXT N_( "File icons" )
 #define VLX_FILE_ICONS_LONGTEXT N_( "Icon style for the media files VLX opens in Explorer." )
@@ -497,6 +506,10 @@ vlc_module_begin ()
     add_string( "qt-accent-color", "#10B981", ACCENT_COLOR_TEXT, ACCENT_COLOR_LONGTEXT ) // VLX: Emerald by default
     add_string( "qt-vlx-theme", "ink", VLX_THEME_TEXT, VLX_THEME_LONGTEXT ) // VLX
         change_string_list( vlx_theme_values, vlx_theme_texts )
+    add_string( "qt-vlx-bar-style", "classic", VLX_BAR_STYLE_TEXT, VLX_BAR_STYLE_LONGTEXT ) // VLX
+        change_string_list( vlx_bar_style_values, vlx_bar_style_texts )
+    add_string( "qt-vlx-bar-position", "bottom", VLX_BAR_POSITION_TEXT, nullptr ) // VLX
+        change_string_list( vlx_bar_position_values, vlx_bar_position_texts )
 
 #ifdef _WIN32 /* VLX: file icons */
     add_string( "qt-vlx-file-icons", "band", VLX_FILE_ICONS_TEXT, VLX_FILE_ICONS_LONGTEXT )

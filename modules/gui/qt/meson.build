@@ -115,6 +115,7 @@ moc_headers = files(
     'network/networkmediamodel.hpp',
     'network/standardpathmodel.hpp',
     'style/systempalette.hpp',
+    'vlx/vlxsettings.hpp', # VLX
     'style/vlcicons.hpp',
     'style/colorcontext.hpp',
     'player/input_models.hpp',
@@ -406,7 +407,9 @@ qt_plugin_sources = files(
     'style/colorcontext.hpp',
     'style/systempalette.cpp',
     'vlx/theme.cpp', # VLX: theme presets and accent
+    'vlx/vlxsettings.cpp', # VLX: look-and-layout settings for QML
     'style/systempalette.hpp',
+    'vlx/vlxsettings.hpp', # VLX
     'style/vlcicons.cpp',
     'style/vlcicons.hpp',
     'style/defaultthemeproviders.hpp',

@@ -126,6 +126,12 @@ T.ItemDelegate {
                 implicitPlayCoverShowPlay: true
             }
 
+            // VLX: the cover lifts a little on hover (DESIGN.md › Motion)
+            PropertyChanges {
+                target: vlxLift
+                y: -VLCStyle.margin_xxsmall
+            }
+
         }
     ]
 
@@ -141,10 +147,13 @@ T.ItemDelegate {
                     property: "implicitPlayCoverShowPlay"
                 }
 
-                NumberAnimation {
-                    properties: "opacity"
-                    duration: VLCStyle.duration_long
-                    easing.type: Easing.InSine
+                ParallelAnimation { // VLX: lift with the shadow
+                    NumberAnimation {
+                        properties: "opacity"
+                        duration: VLCStyle.duration_long
+                        easing.type: VLCStyle.easing_enter // VLX: was InSine
+                    }
+                    NumberAnimation { target: vlxLift; property: "y"; duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter }
                 }
             }
         },
@@ -159,10 +168,13 @@ T.ItemDelegate {
                     property: "implicitPlayCoverShowPlay"
                 }
 
-                NumberAnimation {
-                    properties: "opacity"
-                    duration: VLCStyle.duration_long
-                    easing.type: Easing.OutSine
+                ParallelAnimation { // VLX: settle with the shadow
+                    NumberAnimation {
+                        properties: "opacity"
+                        duration: VLCStyle.duration_long
+                        easing.type: VLCStyle.easing_exit // VLX: was OutSine
+                    }
+                    NumberAnimation { target: vlxLift; property: "y"; duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_exit }
                 }
             }
         }
@@ -258,6 +270,7 @@ T.ItemDelegate {
 
         enabled: theme.initialized
 
+        radius: VLCStyle.gridCover_radius // VLX: rounded selection
         //don't show the backgroud unless selected
         color: root.selected ?  theme.bg.highlight : theme.bg.primary
         border.color: visualFocus ? theme.visualFocus : Qt.alpha(theme.visualFocus, 0.0)
@@ -273,6 +286,7 @@ T.ItemDelegate {
 
             implicitPlayCoverShowPlay: false
             radius: VLCStyle.gridCover_radius
+            transform: Translate { id: vlxLift } // VLX: hover lift
             color: theme.bg.secondary
 
             Layout.preferredWidth: root.width

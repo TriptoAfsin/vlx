@@ -320,6 +320,20 @@ Item {
                     return "qrc:///qt/qml/VLC/MainInterface/MainDisplay.qml"
                 }
             }
+
+            // VLX: the library fades and rises in when you come back from the player (DESIGN.md › Motion).
+            // The player itself appears at once: the video surface is composited outside the scene,
+            // so fading it would flash.
+            onLoaded: {
+                if (MainCtx.effectiveMainInterfaceMode === MainCtx.MAININTERFACE_MODE_MAINDISPLAY && item)
+                    vlxViewEnter.restart()
+            }
+
+            ParallelAnimation {
+                id: vlxViewEnter
+                NumberAnimation { target: viewLoader.item; property: "opacity"; from: 0; to: 1; duration: VLCStyle.duration_view; easing.type: VLCStyle.easing_enter }
+                NumberAnimation { target: viewLoader.item; property: "scale"; from: 0.985; to: 1; duration: VLCStyle.duration_view; easing.type: VLCStyle.easing_enter }
+            }
         }
 
         Loader {

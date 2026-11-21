@@ -38,6 +38,13 @@ FocusScope {
     //behave like a Page
     property var pagePrefix: []
 
+    // VLX: player bar style (DESIGN.md › Player): island, docked, minimal, pill or classic
+    readonly property string vlxBarStyle: VLXSettings.barStyle
+    readonly property bool vlxFloatingBar: vlxBarStyle === "island" || vlxBarStyle === "pill"
+    readonly property real vlxBarSideMargin: (vlxBarStyle === "pill")
+        ? Math.max(VLCStyle.margin_normal, (width - VLCStyle.dp(640, VLCStyle.scale)) / 2)
+        : Math.max(VLCStyle.margin_normal, width * 0.1)
+
     readonly property int positionSliderY: controlBar.y + controlBar.sliderY
 
     readonly property string coverSource: {
@@ -1088,8 +1095,8 @@ FocusScope {
 
                 NumberAnimation {
                     property: "width"
-                    duration: VLCStyle.duration_short
-                    easing.type: Easing.InOutSine
+                    duration: VLCStyle.duration_long // VLX: was duration_short
+                    easing.type: VLCStyle.easing_enter // VLX: was InOutSine
                 }
             }
         }
@@ -1287,15 +1294,20 @@ FocusScope {
             bottom: parent.bottom
             left: parent.left
             right: parent.right
+
+            // VLX: floating styles sit above the bottom edge, inside the video
+            leftMargin: rootPlayer.vlxFloatingBar ? rootPlayer.vlxBarSideMargin : 0
+            rightMargin: rootPlayer.vlxFloatingBar ? rootPlayer.vlxBarSideMargin : 0
+            bottomMargin: rootPlayer.vlxFloatingBar ? (VLCStyle.margin_normal + VLCStyle.applicationVerticalMargin) : 0
         }
 
         hoverEnabled: true
 
         focus: true
 
-        rightPadding: VLCStyle.applicationHorizontalMargin
-        leftPadding: VLCStyle.applicationHorizontalMargin
-        bottomPadding: VLCStyle.applicationVerticalMargin + VLCStyle.margin_xsmall
+        rightPadding: rootPlayer.vlxFloatingBar ? VLCStyle.margin_normal : VLCStyle.applicationHorizontalMargin // VLX
+        leftPadding: rootPlayer.vlxFloatingBar ? VLCStyle.margin_normal : VLCStyle.applicationHorizontalMargin // VLX
+        bottomPadding: rootPlayer.vlxFloatingBar ? VLCStyle.margin_xsmall : (VLCStyle.applicationVerticalMargin + VLCStyle.margin_xsmall) // VLX
 
         textPosition: (MainCtx.pinVideoControls)
                       ? ControlBar.TimeTextPosition.LeftRightSlider
@@ -1337,9 +1349,25 @@ FocusScope {
         background: Rectangle {
             id: controlBarBackground
 
-            visible: !MainCtx.hasEmbededVideo || MainCtx.pinVideoControls || !rootPlayer.displayFadeRectangles
+            // VLX: island and pill are always a panel, minimal never is, docked is always solid
+            visible: {
+                if (rootPlayer.vlxBarStyle === "minimal")
+                    return !MainCtx.hasEmbededVideo
+                if (rootPlayer.vlxFloatingBar || rootPlayer.vlxBarStyle === "docked")
+                    return true
+                return !MainCtx.hasEmbededVideo || MainCtx.pinVideoControls || !rootPlayer.displayFadeRectangles
+            }
+
+            radius: (rootPlayer.vlxBarStyle === "pill") ? height / 2
+                  : (rootPlayer.vlxBarStyle === "island") ? VLCStyle.dp(16, VLCStyle.scale) : 0 // VLX
+            border.width: rootPlayer.vlxFloatingBar ? VLCStyle.border : 0 // VLX
+            border.color: windowTheme.border // VLX
 
             opacity: {
+                if (rootPlayer.vlxFloatingBar) // VLX: a near-solid panel, no blur (DESIGN.md › Components)
+                    return 0.94
+                if (rootPlayer.vlxBarStyle === "docked") // VLX
+                    return 1.0
                 if (MainCtx.hasEmbededVideo && !MainCtx.pinVideoControls && !rootPlayer.displayFadeRectangles) {
                     return 0.6
                 } else if ((Window.visibility === Window.FullScreen) && MainCtx.hasEmbededVideo) {
