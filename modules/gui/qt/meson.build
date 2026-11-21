@@ -644,6 +644,7 @@ qml_modules += {
         'maininterface/qml/MainInterface.qml',
         'maininterface/qml/MainViewLoader.qml',
         'maininterface/qml/MainDisplay.qml',
+        'maininterface/qml/VLXSettingsPage.qml', # VLX: settings with search
         'maininterface/qml/NoMedialibHome.qml',
         'maininterface/qml/OpenFileSplitButton.qml',
         qml_maininterface_extra_files,

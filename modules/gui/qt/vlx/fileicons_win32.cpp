@@ -72,8 +72,14 @@ FileIconSync::FileIconSync(qt_intf_t *intf, QObject *parent)
     connect(m_debounce, &QTimer::timeout, this, &FileIconSync::apply);
     qApp->installNativeEventFilter(this);
 
-    /* Not urgent: leave start-up alone and do it a few seconds later. */
+    /* Not urgent: leave start-up alone and do it a few seconds later. Then check every
+     * 2 s, so a change on the settings page applies quickly; apply() returns at once
+     * when nothing changed (two config reads and one registry value). */
     QTimer::singleShot(3000, this, &FileIconSync::apply);
+    auto *poll = new QTimer(this);
+    poll->setInterval(2000);
+    connect(poll, &QTimer::timeout, this, &FileIconSync::apply);
+    QTimer::singleShot(3000, poll, qOverload<>(&QTimer::start));
 }
 
 FileIconSync::~FileIconSync()

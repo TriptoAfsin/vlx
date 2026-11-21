@@ -40,6 +40,13 @@ class VLXSettings : public QObject
     Q_PROPERTY(QString barPosition READ barPosition WRITE setBarPosition NOTIFY barPositionChanged FINAL)
     // classic (VLC), albumcompact, album, turntable, turntablecompact, mini
     Q_PROPERTY(QString audioSkin READ audioSkin WRITE setAudioSkin NOTIFY audioSkinChanged FINAL)
+    // default (VLC), dark, light, paper, ink, nord, mocha, tokyo
+    Q_PROPERTY(QString theme READ theme WRITE setTheme NOTIFY themeChanged FINAL)
+    // "default" (the theme's own), "system", or a colour such as "#10B981"
+    Q_PROPERTY(QString accent READ accent WRITE setAccent NOTIFY themeChanged FINAL)
+    // band, echo / auto, light, dark
+    Q_PROPERTY(QString fileIcons READ fileIcons WRITE setFileIcons NOTIFY fileIconsChanged FINAL)
+    Q_PROPERTY(QString fileIconLook READ fileIconLook WRITE setFileIconLook NOTIFY fileIconsChanged FINAL)
 
 public:
     explicit VLXSettings(qt_intf_t *intf, QObject *parent = nullptr);
@@ -53,10 +60,25 @@ public:
     QString audioSkin() const { return m_audioSkin; }
     void setAudioSkin(const QString &skin);
 
+    QString theme() const { return m_theme; }
+    void setTheme(const QString &theme);
+    QString accent() const { return m_accent; }
+    void setAccent(const QString &accent);
+
+    QString fileIcons() const { return m_fileIcons; }
+    void setFileIcons(const QString &style);
+    QString fileIconLook() const { return m_fileIconLook; }
+    void setFileIconLook(const QString &look);
+
+    /* The interface's instance, for C++ code that reacts to changes (the palette). */
+    static VLXSettings *instance() { return s_instance; }
+
 signals:
     void barStyleChanged();
     void barPositionChanged();
     void audioSkinChanged();
+    void themeChanged();
+    void fileIconsChanged();
 
 private:
     QString readString(const char *name, const QString &fallback) const;
@@ -66,6 +88,12 @@ private:
     QString m_barStyle;
     QString m_barPosition;
     QString m_audioSkin;
+    QString m_theme;
+    QString m_accent;
+    QString m_fileIcons;
+    QString m_fileIconLook;
+
+    static VLXSettings *s_instance;
 };
 
 #endif

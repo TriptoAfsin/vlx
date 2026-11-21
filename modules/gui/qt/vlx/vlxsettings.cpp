@@ -33,12 +33,22 @@ namespace {
 const QStringList kBarStyles { "island", "docked", "minimal", "pill", "classic" };
 const QStringList kBarPositions { "bottom", "top" };
 const QStringList kAudioSkins { "classic", "albumcompact", "album", "turntable", "turntablecompact", "mini" };
+const QStringList kThemes { "default", "dark", "light", "paper", "ink", "nord", "mocha", "tokyo" };
+const QStringList kFileIcons { "band", "echo" };
+const QStringList kFileIconLooks { "auto", "light", "dark" };
 }
+
+VLXSettings *VLXSettings::s_instance = nullptr;
 
 VLXSettings::VLXSettings(qt_intf_t *intf, QObject *parent)
     : QObject(parent)
     , m_intf(intf)
 {
+    s_instance = this;
+    m_theme = readString("qt-vlx-theme", "ink");
+    m_accent = readString("qt-accent-color", "default");
+    m_fileIcons = readString("qt-vlx-file-icons", "band");
+    m_fileIconLook = readString("qt-vlx-file-icon-look", "auto");
     m_barStyle = readString("qt-vlx-bar-style", "classic");
     if (!kBarStyles.contains(m_barStyle))
         m_barStyle = "classic";
@@ -88,4 +98,40 @@ void VLXSettings::setAudioSkin(const QString &skin)
     m_audioSkin = skin;
     writeString("qt-vlx-audio-skin", skin);
     emit audioSkinChanged();
+}
+
+void VLXSettings::setTheme(const QString &theme)
+{
+    if (!kThemes.contains(theme) || theme == m_theme)
+        return;
+    m_theme = theme;
+    writeString("qt-vlx-theme", theme);
+    emit themeChanged();
+}
+
+void VLXSettings::setAccent(const QString &accent)
+{
+    if (accent == m_accent)
+        return;
+    m_accent = accent;
+    writeString("qt-accent-color", accent);
+    emit themeChanged();
+}
+
+void VLXSettings::setFileIcons(const QString &style)
+{
+    if (!kFileIcons.contains(style) || style == m_fileIcons)
+        return;
+    m_fileIcons = style;
+    writeString("qt-vlx-file-icons", style);
+    emit fileIconsChanged();
+}
+
+void VLXSettings::setFileIconLook(const QString &look)
+{
+    if (!kFileIconLooks.contains(look) || look == m_fileIconLook)
+        return;
+    m_fileIconLook = look;
+    writeString("qt-vlx-file-icon-look", look);
+    emit fileIconsChanged();
 }

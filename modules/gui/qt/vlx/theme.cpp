@@ -23,6 +23,7 @@
 
 #include "style/systempalette.hpp"
 #include "maininterface/mainctx.hpp"
+#include "vlx/vlxsettings.hpp"
 
 #include <QApplication>
 #include <QPalette>
@@ -97,7 +98,33 @@ bool SystemPalette::applyVlxTheme()
         free(themeId);
     }
     if (!theme)
-        return false; /* "default": VLC's own palette and colour scheme */
+    {
+        /* "default": VLC's own palette and colour scheme. Coming back from a VLX theme,
+         * restore the colours that VLX overwrote (values from systempalette.hpp). */
+        if (m_vlxThemed)
+        {
+            darkGrey200 = QColor("#1E1E1E"); darkGrey300 = QColor("#212121"); darkGrey400 = QColor("#242424");
+            darkGrey500 = QColor("#272727"); darkGrey600 = QColor("#2A2A2A"); darkGrey700 = QColor("#2D2D2D");
+            darkGrey800 = QColor("#303030");
+            lightGrey100 = QColor("#FAFAFA"); lightGrey200 = QColor("#F6F6F6"); lightGrey300 = QColor("#F2F2F2");
+            lightGrey400 = QColor("#EDEDED"); lightGrey500 = QColor("#E9E9E9"); lightGrey600 = QColor("#E5E5E5");
+            lightGrey700 = QColor("#E0E0E0");
+            orange400 = QColor("#f89a06"); orange200 = QColor("#e29a06");
+            orange500 = QColor("#FF8800"); orange800 = QColor("#FF610A");
+            if (char *opt = var_InheritString(m_ctx->getIntf(), "qt-accent-color"))
+            {
+                if (!strcmp(opt, "system") && qApp)
+                    orange500 = qApp->palette().color(QPalette::Normal, QPalette::Accent);
+                else if (strcmp(opt, "default") != 0 && QColor::isValidColorName(QString::fromUtf8(opt)))
+                    orange500 = QColor(QString::fromUtf8(opt));
+                orange800 = orange500.lighter(150);
+                free(opt);
+            }
+            m_vlxThemed = false;
+        }
+        return false;
+    }
+    m_vlxThemed = true;
 
     const QColor bg(theme->bg), panel(theme->panel), raised(theme->raised), line(theme->line);
     const QColor text(theme->text), muted(theme->muted);
@@ -149,4 +176,11 @@ bool SystemPalette::applyVlxTheme()
         makeLightPalette();
     }
     return true;
+}
+
+/* VLX: follow live theme and accent changes from the settings page. */
+void SystemPalette::vlxConnectTheme()
+{
+    if (VLXSettings *settings = VLXSettings::instance())
+        connect(settings, &VLXSettings::themeChanged, this, &SystemPalette::updatePalette, Qt::UniqueConnection);
 }

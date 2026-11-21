@@ -123,6 +123,9 @@ FocusScope {
             name: "discover",
             url: "qrc:///qt/qml/VLC/Network/DiscoverDisplay.qml"
         }, {
+            name: "vlxsettings", // VLX: settings with search and live previews
+            url: "qrc:///qt/qml/VLC/MainInterface/VLXSettingsPage.qml"
+        }, {
             name: "mlsettings",
             url: "qrc:///qt/qml/VLC/MediaLibrary/MLFoldersSettings.qml"
         }

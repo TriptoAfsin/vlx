@@ -376,6 +376,7 @@ void SystemPalette::setCtx(MainCtx* ctx)
     if (ctx == m_ctx)
         return;
     m_ctx = ctx;
+    vlxConnectTheme(); // VLX: re-colour live when the theme or accent changes (vlx/theme.cpp)
     emit ctxChanged();
     updatePalette();
 }
