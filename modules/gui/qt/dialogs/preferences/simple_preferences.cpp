@@ -249,6 +249,10 @@ SPrefsCatList::SPrefsCatList( qt_intf_t *_p_intf, QWidget *_parent ) :
         button->setMinimumWidth( 40 + ICON_WIDTH );
         button->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
         button->setAutoRaise( true );
+        /* VLX: a soft rounded highlight for the selected category, not a solid accent block */
+        button->setStyleSheet( "QToolButton { border-radius: 10px; padding: 6px; }"
+                               "QToolButton:checked { background: rgba(127, 127, 127, 0.18); }"
+                               "QToolButton:hover:!checked { background: rgba(127, 127, 127, 0.09); }" );
         button->setCheckable( true );
         button->setAutoExclusive( true );
         connect( button, &QToolButton::clicked, mapper, QOverload<>::of(&QSignalMapper::map) );
