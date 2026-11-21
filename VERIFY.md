@@ -13,8 +13,10 @@ VLX builds with a mingw-w64 toolchain inside **WSL (Ubuntu)**. The machine has `
 
 ## 1. Every change
 
-1. **Build** with no errors and no new warnings in the files you touched:
+1. **Build** with no errors and no new warnings in the files you touched. Point the build at VideoLAN's prebuilt
+   dependencies first, or it compiles all of them (Qt included) for hours:
    ```sh
+   export VLC_PREBUILT_CONTRIBS_URL=https://artifacts.videolan.org/vlc/win64/vlc-contrib-x86_64-w64-mingw32-$(cat .vlx-contrib-sha).tar.zst
    ./extras/package/win32/build.sh -a x86_64 -p -m          # debug
    ./extras/package/win32/build.sh -a x86_64 -p -m -r -t    # release + LTO, what VLX ships
    ```
