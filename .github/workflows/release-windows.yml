@@ -31,6 +31,9 @@ jobs:
       image: registry.videolan.org/vlc-debian-win64-posix:20261109074440
       options: --user root
     env:
+      # GitHub mounts its own /github/home, owned by another user; Wine (Meson runs its compiler checks through
+      # it) refuses to start there, so give root its own home.
+      HOME: /root
       VLX_VERSION: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || format('dev-{0}', github.run_number) }}
     steps:
       - name: Check out
