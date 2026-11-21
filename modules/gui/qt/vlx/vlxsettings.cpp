@@ -184,6 +184,24 @@ void VLXSettings::setIntOption(const QString &name, int value)
     var_SetInteger(vlc_object_instance(m_intf), qtu(name), value);
 }
 
+QString VLXSettings::openMode() const
+{
+    if (!config_GetInt("one-instance") && !config_GetInt("one-instance-when-started-from-file"))
+        return QStringLiteral("new");
+    return config_GetInt("playlist-enqueue") ? QStringLiteral("queue") : QStringLiteral("running");
+}
+
+void VLXSettings::setOpenMode(const QString &mode)
+{
+    if (mode != "new" && mode != "running" && mode != "queue")
+        return;
+    /* read by each new VLX process at start-up (src/win32/specific.c), so the config is enough */
+    config_PutInt("one-instance", 0);
+    config_PutInt("one-instance-when-started-from-file", mode == "new" ? 0 : 1);
+    config_PutInt("playlist-enqueue", mode == "queue" ? 1 : 0);
+    config_SaveConfigFile(m_intf);
+}
+
 QVariantList VLXSettings::commands() const
 {
     QVariantList out;

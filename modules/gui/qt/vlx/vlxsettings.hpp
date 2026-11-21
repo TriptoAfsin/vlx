@@ -86,6 +86,12 @@ public:
     /* VLC's own integer options (e.g. "mouse-hide-timeout"), for the settings page. */
     Q_INVOKABLE int intOption(const QString &name) const;
     Q_INVOKABLE void setIntOption(const QString &name, int value);
+    // Opening a file from Explorer while VLX runs: "new" (a new window each time, several videos at once),
+    // "running" (play it in the open window, VLC's default) or "queue" (add it to the open window's queue).
+    // Sets VLC's one-instance, one-instance-when-started-from-file and playlist-enqueue; takes effect for the
+    // next file opened.
+    Q_INVOKABLE QString openMode() const;
+    Q_INVOKABLE void setOpenMode(const QString &mode);
 
     /* Command palette (Ctrl+K): every VLC hotkey action with its label and current keys,
      * as [{ id: "key-play-pause", label, keys: ["Space"] }], and running one by id
