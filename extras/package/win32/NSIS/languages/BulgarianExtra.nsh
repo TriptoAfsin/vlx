@@ -23,25 +23,25 @@ ${LangFileString} Desc_Section04 \
 ${LangFileString} Desc_Section05 \
     "Възпроизвеждане на CD и DVD дискове"
 ${LangFileString} Desc_Section06 \
-    "Задаване на VLC media player, като програма по подразбиране за определените типове файлове"
+    "Задаване на VLX, като програма по подразбиране за определените типове файлове"
 ${LangFileString} Desc_Section07 \
-    "Добавяне на елементи в контекстното меню ('Възпроизвеждане с VLC' и 'Добавяне към плейлиста на VLC')"
+    "Добавяне на елементи в контекстното меню ('Възпроизвеждане с VLX' и 'Добавяне към плейлиста на VLX')"
 ${LangFileString} Desc_Section08 \
-    "Изтриване на файловете с настройките и кеша на VLC media player останали от предишните инсталации"
+    "Изтриване на файловете с настройките и кеша на VLX останали от предишните инсталации"
 
 ${LangFileString} Name_Section91 "Деинсталиране"
 ${LangFileString} Name_Section92 "Изтриване на настройките и кеша"
 
 ${LangFileString} Desc_Section91 \
-"Деинсталиране на VLC media player и на всичките му компоненти"
+"Деинсталиране на VLX и на всичките му компоненти"
 ${LangFileString} Desc_Section92 \
-"Изтриване на файловете с настройките и кеша на VLC media player"
+"Изтриване на файловете с настройките и кеша на VLX"
 
 ${LangFileString} ShellAssociation_Play "Възпроизвеждане"
-${LangFileString} ContextMenuEntry_PlayWith "Възпроизвеждане с VLC media player"
-${LangFileString} ContextMenuEntry_AddToPlaylist "Добавяне към плейлиста на VLC media player"
+${LangFileString} ContextMenuEntry_PlayWith "Възпроизвеждане с VLX"
+${LangFileString} ContextMenuEntry_AddToPlaylist "Добавяне към плейлиста на VLX"
 
-${LangFileString} Link_VisitWebsite "Посетете уебсайта на VideoLAN VLC media player"
+${LangFileString} Link_VisitWebsite "Посетете уебсайта на VLX"
 
 ${LangFileString} Name_InstTypeRecommended "Препоръчителна"
 ${LangFileString} Name_InstTypeMinimum "Минимална"
