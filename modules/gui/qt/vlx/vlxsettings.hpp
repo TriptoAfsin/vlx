@@ -22,6 +22,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QVariantList>
 
 struct qt_intf_t;
 
@@ -76,6 +77,12 @@ public:
     /* VLC's own integer options (e.g. "mouse-hide-timeout"), for the settings page. */
     Q_INVOKABLE int intOption(const QString &name) const;
     Q_INVOKABLE void setIntOption(const QString &name, int value);
+
+    /* Command palette (Ctrl+K): every VLC hotkey action with its label and current keys,
+     * as [{ id: "key-play-pause", label, keys: ["Space"] }], and running one by id
+     * exactly as if its keys were pressed. */
+    Q_INVOKABLE QVariantList commands() const;
+    Q_INVOKABLE bool runCommand(const QString &id);
 
     /* The interface's instance, for C++ code that reacts to changes (the palette). */
     static VLXSettings *instance() { return s_instance; }

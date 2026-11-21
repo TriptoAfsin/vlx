@@ -28,6 +28,11 @@
 #include <QStringList>
 
 #include <vlc_configuration.h>
+#include <vlc_modules.h>
+#include <vlc_plugin.h>
+#include <vlc_actions.h>
+
+#include <QVariantMap>
 
 namespace {
 const QStringList kBarStyles { "island", "docked", "minimal", "pill", "classic" };
@@ -147,4 +152,41 @@ void VLXSettings::setIntOption(const QString &name, int value)
     config_PutInt(qtu(name), value);
     /* the video output reads it per window; update the live variable too */
     var_SetInteger(vlc_object_instance(m_intf), qtu(name), value);
+}
+
+QVariantList VLXSettings::commands() const
+{
+    QVariantList out;
+    unsigned count = 0;
+    module_config_t *config = module_config_get(module_get_main(), &count);
+    for (unsigned i = 0; i < count; ++i)
+    {
+        const module_config_t &item = config[i];
+        if (item.i_type != CONFIG_ITEM_KEY || !item.psz_name || strncmp(item.psz_name, "key-", 4) != 0)
+            continue;
+
+        QStringList keys;
+        if (char *value = config_GetPsz(item.psz_name))
+        {
+            keys = QString::fromUtf8(value).split(QLatin1Char('\t'), Qt::SkipEmptyParts);
+            free(value);
+        }
+        QVariantMap entry;
+        entry.insert(QStringLiteral("id"), QString::fromUtf8(item.psz_name));
+        entry.insert(QStringLiteral("label"), item.psz_text ? QString::fromUtf8(vlc_gettext(item.psz_text))
+                                                            : QString::fromUtf8(item.psz_name));
+        entry.insert(QStringLiteral("keys"), keys);
+        out.append(entry);
+    }
+    module_config_free(config);
+    return out;
+}
+
+bool VLXSettings::runCommand(const QString &id)
+{
+    const vlc_action_id_t action = vlc_actions_get_id(qtu(id));
+    if (action == ACTIONID_NONE)
+        return false;
+    var_SetInteger(vlc_object_instance(m_intf), "key-action", action);
+    return true;
 }

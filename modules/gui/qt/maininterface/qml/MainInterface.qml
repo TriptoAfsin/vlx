@@ -341,6 +341,12 @@ Item {
             source: "qrc:///qt/qml/VLC/Menus/GlobalShortcuts.qml"
         }
 
+        // VLX: Ctrl+K command palette, above everything else
+        VLXCommandPalette {
+            anchors.fill: parent
+            z: 1000
+        }
+
         Loader {
             active: {
                 const windowVisibility = MainCtx.intfMainWindow.visibility
