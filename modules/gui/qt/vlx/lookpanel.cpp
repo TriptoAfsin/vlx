@@ -269,7 +269,13 @@ protected:
             if (disc)
             {
                 p.setBrush(QColor(18, 18, 20));
+                p.setPen(QPen(QColor(255, 255, 255, 60), 1)); // a rim, so the record reads on dark cards too
                 p.drawEllipse(art);
+                p.setBrush(Qt::NoBrush);
+                p.setPen(QPen(QColor(255, 255, 255, 22), 1));
+                for (qreal g = 0.82; g > 0.45; g -= 0.12) // grooves
+                    p.drawEllipse(art.center(), side * g / 2, side * g / 2);
+                p.setPen(Qt::NoPen);
                 p.setBrush(c.accent);
                 p.drawEllipse(art.center(), side * 0.2, side * 0.2);
                 p.setBrush(c.bg);

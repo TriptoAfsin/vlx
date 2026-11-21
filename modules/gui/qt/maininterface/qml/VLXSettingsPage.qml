@@ -329,6 +329,16 @@ FocusScope {
                                             visible: audioPreview.disc
                                             anchors.fill: parent; radius: width / 2
                                             color: Qt.rgba(0.07, 0.07, 0.08, 1)
+                                            border.color: Qt.rgba(1, 1, 1, 0.24); border.width: 1 // a rim, so it reads on dark cards
+                                            Repeater { // grooves
+                                                model: 3
+                                                Rectangle {
+                                                    required property int index
+                                                    anchors.centerIn: parent
+                                                    width: parent.width * (0.82 - index * 0.12); height: width; radius: width / 2
+                                                    color: "transparent"; border.color: Qt.rgba(1, 1, 1, 0.09); border.width: 1
+                                                }
+                                            }
                                             Rectangle { anchors.centerIn: parent; width: parent.width * 0.4; height: width; radius: width / 2; color: audioPreview.cAccent }
                                             RotationAnimator on rotation { from: 0; to: 360; duration: 3200; loops: Animation.Infinite; running: audioPreview.visible && audioPreview.disc }
                                         }
