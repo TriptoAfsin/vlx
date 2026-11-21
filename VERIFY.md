@@ -10,8 +10,9 @@ VLX builds with a mingw-w64 toolchain inside **WSL (Ubuntu)**. The machine has `
 - Install the packages listed in `doc/BUILD-win32.md` (Ubuntu section).
 - Link `/opt/tools` to the clone's `contrib` folder (`sudo ln -s ~/src/vlx/contrib /opt/tools`): VideoLAN's prebuilt
   Qt looks for its native tools (qmake6, moc) there, as on their build machines.
-  After the first build unpacks it, also make its tool paths absolute (they're relative to VideoLAN's folders):
-  `sed -i 's#^HostPrefix=.*#HostPrefix=/opt/tools#' contrib/x86_64-w64-mingw32/bin/target_qt.conf`.
+  Its config gives that path relative to VideoLAN's folders, which resolves to `/home/opt/tools` in a clone at
+  `~/src/vlx`, so link that too: `sudo mkdir -p /home/opt && sudo ln -s ~/src/vlx/contrib /home/opt/tools`.
+  (Editing the config doesn't last: build.sh unpacks the prebuilt package again on every run.)
 - Build from a Linux path (e.g. `~/src/vlx`, a clone of this repo), not `/mnt/l/...`. Builds on the Windows drive are many times slower.
 - Bring commits into the WSL clone with `git fetch /mnt/l/personal-projects/vlx/vlc main && git checkout -f FETCH_HEAD`,
   not by copying files: the Windows checkout has CRLF line endings, which break the shell scripts.
