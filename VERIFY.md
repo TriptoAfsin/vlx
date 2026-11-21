@@ -13,6 +13,9 @@ VLX builds with a mingw-w64 toolchain inside **WSL (Ubuntu)**. The machine has `
   Its config gives that path relative to VideoLAN's folders, which resolves to `/home/opt/tools` in a clone at
   `~/src/vlx`, so link that too: `sudo mkdir -p /home/opt && sudo ln -s ~/src/vlx/contrib /home/opt/tools`.
   (Editing the config doesn't last: build.sh unpacks the prebuilt package again on every run.)
+  Its data path resolves the same way, to `/home/home/<you>/...`: `sudo mkdir -p /home/home && sudo ln -s ~ /home/home/$USER`.
+- Ubuntu's MinGW links two copies of the stack-protector library with the prebuilt FLAC, so locally build with
+  `MCONFIGFLAGS=-Dssp=disabled` (VideoLAN's Docker image, used by the release workflow, doesn't need it).
 - Build from a Linux path (e.g. `~/src/vlx`, a clone of this repo), not `/mnt/l/...`. Builds on the Windows drive are many times slower.
 - Bring commits into the WSL clone with `git fetch /mnt/l/personal-projects/vlx/vlc main && git checkout -f FETCH_HEAD`,
   not by copying files: the Windows checkout has CRLF line endings, which break the shell scripts.
