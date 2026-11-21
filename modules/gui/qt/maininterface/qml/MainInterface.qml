@@ -341,10 +341,23 @@ Item {
             source: "qrc:///qt/qml/VLC/Menus/GlobalShortcuts.qml"
         }
 
-        // VLX: Ctrl+K command palette, above everything else
-        VLXCommandPalette {
+        // VLX: Ctrl+K command palette, above everything else. Created on first use, so it costs
+        // nothing at start-up (--qt-vlx-start-view=palette creates and opens it at once).
+        Shortcut {
+            sequence: "Ctrl+K"
+            context: Qt.ApplicationShortcut
+            onActivated: {
+                vlxPalette.active = true
+                vlxPalette.item.toggle()
+            }
+        }
+
+        Loader {
+            id: vlxPalette
             anchors.fill: parent
             z: 1000
+            active: VLXSettings.startView === "palette"
+            sourceComponent: Component { VLXCommandPalette { } }
         }
 
         Loader {

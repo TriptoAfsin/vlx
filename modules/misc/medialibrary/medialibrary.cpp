@@ -2711,5 +2711,5 @@ vlc_module_begin()
     set_capability("medialibrary", 100)
     set_callbacks(Open, Close)
     add_bool( "ml-verbose", false, ML_VERBOSE, nullptr )
-    add_bool( "ml-network-discovery", true, ML_NETWORK_DISCOVERY, nullptr )
+    add_bool( "ml-network-discovery", false, ML_NETWORK_DISCOVERY, nullptr ) // VLX: was true; started libupnp on every launch
 vlc_module_end()

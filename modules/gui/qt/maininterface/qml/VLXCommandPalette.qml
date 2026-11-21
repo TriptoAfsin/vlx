@@ -107,12 +107,6 @@ FocusScope {
     // --qt-vlx-start-view=palette opens it at start, for screenshots and tests
     Component.onCompleted: if (VLXSettings.startView === "palette") Qt.callLater(root.toggle)
 
-    Shortcut {
-        sequence: "Ctrl+K"
-        context: Qt.ApplicationShortcut
-        onActivated: root.toggle()
-    }
-
     Rectangle { // scrim
         anchors.fill: parent
         color: Qt.rgba(0, 0, 0, 0.55)
