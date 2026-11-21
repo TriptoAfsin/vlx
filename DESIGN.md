@@ -99,6 +99,8 @@ Defaults are the owner's picks.
 | Time display | Elapsed and remaining, Elapsed and total, Elapsed and ends at | Elapsed and remaining |
 | Seek bar | Chapter marks, Thumbnail on hover, Thicker on hover | Chapter marks, Thumbnail on hover |
 | Hide controls after | 1, 2, 3, 5 s, Never | 2 s |
+| Opening files (from Explorer while VLX runs) | A new window for each file, Play in the open window, Queue in the open window | Play in the open window (VLC's default) |
+| Player buttons | VLC 4's toolbar editor: buttons of the video, audio and mini player bars, with profiles | VLC's default layout |
 | Look defaults | Theme, accent, interface size | Ink, Emerald, 100 % |
 
 - Subtitles move up while the controls show, so the bar never covers them.
@@ -136,8 +138,11 @@ and a skin button in the player cycles through them.
 | Setting | Options | Default |
 |---|---|---|
 | Background | Plain theme, Tinted from the cover art | Plain theme |
-| Seek bar | Line, Waveform | Line |
-| Colours | Follow the app theme, Its own theme | Follow the app theme |
+| Seek bar | Line, Waveform (not built yet) | Line |
+| Colours | Follow the app theme, or its own theme (Dark, Light, Paper, Ink, Nord, Mocha, Tokyo) | Follow the app theme |
+
+- Skin, background and colours are in Settings › Audio player and in the classic preferences (Interface › Look),
+  each with a preview of the skin in its colours.
 
 - Cover art comes from the file or folder; without one, a tile coloured from the file name.
 - Spinning and the arm stop with Windows' "Animation effects" off. The record turns at one revolution per 3.2 s.
