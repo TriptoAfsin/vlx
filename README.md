@@ -38,6 +38,11 @@ Themes and accents are user-chosen. Here's the library in the Paper theme with t
 
 Icon files (SVG, PNG from 16 to 512 px, and a Windows `.ico`) are in [`extras/vlx/brand/`](extras/vlx/brand/).
 
+## Download
+
+Windows x64 builds come from GitHub Actions: see [Releases](https://github.com/TriptoAfsin/vlx/releases) for the setup
+and the portable `.7z`. There are no Linux or macOS builds; VLX is made for Windows.
+
 ## Building
 
 VLX builds the same way VLC does. On Windows that means a mingw-w64 toolchain inside WSL, msys2

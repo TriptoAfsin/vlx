@@ -87,9 +87,14 @@ Single runs vary, so call small differences "within noise" unless they repeat.
 
 ## 5. Releases
 
-Only when the owner asks.
+Only when the owner asks. Windows x64 only: VLX is for the owner's Windows PC.
 
-1. Bump the VLX version, build the release with LTO, run the screenshot pass and check About shows the new version.
-2. Zip the release folder as `VLX-<version>-windows-x64.zip` and write `sha256.txt`.
-3. Unzip into an empty folder with a `portable\` folder and play the sample set.
-4. Tag `v<version>`, push, and `gh release create v<version> -R TriptoAfsin/vlx` with notes that credit VLC and name the upstream base.
+1. Run **Actions › Release (Windows) › Run workflow** first. It builds the setup `.exe` and the portable `.7z` in
+   VideoLAN's build image and attaches them to the run as an artifact. Install it on Windows and run §4 on it.
+2. When it's good, bump the version and push a tag: `git tag v<version> && git push origin v<version>`. The same
+   workflow builds again and publishes a pre-release named `VLX <version>` with the setup, the portable `.7z` and
+   `sha256-<version>.txt`. Notes credit VLC and name the upstream base from `.vlx-base`.
+3. After an upstream update, bump the Docker image in `.github/workflows/release-windows.yml` to match
+   `VLC_WIN64_IMAGE` in `extras/ci/gitlab-ci.yml`.
+
+The files aren't code-signed, so SmartScreen may warn on first run.

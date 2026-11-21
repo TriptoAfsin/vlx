@@ -1,0 +1,96 @@
+# VLX: Windows installer and portable build.
+#
+# Run it from the Actions tab (Run workflow) to get the files as a build artifact, or push a tag like v0.1.0
+# to also publish a GitHub release with them. It cross-compiles in VideoLAN's own Windows build image, the
+# same one VLC's CI uses (see extras/ci/gitlab-ci.yml), with VideoLAN's prebuilt dependencies.
+name: Release (Windows)
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      lto:
+        description: Link-time optimisation (slower build, what VLX ships)
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows-x64:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    container:
+      # Keep in step with VLC_WIN64_IMAGE in extras/ci/gitlab-ci.yml after each upstream update.
+      image: registry.videolan.org/vlc-debian-win64-posix:20261109074440
+      options: --user root
+    env:
+      VLX_VERSION: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || format('dev-{0}', github.run_number) }}
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Build
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          FLAGS="-a x86_64 -p -m -r"
+          if [ "${{ github.event_name }}" != "workflow_dispatch" ] || [ "${{ inputs.lto }}" = "true" ]; then
+            FLAGS="$FLAGS -t"
+          fi
+          ./extras/package/win32/build.sh $FLAGS
+
+      - name: Package
+        run: |
+          cd win64-meson
+          meson install --strip --no-rebuild
+          ninja package-win32-7zip package-win32-exe
+
+      - name: Collect files
+        run: |
+          mkdir -p dist
+          exe=$(find win64-meson -maxdepth 1 -name 'vlc-*-win64*.exe' ! -name '*spad*' | head -n 1)
+          sz=$(find win64-meson -maxdepth 1 -name 'vlc-*-win64*.7z' ! -name '*debug*' | head -n 1)
+          test -n "$exe" && test -n "$sz"
+          cp "$exe" "dist/VLX-${VLX_VERSION}-windows-x64-setup.exe"
+          cp "$sz"  "dist/VLX-${VLX_VERSION}-windows-x64-portable.7z"
+          cd dist && sha256sum * > "sha256-${VLX_VERSION}.txt" && cat "sha256-${VLX_VERSION}.txt"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: VLX-${{ env.VLX_VERSION }}-windows-x64
+          path: dist/*
+          retention-days: 14
+
+      - name: Write release notes
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          base=$(cat .vlx-base 2>/dev/null || echo unknown)
+          cat > notes.md <<EOF
+          VLX ${VLX_VERSION} for Windows (x64), a personal fork of [VLC media player](https://www.videolan.org/vlc/).
+          All credit for the engine and codecs goes to VideoLAN and VLC's contributors. VLX isn't affiliated with VideoLAN.
+
+          - **Setup:** \`VLX-${VLX_VERSION}-windows-x64-setup.exe\`
+          - **Portable:** \`VLX-${VLX_VERSION}-windows-x64-portable.7z\`. Unpack it and add an empty \`portable\` folder next to \`vlc.exe\` to keep settings beside it.
+          - Checksums: \`sha256-${VLX_VERSION}.txt\`
+
+          Built on VLC upstream \`${base}\`. The files aren't code-signed, so Windows SmartScreen may warn on first run.
+          EOF
+          sed -i 's/^          //' notes.md
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: VLX ${{ env.VLX_VERSION }}
+          body_path: notes.md
+          prerelease: true
+          files: dist/*
