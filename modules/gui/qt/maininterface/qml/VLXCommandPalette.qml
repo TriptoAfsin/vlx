@@ -41,6 +41,10 @@ FocusScope {
         id: theme
         colorSet: ColorContext.Window
     }
+    // a raised surface on any theme: a light tint on dark backgrounds, a slight shade on light ones
+    readonly property bool darkTheme: theme.bg.primary.hslLightness < 0.5
+    readonly property color raised: Qt.tint(theme.bg.primary, darkTheme ? Qt.rgba(1, 1, 1, 0.07) : Qt.rgba(0, 0, 0, 0.03))
+    readonly property color raisedMore: Qt.tint(theme.bg.primary, darkTheme ? Qt.rgba(1, 1, 1, 0.13) : Qt.rgba(0, 0, 0, 0.07))
 
     // the interface's own window shortcuts (menus/qml/GlobalShortcuts.qml), plus VLX pages
     readonly property var appCommands: [
@@ -111,18 +115,18 @@ FocusScope {
 
     Rectangle { // scrim
         anchors.fill: parent
-        color: Qt.rgba(0, 0, 0, 0.45)
+        color: Qt.rgba(0, 0, 0, 0.55)
         TapHandler { onTapped: root.close() }
     }
 
     Rectangle { // the palette
         id: card
         width: Math.min(parent.width - VLCStyle.margin_xlarge * 2, VLCStyle.dp(640, VLCStyle.scale))
-        height: Math.min(parent.height * 0.62, header.height + list.contentHeight + VLCStyle.margin_small * 2)
+        height: Math.min(parent.height * 0.62, header.height + footer.height + list.contentHeight + VLCStyle.margin_small * 2)
         anchors.horizontalCenter: parent.horizontalCenter
         y: parent.height * 0.14
         radius: VLCStyle.dp(14, VLCStyle.scale)
-        color: theme.bg.primary
+        color: root.raised
         border.width: VLCStyle.border
         border.color: theme.border
         clip: true
@@ -161,7 +165,7 @@ FocusScope {
 
         ListView {
             id: list
-            anchors { top: header.bottom; left: parent.left; right: parent.right; bottom: parent.bottom; margins: VLCStyle.margin_xxsmall }
+            anchors { top: header.bottom; left: parent.left; right: parent.right; bottom: footer.top; margins: VLCStyle.margin_xxsmall }
             clip: true
             model: root.shown
             boundsBehavior: Flickable.StopAtBounds
@@ -175,7 +179,7 @@ FocusScope {
                 width: ListView.view.width
                 height: VLCStyle.dp(38, VLCStyle.scale)
                 radius: VLCStyle.button_radius
-                color: (ListView.isCurrentItem || hover.hovered) ? theme.bg.secondary : "transparent"
+                color: (ListView.isCurrentItem || hover.hovered) ? root.raisedMore : "transparent"
                 Behavior on color { ColorAnimation { duration: VLCStyle.duration_short } }
 
                 Widgets.ListLabel {
@@ -201,7 +205,7 @@ FocusScope {
                                     width: Math.max(height, capLabel.implicitWidth + VLCStyle.margin_small)
                                     height: VLCStyle.dp(22, VLCStyle.scale)
                                     radius: VLCStyle.dp(5, VLCStyle.scale)
-                                    color: theme.bg.secondary
+                                    color: root.raised
                                     border.width: VLCStyle.border
                                     border.color: theme.border
                                     Widgets.CaptionLabel { id: capLabel; anchors.centerIn: parent; text: parent.modelData; color: theme.fg.primary }
@@ -225,6 +229,22 @@ FocusScope {
                 anchors.centerIn: parent
                 visible: list.count === 0
                 text: qsTr("No command matches.")
+                color: theme.fg.secondary
+            }
+        }
+        Item { // key hints
+            id: footer
+            anchors { left: parent.left; right: parent.right; bottom: parent.bottom }
+            height: VLCStyle.dp(34, VLCStyle.scale)
+            Rectangle { width: parent.width; height: VLCStyle.border; color: theme.border }
+            Widgets.CaptionLabel {
+                anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: VLCStyle.margin_normal }
+                text: qsTr("↑ ↓ to move    Enter to run    Esc to close")
+                color: theme.fg.secondary
+            }
+            Widgets.CaptionLabel {
+                anchors { verticalCenter: parent.verticalCenter; right: parent.right; rightMargin: VLCStyle.margin_normal }
+                text: qsTr("%1 commands").arg(list.count)
                 color: theme.fg.secondary
             }
         }
