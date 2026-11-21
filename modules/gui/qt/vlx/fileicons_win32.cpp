@@ -38,7 +38,7 @@ namespace vlx {
 
 namespace {
 
-const wchar_t *const kAssociations = L"Software\\Clients\\Media\\VLC\\Capabilities\\FileAssociations";
+const wchar_t *const kAssociations = L"Software\\Clients\\Media\\VLX\\Capabilities\\FileAssociations";
 
 bool appsUseLightTheme()
 {

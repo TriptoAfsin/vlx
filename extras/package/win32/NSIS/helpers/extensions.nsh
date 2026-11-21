@@ -13,10 +13,10 @@ Function AssociateExtension
   ; back up old value for extension $R0 (eg. ".opt")
   ReadRegStr $1 HKCR "$R0" ""
   StrCmp $1 "" NoBackup
-    StrCmp $1 "VLC$R0" "NoBackup"
-    WriteRegStr HKCR "$R0" "VLC.backup" $1
+    StrCmp $1 "VLX$R0" "NoBackup"
+    WriteRegStr HKCR "$R0" "VLX.backup" $1
 NoBackup:
-  WriteRegStr HKCR "$R0" "" "VLC$R0"
+  WriteRegStr HKCR "$R0" "" "VLX$R0"
 FunctionEnd
 
 ;; Function that registers one extension for VLC
@@ -27,11 +27,11 @@ Function RegisterExtension
   ; And capitalize the extension
   ${StrCase} $R2 $R2 "U"
   ; for instance: MKV Video File (VLC)
-  WriteRegStr HKCR "VLC$R0" "" "$R2 $R1 File (VLX)"
-  WriteRegStr HKCR "VLC$R0\shell" "" "Open"
-  WriteRegStr HKCR "VLC$R0\shell\Open" "" "$(ShellAssociation_Play)"
-  WriteRegStr HKCR "VLC$R0\shell\Open" "MultiSelectModel" "Player"
-  WriteRegStr HKCR "VLC$R0\shell\Open\command" "" '"$INSTDIR\vlc.exe" --started-from-file "%1"'
+  WriteRegStr HKCR "VLX$R0" "" "$R2 $R1 File (VLX)"
+  WriteRegStr HKCR "VLX$R0\shell" "" "Open"
+  WriteRegStr HKCR "VLX$R0\shell\Open" "" "$(ShellAssociation_Play)"
+  WriteRegStr HKCR "VLX$R0\shell\Open" "MultiSelectModel" "Player"
+  WriteRegStr HKCR "VLX$R0\shell\Open\command" "" '"$INSTDIR\vlc.exe" --started-from-file "%1"'
   ; VLX: the type's own icon (Page and band, light; VLX switches style and look at run time),
   ; falling back to the icon for its kind
   Push $R3
@@ -46,41 +46,41 @@ Function RegisterExtension
   StrCmp $R1 "Video" 0 +2
   StrCpy $R4 "$INSTDIR\filetypes\band-light\video.ico"
   vlx_icon_done:
-  WriteRegStr HKCR "VLC$R0\DefaultIcon" "" '"$R4"'
+  WriteRegStr HKCR "VLX$R0\DefaultIcon" "" '"$R4"'
   Pop $R4
   Pop $R3
-  WriteRegStr HKCR "Applications\vlc.exe\SupportedTypes" $0 ""
+  ; VLX: keyed by vlc.exe, shared with an installed VLC, so left alone: WriteRegStr HKCR "Applications\vlc.exe\SupportedTypes" $0 ""
 
-    WriteRegStr HKLM "Software\Clients\Media\VLC\Capabilities\FileAssociations" "$R0" "VLC$R0"
+    WriteRegStr HKLM "Software\Clients\Media\VLX\Capabilities\FileAssociations" "$R0" "VLX$R0"
 FunctionEnd
 
 ;; Function that registers one skin extension for VLC
 Function RegisterSkinExtension
-  WriteRegStr HKCR "VLC$R0" "" "VLC skin file ($R0)"
-  WriteRegStr HKCR "VLC$R0\shell" "" "Open"
-  WriteRegStr HKCR "VLC$R0\shell\Open" "" ""
-  WriteRegStr HKCR "VLC$R0\shell\Open\command" "" '"$INSTDIR\vlc.exe" -Iskins --skins2-last "%1"'
-  WriteRegStr HKCR "VLC$R0\DefaultIcon" "" '"$INSTDIR\vlc.exe",0'
+  WriteRegStr HKCR "VLX$R0" "" "VLC skin file ($R0)"
+  WriteRegStr HKCR "VLX$R0\shell" "" "Open"
+  WriteRegStr HKCR "VLX$R0\shell\Open" "" ""
+  WriteRegStr HKCR "VLX$R0\shell\Open\command" "" '"$INSTDIR\vlc.exe" -Iskins --skins2-last "%1"'
+  WriteRegStr HKCR "VLX$R0\DefaultIcon" "" '"$INSTDIR\vlc.exe",0'
 
-    WriteRegStr HKLM "Software\Clients\Media\VLC\Capabilities\FileAssociations" "$R0" "VLC$R0"
+    WriteRegStr HKLM "Software\Clients\Media\VLX\Capabilities\FileAssociations" "$R0" "VLX$R0"
 FunctionEnd
 
 ;; Function that removes one extension that VLC owns.
 Function un.RegisterExtension
   ;start of restore script
   ReadRegStr $1 HKCR "$R0" ""
-  StrCmp $1 "VLC$R0" 0 NoOwn ; only do this if we own it
+  StrCmp $1 "VLX$R0" 0 NoOwn ; only do this if we own it
     ; Read the old value from Backup
-    ReadRegStr $1 HKCR "$R0" "VLC.backup"
+    ReadRegStr $1 HKCR "$R0" "VLX.backup"
     StrCmp $1 "" 0 Restore ; if backup="" then delete the whole key
       DeleteRegKey HKCR "$R0"
     Goto NoOwn
 Restore:
       WriteRegStr HKCR "$R0" "" $1
-      DeleteRegValue HKCR "$R0" "VLC.backup"
+      DeleteRegValue HKCR "$R0" "VLX.backup"
 NoOwn:
-    DeleteRegKey HKCR "VLC$R0" ;Delete key with association settings
-    DeleteRegKey HKLM "Software\Clients\Media\VLC\Capabilities\FileAssociations\VLC$R0" ; for vista
+    DeleteRegKey HKCR "VLX$R0" ;Delete key with association settings
+    DeleteRegKey HKLM "Software\Clients\Media\VLX\Capabilities\FileAssociations\VLX$R0" ; for vista
 FunctionEnd
 
 !macro AssociateExtensionSection TYPE EXT

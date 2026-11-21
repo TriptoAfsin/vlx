@@ -190,7 +190,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
     if (!lang)
     {
         HKEY h_key;
-        if( RegOpenKeyEx( HKEY_CURRENT_USER, TEXT("Software\\VideoLAN\\VLC\\"), 0, KEY_READ, &h_key )
+        if( RegOpenKeyEx( HKEY_CURRENT_USER, TEXT("Software\\VLX\\") /* VLX: own key */, 0, KEY_READ, &h_key )
                 == ERROR_SUCCESS )
         {
             WCHAR szData[256];
