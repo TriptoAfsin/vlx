@@ -32,11 +32,11 @@ VLX builds with a mingw-w64 toolchain inside **WSL (Ubuntu)**. The machine has `
    ./extras/package/win32/build.sh -a x86_64 -p -m -r -t    # release + LTO, what VLX ships
    ```
 2. **Tests:** `meson test --suite qt` from the build directory (Qt models and QML tests). Run all of `meson test` before taking an upstream update.
-3. **Start it in a scratch profile.** VLC uses a `portable` folder next to `vlc.exe` as its whole profile when one
+3. **Start it in a scratch profile.** VLX (like VLC) uses a `portable` folder next to `vlx.exe` as its whole profile when one
    exists (`src/win32/dirs.c`). So run from the scratch copy with an empty `portable\` folder beside the exe:
    ```powershell
    New-Item -ItemType Directory T:\dev\vlx\build-<HHmm>\portable
-   T:\dev\vlx\build-<HHmm>\vlc.exe --verbose=2 --file-logging --logfile=T:\dev\vlx\build-<HHmm>\vlx.log
+   T:\dev\vlx\build-<HHmm>\vlx.exe --verbose=2 --file-logging --logfile=T:\dev\vlx\build-<HHmm>\vlx.log
    ```
    It must reach the main window, and the log must have no QML errors or binding loops. Never run a test build
    against the owner's real profile (`%APPDATA%\vlc`).
@@ -49,7 +49,7 @@ screen is captured.
 
 ```powershell
 $env:VLX_UISHOT_DIR = "<empty folder>"
-T:\dev\vlx\build-<HHmm>\vlc.exe <sample video> <sample audio>
+T:\dev\vlx\build-<HHmm>\vlx.exe <sample video> <sample audio>
 Remove-Item Env:VLX_UISHOT_DIR
 ```
 

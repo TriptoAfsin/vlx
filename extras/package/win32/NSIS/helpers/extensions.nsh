@@ -31,7 +31,7 @@ Function RegisterExtension
   WriteRegStr HKCR "VLX$R0\shell" "" "Open"
   WriteRegStr HKCR "VLX$R0\shell\Open" "" "$(ShellAssociation_Play)"
   WriteRegStr HKCR "VLX$R0\shell\Open" "MultiSelectModel" "Player"
-  WriteRegStr HKCR "VLX$R0\shell\Open\command" "" '"$INSTDIR\vlc.exe" --started-from-file "%1"'
+  WriteRegStr HKCR "VLX$R0\shell\Open\command" "" '"$INSTDIR\vlx.exe" --started-from-file "%1"'
   ; VLX: the type's own icon (Page and band, light; VLX switches style and look at run time),
   ; falling back to the icon for its kind
   Push $R3
@@ -49,7 +49,7 @@ Function RegisterExtension
   WriteRegStr HKCR "VLX$R0\DefaultIcon" "" '"$R4"'
   Pop $R4
   Pop $R3
-  ; VLX: keyed by vlc.exe, shared with an installed VLC, so left alone: WriteRegStr HKCR "Applications\vlc.exe\SupportedTypes" $0 ""
+  WriteRegStr HKCR "Applications\vlx.exe\SupportedTypes" $0 ""
 
     WriteRegStr HKLM "Software\Clients\Media\VLX\Capabilities\FileAssociations" "$R0" "VLX$R0"
 FunctionEnd
@@ -59,8 +59,8 @@ Function RegisterSkinExtension
   WriteRegStr HKCR "VLX$R0" "" "VLC skin file ($R0)"
   WriteRegStr HKCR "VLX$R0\shell" "" "Open"
   WriteRegStr HKCR "VLX$R0\shell\Open" "" ""
-  WriteRegStr HKCR "VLX$R0\shell\Open\command" "" '"$INSTDIR\vlc.exe" -Iskins --skins2-last "%1"'
-  WriteRegStr HKCR "VLX$R0\DefaultIcon" "" '"$INSTDIR\vlc.exe",0'
+  WriteRegStr HKCR "VLX$R0\shell\Open\command" "" '"$INSTDIR\vlx.exe" -Iskins --skins2-last "%1"'
+  WriteRegStr HKCR "VLX$R0\DefaultIcon" "" '"$INSTDIR\vlx.exe",0'
 
     WriteRegStr HKLM "Software\Clients\Media\VLX\Capabilities\FileAssociations" "$R0" "VLX$R0"
 FunctionEnd
@@ -303,15 +303,15 @@ FunctionEnd
 
 ; Generic function for adding the context menu for one ext.
 !macro AddContextMenuExt EXT
-  WriteRegStr HKCR ${EXT}\shell\PlayWithVLC "" "$(ContextMenuEntry_PlayWith)"
-  WriteRegStr HKCR ${EXT}\shell\PlayWithVLC "Icon" '"$INSTDIR\vlc.exe",0'
-  WriteRegStr HKCR ${EXT}\shell\PlayWithVLC "MultiSelectModel" "Player"
-  WriteRegStr HKCR ${EXT}\shell\PlayWithVLC\command "" '"$INSTDIR\vlc.exe" --started-from-file --no-playlist-enqueue "%1"'
+  WriteRegStr HKCR ${EXT}\shell\PlayWithVLX "" "$(ContextMenuEntry_PlayWith)"
+  WriteRegStr HKCR ${EXT}\shell\PlayWithVLX "Icon" '"$INSTDIR\vlx.exe",0'
+  WriteRegStr HKCR ${EXT}\shell\PlayWithVLX "MultiSelectModel" "Player"
+  WriteRegStr HKCR ${EXT}\shell\PlayWithVLX\command "" '"$INSTDIR\vlx.exe" --started-from-file --no-playlist-enqueue "%1"'
 
-  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLC "" "$(ContextMenuEntry_AddToPlaylist)"
-  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLC "Icon" '"$INSTDIR\vlc.exe",0'
-  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLC "MultiSelectModel" "Player"
-  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLC\command "" '"$INSTDIR\vlc.exe" --started-from-file --playlist-enqueue "%1"'
+  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLX "" "$(ContextMenuEntry_AddToPlaylist)"
+  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLX "Icon" '"$INSTDIR\vlx.exe",0'
+  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLX "MultiSelectModel" "Player"
+  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLX\command "" '"$INSTDIR\vlx.exe" --started-from-file --playlist-enqueue "%1"'
 !macroend
 
 !macro AddContextMenu TYPE EXT
@@ -319,8 +319,8 @@ FunctionEnd
 !macroend
 
 !macro DeleteContextMenuExt EXT
-  DeleteRegKey HKCR ${EXT}\shell\PlayWithVLC
-  DeleteRegKey HKCR ${EXT}\shell\AddToPlaylistVLC
+  DeleteRegKey HKCR ${EXT}\shell\PlayWithVLX
+  DeleteRegKey HKCR ${EXT}\shell\AddToPlaylistVLX
 !macroend
 
 !macro DeleteContextMenu TYPE EXT

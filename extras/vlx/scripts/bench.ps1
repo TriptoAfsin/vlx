@@ -3,8 +3,8 @@
   Compare VLX with other VLC builds on this PC: install size, start-up time, memory and CPU while playing.
 
 .DESCRIPTION
-  Each app is a folder holding vlc.exe (a portable copy). The script adds an empty "portable" folder next to
-  vlc.exe so every run uses a throwaway profile beside it, never %APPDATA%\vlc. It runs the apps one at a time.
+  Each app is a folder holding vlx.exe or vlc.exe (a portable copy). The script adds an empty "portable" folder next to
+  the exe so every run uses a throwaway profile beside it, never %APPDATA%\vlc. It runs the apps one at a time.
 
   Start-up = launch to the main window existing, median of the warm runs (the first run builds the plugin
   cache and is reported separately). Memory = private bytes and working set after 10 s idle, and the peak
@@ -14,7 +14,7 @@
   .\bench.ps1 -App "VLC 3.0.24=T:\dev\vlx-bench\vlc-3.0.24", "VLX=T:\dev\vlx-bench\vlx" -Sample T:\dev\vlx-bench\bbb-1080p.mp4
 #>
 param(
-    [Parameter(Mandatory)] [string[]] $App,       # "Name=folder with vlc.exe"
+    [Parameter(Mandatory)] [string[]] $App,       # "Name=folder with vlx.exe or vlc.exe"
     [Parameter(Mandatory)] [string]   $Sample,    # a video file
     [int] $StartupRuns = 6,
     [int] $PlaySeconds = 60,
@@ -55,8 +55,9 @@ function Measure-Startup($exe) {
 $rows = @()
 foreach ($spec in $App) {
     $name, $dir = $spec -split '=', 2
-    $exe = Join-Path $dir 'vlc.exe'
-    if (-not (Test-Path $exe)) { throw "No vlc.exe in $dir" }
+    # VLX builds are vlx.exe; VLC (and VLX builds before 0.1.0) are vlc.exe
+    $exe = @('vlx.exe', 'vlc.exe') | ForEach-Object { Join-Path $dir $_ } | Where-Object { Test-Path $_ } | Select-Object -First 1
+    if (-not $exe) { throw "No vlx.exe or vlc.exe in $dir" }
     $portable = Join-Path $dir 'portable'
     if (Test-Path $portable) { Remove-Item -Recurse -Force $portable }
     New-Item -ItemType Directory $portable | Out-Null

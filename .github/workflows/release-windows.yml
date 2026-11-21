@@ -83,8 +83,8 @@ jobs:
       - name: Collect files
         run: |
           mkdir -p dist
-          exe=$(find win64-meson -maxdepth 1 -name 'vlc-*-win64*.exe' ! -name '*spad*' | head -n 1)  # named after the VLX version
-          sz=$(find win64-meson -maxdepth 1 -name 'vlc-*-win64*.7z' ! -name '*debug*' | head -n 1)
+          exe=$(find win64-meson -maxdepth 1 -name 'vlx-*-win64*.exe' ! -name '*spad*' | head -n 1)  # named after the VLX version
+          sz=$(find win64-meson -maxdepth 1 -name 'vlx-*-win64*.7z' ! -name '*debug*' | head -n 1)
           test -n "$exe" && test -n "$sz"
           cp "$exe" "dist/VLX-${VLX_VERSION}-windows-x64-setup.exe"
           cp "$sz"  "dist/VLX-${VLX_VERSION}-windows-x64-portable.7z"
@@ -106,7 +106,7 @@ jobs:
           All credit for the engine and codecs goes to VideoLAN and VLC's contributors. VLX isn't affiliated with VideoLAN.
 
           - **Setup:** \`VLX-${VLX_VERSION}-windows-x64-setup.exe\`
-          - **Portable:** \`VLX-${VLX_VERSION}-windows-x64-portable.7z\`. Unpack it and add an empty \`portable\` folder next to \`vlc.exe\` to keep settings beside it.
+          - **Portable:** \`VLX-${VLX_VERSION}-windows-x64-portable.7z\`. Unpack it and add an empty \`portable\` folder next to \`vlx.exe\` to keep settings beside it.
           - Checksums: \`sha256-${VLX_VERSION}.txt\`
 
           Built on VLC upstream \`${base}\`. The files aren't code-signed, so Windows SmartScreen may warn on first run.
