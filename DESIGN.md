@@ -102,6 +102,7 @@ Defaults are the owner's picks.
 | Bar size | Compact, Normal, Large | Normal |
 | Always show the controls (under the video, like VLC 3) | Off (over the video, auto-hide), On | Off |
 | Always show the top bar (above the video) | Off (over the video, auto-hide), On | Off |
+| When playback ends | Stay on the player (VLX icon and the last title, like VLC 3), Go back to Home (VLC 4) | Stay on the player |
 | Hide controls after | 1, 2, 3, 5 s, Never | 2 s |
 | Opening files (from Explorer while VLX runs) | A new window for each file, Play in the open window, Queue in the open window | Play in the open window (VLC's default) |
 | Player buttons | VLC 4's toolbar editor: buttons of the video, audio and mini player bars, with profiles | VLC's default layout |
