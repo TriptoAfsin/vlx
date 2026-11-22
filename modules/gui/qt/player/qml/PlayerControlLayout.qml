@@ -86,89 +86,103 @@ FocusScope {
 
         focus: active
 
-        sourceComponent: RowLayout {
-            spacing: playerControlLayout.spacing
+        // VLX: two groups positioned by the alignment instead of one row, so "Controls alignment" also works
+        //      for profiles with an empty centre zone (their playback buttons are in the left zone):
+        //      left = VLC's layout; center = the left zone in the middle; right = the right zone first, then
+        //      the left (playback) zone at the right edge.
+        sourceComponent: Item {
+            id: twoZones
 
             focus: true
 
-            // TODO: Qt >= 5.13 Use QConcatenateTablesProxyModel
-            //       instead of multiple repeaters
+            implicitWidth: leftGroup.implicitWidth + rightGroup.implicitWidth + playerControlLayout.layoutSpacing
+            implicitHeight: Math.max(leftGroup.implicitHeight, rightGroup.implicitHeight)
 
-            ControlRepeater {
-                id: leftRepeater
-                model: ControlListFilter {
-                    sourceModel: playerControlLayout.model.left
+            RowLayout {
+                id: leftGroup
 
-                    player: Player
-                    ctx: MainCtx
+                height: parent.height
+                width: implicitWidth
+                spacing: playerControlLayout.spacing
+
+                x: {
+                    const a = playerControlLayout.vlxAlign
+                    if (a === "right")
+                        return Math.max(rightGroup.width + playerControlLayout.layoutSpacing, twoZones.width - width)
+                    if (a === "center")
+                        return Math.max(0, Math.min((twoZones.width - width) / 2,
+                                                    twoZones.width - rightGroup.width - playerControlLayout.layoutSpacing - width))
+                    return 0
                 }
+                Behavior on x { enabled: twoZones.width > 0; NumberAnimation { duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter } }
 
-                Navigation.parentItem: playerControlLayout
-                Navigation.rightAction: function() {
-                    const item = rightRepeater.itemAt(0)
-                    if (item)
-                        item.forceActiveFocus(Qt.TabFocusReason)
-                    else
-                        return false
-                }
+                ControlRepeater {
+                    id: leftRepeater
+                    model: ControlListFilter {
+                        sourceModel: playerControlLayout.model.left
 
-                availableWidth: loaderLeftRight.width
-                availableHeight: loaderLeftRight.height
-
-                Component.onCompleted: {
-                    requestLockUnlockAutoHide.connect(playerControlLayout.requestLockUnlockAutoHide)
-                    menuOpened.connect(playerControlLayout.menuOpened)
-                    playerControlLayout.forceUnlock.connect(leftRepeater.forceUnlock)
-                }
-            }
-
-            Item {
-                function containsVisibleItem(repeater) {
-                    for (let i = 0; i < repeater.count; ++i) {
-                        const item = repeater.itemAt(i)
-
-                        if (item && item.visible)
-                            return true
+                        player: Player
+                        ctx: MainCtx
                     }
 
-                    return false
-                }
+                    Navigation.parentItem: playerControlLayout
+                    Navigation.rightAction: function() {
+                        const item = rightRepeater.itemAt(0)
+                        if (item)
+                            item.forceActiveFocus(Qt.TabFocusReason)
+                        else
+                            return false
+                    }
 
-                Layout.minimumWidth: (containsVisibleItem(leftRepeater) && containsVisibleItem(rightRepeater)) ? playerControlLayout.layoutSpacing
-                                                                                                               : 0
+                    availableWidth: loaderLeftRight.width
+                    availableHeight: loaderLeftRight.height
 
-                Layout.fillWidth: true
-                visible: true
-            }
-
-            ControlRepeater {
-                id: rightRepeater
-                model: ControlListFilter {
-                    sourceModel: playerControlLayout.model.right
-
-                    player: Player
-                    ctx: MainCtx
-                }
-
-                Navigation.parentItem: playerControlLayout
-                Navigation.leftAction: function() {
-                    const item = leftRepeater.itemAt(leftRepeater.count - 1)
-                    if (item)
-                        item.forceActiveFocus(Qt.BacktabFocusReason)
-                    else
-                        return false
-                }
-
-                availableWidth: loaderLeftRight.width
-                availableHeight: loaderLeftRight.height
-
-                Component.onCompleted: {
-                    requestLockUnlockAutoHide.connect(playerControlLayout.requestLockUnlockAutoHide)
-                    menuOpened.connect(playerControlLayout.menuOpened)
-                    playerControlLayout.forceUnlock.connect(rightRepeater.forceUnlock)
+                    Component.onCompleted: {
+                        requestLockUnlockAutoHide.connect(playerControlLayout.requestLockUnlockAutoHide)
+                        menuOpened.connect(playerControlLayout.menuOpened)
+                        playerControlLayout.forceUnlock.connect(leftRepeater.forceUnlock)
+                    }
                 }
             }
 
+            RowLayout {
+                id: rightGroup
+
+                height: parent.height
+                width: implicitWidth
+                spacing: playerControlLayout.spacing
+
+                x: playerControlLayout.vlxAlign === "right" ? 0 : twoZones.width - width
+                Behavior on x { enabled: twoZones.width > 0; NumberAnimation { duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter } }
+
+                ControlRepeater {
+                    id: rightRepeater
+                    model: ControlListFilter {
+                        sourceModel: playerControlLayout.model.right
+
+                        player: Player
+                        ctx: MainCtx
+                    }
+
+                    Navigation.parentItem: playerControlLayout
+                    Navigation.leftAction: function() {
+                        const item = leftRepeater.itemAt(leftRepeater.count - 1)
+                        if (item)
+                            item.forceActiveFocus(Qt.BacktabFocusReason)
+                        else
+                            return false
+                    }
+
+                    availableWidth: loaderLeftRight.width
+                    availableHeight: loaderLeftRight.height
+
+                    Component.onCompleted: {
+                        requestLockUnlockAutoHide.connect(playerControlLayout.requestLockUnlockAutoHide)
+                        menuOpened.connect(playerControlLayout.menuOpened)
+                        playerControlLayout.forceUnlock.connect(rightRepeater.forceUnlock)
+                    }
+                }
+            }
         }
     }
 
