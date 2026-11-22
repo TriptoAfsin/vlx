@@ -314,7 +314,7 @@ static const char *const vlx_bar_size_texts[] = { N_("Compact"), N_("Normal"), N
 #define VLX_PIN_CONTROLS_LONGTEXT N_( "Show the controls under the video at all times instead of over it, like VLC 3." )
 #define VLX_PIN_TOPBAR_TEXT N_( "Always show the top bar" )
 #define VLX_MEMORY_SAVER_TEXT N_( "Memory saver" )
-#define VLX_MEMORY_SAVER_LONGTEXT N_( "Decode with 2 threads and read 0.3 s ahead instead of 1 s: about 50 MB less for 1080p. CPU-only decoding of heavy 4K files may stutter." )
+#define VLX_MEMORY_SAVER_LONGTEXT N_( "Decode with 2 threads and read 0.3 s ahead instead of 1 s: about 35 MB less for 1080p. CPU-only decoding of heavy 4K files may stutter." )
 #define VLX_MEDIA_LIBRARY_TEXT N_( "Media library" )
 #define VLX_MEDIA_LIBRARY_LONGTEXT N_( "Index your videos and music for the Video and Music pages. Off saves about 10 MB; takes effect at the next start." )
 #define VLX_PIN_TOPBAR_LONGTEXT N_( "Show the title bar above the video at all times instead of over it." )

@@ -103,7 +103,7 @@ FocusScope {
           options: [["auto", qsTr("Follow Windows")], ["light", qsTr("Light")], ["dark", qsTr("Dark")]],
           get: () => VLXSettings.fileIconLook, set: (v) => { VLXSettings.fileIconLook = v } },
         { id: "memorySaver", section: "performance", name: qsTr("Memory saver"),
-          help: qsTr("Decode with 2 threads and read 0.3 s ahead instead of 1 s: about 50 MB less when playing 1080p. Applies to the next file you open. CPU-only decoding of heavy 4K files may stutter."),
+          help: qsTr("Decode with 2 threads and read 0.3 s ahead instead of 1 s: about 35 MB less when playing 1080p. Applies to the next file you open. CPU-only decoding of heavy 4K files may stutter."),
           keys: "memory ram usage lighter low saver threads cache caching buffer performance",
           options: [["false", qsTr("Off")], ["true", qsTr("On")]],
           get: () => String(VLXSettings.memorySaver()), set: (v) => VLXSettings.setMemorySaver(v === "true") },

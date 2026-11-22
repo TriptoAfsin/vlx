@@ -152,6 +152,18 @@ and a skin button in the player cycles through them.
 - Spinning and the arm stop with Windows' "Animation effects" off. The record turns at one revolution per 3.2 s.
 - Format chips: codec, bit depth, sample rate, channels, ReplayGain when present.
 
+## Performance
+
+Settings › Performance. Measured on a 1080p H.264 clip (Task Manager's memory column, 2026-11-22):
+
+| Setting | Effect | Default |
+|---|---|---|
+| Memory saver | 2 decoder threads and 0.3 s read-ahead instead of VLC's automatic threads and 1 s: playing 209 → 173 MB | Off (CPU-only 4K decoding may stutter) |
+| Media library | Off: no indexing, Home becomes the open-file page, idle 85 → 75 MB; next start | On |
+
+- Floors: VLC 3.0.24 needs 124 MB to play the same clip with the same savings; VLX's interface (Qt Quick) adds
+  about 35 MB on top while playing. Under 100 MB while playing 1080p isn't reachable for a VLC-based player.
+
 ## File icons
 
 Chosen 21 November 2026 (https://claude.ai/artifact/YBZzFeVgBZK83hguPHDNxF). Both styles ship; Settings ›
