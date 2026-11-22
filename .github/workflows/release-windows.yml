@@ -81,9 +81,15 @@ jobs:
 
       - name: Package
         run: |
+          # build.sh -r already installs and packages; this only fills in what's missing, with build.sh's own
+          # Meson and Ninja (the image's older Meson can't read the build folder)
+          export PATH="$GITHUB_WORKSPACE/extras/tools/build/bin:$PATH"
           cd win64-meson
-          meson install --strip --no-rebuild
-          ninja package-win32-7zip package-win32-exe
+          if ! ls vlx-*-win64.exe vlx-*-win64.7z > /dev/null 2>&1; then
+            meson install --strip --no-rebuild
+            ninja package-win32-7zip package-win32-exe
+          fi
+          ls -la vlx-*-win64.exe vlx-*-win64.7z
 
       - name: Collect files
         run: |
