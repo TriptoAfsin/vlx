@@ -11,9 +11,10 @@ on:
   workflow_dispatch:
     inputs:
       lto:
-        description: Link-time optimisation (slower build, what VLX ships)
+        # Off for now: with -flto Meson wrongly finds strndup, so VLC's fallback isn't built and the link fails
+        description: Link-time optimisation (experimental, doesn't link yet)
         type: boolean
-        default: true
+        default: false
 
 permissions:
   contents: write
@@ -72,7 +73,8 @@ jobs:
             echo "::warning::No prebuilt dependencies at $url; building them from source (slow)."
           fi
           FLAGS="-a x86_64 -p -m -r"
-          if [ "${{ github.event_name }}" != "workflow_dispatch" ] || [ "${{ inputs.lto }}" = "true" ]; then
+          # LTO only when asked for (see the lto input): releases build without it until the strndup check is fixed
+          if [ "${{ inputs.lto }}" = "true" ]; then
             FLAGS="$FLAGS -t"
           fi
           ./extras/package/win32/build.sh $FLAGS
