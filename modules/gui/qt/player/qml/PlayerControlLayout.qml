@@ -98,13 +98,16 @@ FocusScope {
             implicitWidth: leftGroup.implicitWidth + rightGroup.implicitWidth + playerControlLayout.layoutSpacing
             implicitHeight: Math.max(leftGroup.implicitHeight, rightGroup.implicitHeight)
 
+            // the room the left (playback) zone may use beside the right zone. What fits is decided against this
+            // room, not against the group's own width, which shrinks as buttons hide (they'd never come back)
+            readonly property real leftRoom: Math.max(0, width - rightGroup.width
+                                                         - (rightGroup.width > 0 ? playerControlLayout.layoutSpacing : 0))
+
             RowLayout {
                 id: leftGroup
 
                 height: parent.height
-                // what's left beside the right group; buttons that don't fit hide from the end
-                width: Math.min(implicitWidth, Math.max(0, twoZones.width - rightGroup.width
-                                                           - (rightGroup.width > 0 ? playerControlLayout.layoutSpacing : 0)))
+                width: Math.min(implicitWidth, twoZones.leftRoom)
                 spacing: playerControlLayout.spacing
 
                 x: {
@@ -136,7 +139,9 @@ FocusScope {
                             return false
                     }
 
-                    availableWidth: leftGroup.width // VLX
+                    // VLX: buttons that don't fit in the room left of the right zone hide from the end
+                    // (the group's x keeps its right edge within this room for every alignment)
+                    availableWidth: twoZones.leftRoom
                     availableHeight: loaderLeftRight.height
 
                     Component.onCompleted: {
