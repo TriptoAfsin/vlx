@@ -1,7 +1,7 @@
-"""Copy the VLX icon over every VLC icon in share/icons (the plain, Christmas, April-fools and kb variants), so no
+"""Copy the VLZ icon over every VLC icon in share/icons (the plain, Christmas, April-fools and kb variants), so no
 VLC cone ships anywhere. Re-run after an upstream merge brings icons back. Needs Pillow.
 
-    python extras/vlx/scripts/app-icons.py
+    python extras/vlz/scripts/app-icons.py
 """
 import os
 import shutil
@@ -9,7 +9,7 @@ import shutil
 from PIL import Image
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..")
-BRAND = os.path.join(ROOT, "extras", "vlx", "brand")
+BRAND = os.path.join(ROOT, "extras", "vlz", "brand")
 ICONS = os.path.join(ROOT, "share", "icons")
 
 
@@ -43,7 +43,7 @@ for size in os.listdir(ICONS):
     if not os.path.isdir(folder):
         continue
     px = size.split("x")[0]
-    src = os.path.join(BRAND, "vlx-icon-%s.png" % px)
+    src = os.path.join(BRAND, "vlz-icon-%s.png" % px)
     for f in os.listdir(folder):
         if not f.startswith("vlc"):
             continue
@@ -52,5 +52,5 @@ for size in os.listdir(ICONS):
             shutil.copyfile(src, dst)
         elif f.endswith(".xpm"):
             write_xpm(src, dst, os.path.splitext(f)[0].replace("-", "_"))
-        print("VLX icon ->", os.path.relpath(dst, ROOT))
-shutil.copyfile(os.path.join(BRAND, "vlx.ico"), os.path.join(ICONS, "vlc.ico"))
+        print("VLZ icon ->", os.path.relpath(dst, ROOT))
+shutil.copyfile(os.path.join(BRAND, "vlz.ico"), os.path.join(ICONS, "vlc.ico"))

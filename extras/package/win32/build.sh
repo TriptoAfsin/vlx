@@ -227,9 +227,9 @@ if [ "$HOST_ARCH" = "$ARCH" ]; then
 elif [ "$HOST_ARCH" = "x86_64" ] && [ "$ARCH" = "i686" ]; then
     VLC_EXE_WRAPPER="wine"
 fi
-# VLX: VLX_NO_WINE=1 builds without running Windows programs (GitHub's containers can't run Wine: no socket).
+# VLZ: VLZ_NO_WINE=1 builds without running Windows programs (GitHub's containers can't run Wine: no socket).
 # Meson then compiles its checks without running them; with prebuilt contribs nothing else needs Wine.
-if [ -n "$VLX_NO_WINE" ]; then
+if [ -n "$VLZ_NO_WINE" ]; then
     VLC_EXE_WRAPPER=""
     WIN32_PATH_CMD=""
 fi
@@ -662,7 +662,7 @@ if [ -n "$BUILD_MESON" ]; then
         $MCONFIGFLAGS \
         --cross-file ${BUILD_PATH}/$SHORTARCH-meson/crossfile.meson \
         --cross-file ${BUILD_PATH}/contrib/$CONTRIB_PREFIX/share/meson/cross/contrib.ini \
-        $(sh ${VLC_ROOT_PATH}/extras/vlx/meson-flags.sh)  # VLX: feature cuts (extras/vlx/vlx.ini), last so they win
+        $(sh ${VLC_ROOT_PATH}/extras/vlz/meson-flags.sh)  # VLZ: feature cuts (extras/vlz/vlz.ini), last so they win
 
     info "Compiling"
     meson compile -j $JOBS -C ${BUILD_PATH}/$SHORTARCH-meson ${MCOMPILEFLAGS}
@@ -677,13 +677,13 @@ if [ -n "$BUILD_MESON" ]; then
             # generate .exe installer
             ninja -C ${BUILD_PATH}/$SHORTARCH-meson package-win32-exe
             # generate .msi installer
-            # VLX: only when the MSI target exists (vlx.ini sets wix=disabled)
+            # VLZ: only when the MSI target exists (vlz.ini sets wix=disabled)
             if ninja -C ${BUILD_PATH}/$SHORTARCH-meson -t targets all | grep -q "^package-msi:"; then
                 ninja -C ${BUILD_PATH}/$SHORTARCH-meson package-msi
             fi
         fi
     elif [ "$INSTALLER" = "r" ]; then
-        meson dist -C ${BUILD_PATH}/$SHORTARCH-meson -j$JOBS --no-tests || echo "meson dist skipped"  # VLX: the source archive isn't needed, and newer Meson rejects -j here
+        meson dist -C ${BUILD_PATH}/$SHORTARCH-meson -j$JOBS --no-tests || echo "meson dist skipped"  # VLZ: the source archive isn't needed, and newer Meson rejects -j here
         meson install -C ${BUILD_PATH}/$SHORTARCH-meson ${MINSTALLFLAGS}
         ninja -C ${BUILD_PATH}/$SHORTARCH-meson package-win32-7zip
 
@@ -691,7 +691,7 @@ if [ -n "$BUILD_MESON" ]; then
             # generate .exe installer
             ninja -C ${BUILD_PATH}/$SHORTARCH-meson package-win32-exe
             # generate .msi installer
-            # VLX: only when the MSI target exists (vlx.ini sets wix=disabled)
+            # VLZ: only when the MSI target exists (vlz.ini sets wix=disabled)
             if ninja -C ${BUILD_PATH}/$SHORTARCH-meson -t targets all | grep -q "^package-msi:"; then
                 ninja -C ${BUILD_PATH}/$SHORTARCH-meson package-msi
             fi
@@ -704,7 +704,7 @@ if [ -n "$BUILD_MESON" ]; then
             # generate .exe installer
             ninja -C ${BUILD_PATH}/$SHORTARCH-meson package-win32-exe
             # generate .msi installer
-            # VLX: only when the MSI target exists (vlx.ini sets wix=disabled)
+            # VLZ: only when the MSI target exists (vlz.ini sets wix=disabled)
             if ninja -C ${BUILD_PATH}/$SHORTARCH-meson -t targets all | grep -q "^package-msi:"; then
                 ninja -C ${BUILD_PATH}/$SHORTARCH-meson package-msi
             fi

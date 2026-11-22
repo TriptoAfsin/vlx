@@ -119,29 +119,29 @@ FunctionEnd
 
 ; Remove shortcuts
 !macro HideIcons
-  WriteRegDWORD HKLM "Software\Clients\Media\VLX\InstallInfo" "IconsVisible" 0
+  WriteRegDWORD HKLM "Software\Clients\Media\VLZ\InstallInfo" "IconsVisible" 0
   SetShellVarContext all  ; Set $DESKTOP to All Users
-  ${Unless} ${FileExists} "$DESKTOP\VLX.lnk"
+  ${Unless} ${FileExists} "$DESKTOP\VLZ.lnk"
     SetShellVarContext current  ; Set $DESKTOP to the current user's desktop
   ${EndUnless}
-  ${If} ${FileExists} "$DESKTOP\VLX.lnk"
-    Delete "$DESKTOP\VLX.lnk"
+  ${If} ${FileExists} "$DESKTOP\VLZ.lnk"
+    Delete "$DESKTOP\VLZ.lnk"
   ${EndIf}
-  ${If} ${FileExists} "$QUICKLAUNCH\VLX.lnk"
-    Delete "$QUICKLAUNCH\VLX.lnk"
+  ${If} ${FileExists} "$QUICKLAUNCH\VLZ.lnk"
+    Delete "$QUICKLAUNCH\VLZ.lnk"
   ${EndIf}
 !macroend
 !define HideIcons "!insertmacro HideIcons"
 
 ; Adds shortcuts 
 !macro ShowIcons
-  WriteRegDWORD HKLM "Software\Clients\Media\VLX\InstallInfo" "IconsVisible" 1
+  WriteRegDWORD HKLM "Software\Clients\Media\VLZ\InstallInfo" "IconsVisible" 1
   SetShellVarContext all  ; Set $DESKTOP to All Users
-  ${Unless} ${FileExists} "$DESKTOP\VLX.lnk"
-    CreateShortCut "$DESKTOP\VLX.lnk" "$EXEDIR\vlx.exe" "" "$EXEDIR\vlx.exe" 0
+  ${Unless} ${FileExists} "$DESKTOP\VLZ.lnk"
+    CreateShortCut "$DESKTOP\VLZ.lnk" "$EXEDIR\vlz.exe" "" "$EXEDIR\vlz.exe" 0
   ${EndUnless}
-  ${Unless} ${FileExists} "$QUICKLAUNCH\VLX.lnk"
-    CreateShortCut "$QUICKLAUNCH\VLX.lnk" "$EXEDIR\vlx.exe" "" "$EXEDIR\vlx.exe" 0
+  ${Unless} ${FileExists} "$QUICKLAUNCH\VLZ.lnk"
+    CreateShortCut "$QUICKLAUNCH\VLZ.lnk" "$EXEDIR\vlz.exe" "" "$EXEDIR\vlz.exe" 0
   ${EndUnless}
 !macroend
 !define ShowIcons "!insertmacro ShowIcons"

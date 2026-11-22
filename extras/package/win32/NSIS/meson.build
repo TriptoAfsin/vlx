@@ -5,10 +5,10 @@ makensis = find_program('makensis', required: nsis_required)
 
 nsi_conf = configuration_data()
 nsi_conf.merge_from(cdata)
-# VLX: the installer shows and registers VLX's version
-nsi_conf.set('VERSION', vlx_version)
-nsi_conf.set('VERSION_MAJOR', vlx_version_parts[0])
-nsi_conf.set('VERSION_MINOR', vlx_version_parts[1])
+# VLZ: the installer shows and registers VLZ's version
+nsi_conf.set('VERSION', vlz_version)
+nsi_conf.set('VERSION_MAJOR', vlz_version_parts[0])
+nsi_conf.set('VERSION_MINOR', vlz_version_parts[1])
 nsi_conf.set('BUILD_LUA_TRUE', lua_dep.found() and get_option('lua').allowed() ? '' : ';')
 nsi_conf.set('BUILD_SKINS_TRUE', skins2_feasible ? '' : ';')
 nsi_conf.set('HAVE_WIN64_TRUE',  have_win64 ? '' : ';')
@@ -100,7 +100,7 @@ if makensis.found()
     vlc_nsis = custom_target(
         command: [makensis, nsi_script_dir / 'vlc.win32.nsi'],
         input: vlc_nsi,
-        output: 'vlx-' + vlx_version + '-' + winstaller_suffix + '.exe', # real name but root build folder (VLX)
+        output: 'vlz-' + vlz_version + '-' + winstaller_suffix + '.exe', # real name but root build folder (VLZ)
         build_by_default: false,
         console: true,
         depends: nsProcess)

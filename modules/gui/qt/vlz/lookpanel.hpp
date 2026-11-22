@@ -1,7 +1,7 @@
 /*****************************************************************************
- * lookpanel.hpp: VLX look settings inside the classic preferences dialog
+ * lookpanel.hpp: VLZ look settings inside the classic preferences dialog
  *****************************************************************************
- * Copyright (C) 2026 VLX contributors
+ * Copyright (C) 2026 VLZ contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#ifndef VLX_LOOKPANEL_HPP
-#define VLX_LOOKPANEL_HPP
+#ifndef VLZ_LOOKPANEL_HPP
+#define VLZ_LOOKPANEL_HPP
 
 #include "qt.hpp"
 
@@ -27,9 +27,9 @@
 
 class QWidget;
 
-namespace vlx {
+namespace vlz {
 
-/* Colours of a VLX theme, the same table the app uses (theme.cpp), with the accent made readable on it. */
+/* Colours of a VLZ theme, the same table the app uses (theme.cpp), with the accent made readable on it. */
 struct ThemeColors
 {
     bool dark;
@@ -37,10 +37,10 @@ struct ThemeColors
 };
 ThemeColors themeColors(const QString &theme, const QString &accentOption);
 
-/* "Look (VLX)": theme, accent, size, player bar, audio skin and file icons with a live preview.
- * Every change applies at once, like the VLX Settings page. */
+/* "Look (VLZ)": theme, accent, size, player bar, audio skin and file icons with a live preview.
+ * Every change applies at once, like the VLZ Settings page. */
 QWidget *createLookPanel(qt_intf_t *intf, QWidget *parent);
 
-} // namespace vlx
+} // namespace vlz
 
 #endif

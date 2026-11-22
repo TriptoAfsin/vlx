@@ -190,7 +190,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
     if (!lang)
     {
         HKEY h_key;
-        if( RegOpenKeyEx( HKEY_CURRENT_USER, TEXT("Software\\VLX\\") /* VLX: own key */, 0, KEY_READ, &h_key )
+        if( RegOpenKeyEx( HKEY_CURRENT_USER, TEXT("Software\\VLZ\\") /* VLZ: own key */, 0, KEY_READ, &h_key )
                 == ERROR_SUCCESS )
         {
             WCHAR szData[256];
@@ -228,9 +228,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
         libvlc_release (vlc);
     }
     else
-        MessageBox (NULL, TEXT("VLX could not start.\n"
+        MessageBox (NULL, TEXT("VLZ could not start.\n"
                     "Either the command line options were invalid or no plugins were found.\n"),
-                    TEXT("VLX"),
+                    TEXT("VLZ"),
                     MB_OK|MB_ICONERROR);
 
 

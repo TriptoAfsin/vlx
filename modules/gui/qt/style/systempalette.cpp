@@ -376,7 +376,7 @@ void SystemPalette::setCtx(MainCtx* ctx)
     if (ctx == m_ctx)
         return;
     m_ctx = ctx;
-    vlxConnectTheme(); // VLX: re-colour live when the theme or accent changes (vlx/theme.cpp)
+    vlzConnectTheme(); // VLZ: re-colour live when the theme or accent changes (vlz/theme.cpp)
     emit ctxChanged();
     updatePalette();
 }
@@ -384,7 +384,7 @@ void SystemPalette::setCtx(MainCtx* ctx)
 void SystemPalette::updatePalette()
 {
     m_palettePriv.reset();
-    if (!applyVlxTheme()) // VLX: theme presets (vlx/theme.cpp)
+    if (!applyVlzTheme()) // VLZ: theme presets (vlz/theme.cpp)
     switch(m_source)
     {
     case ColorSchemeModel::System:

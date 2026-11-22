@@ -48,7 +48,7 @@ ${LangFileString} Reinstall_HeadlineInstall "VLCをどのようにインスト�
 ${LangFileString} Reinstall_HeadlineMaintenance "処理したいメンテナンスオプションを選択してください"
 ${LangFileString} Reinstall_MessageOlder "古いバージョンのVLCがシステムにインストールされています。処理したいオペレーションを選択して次へをクリックしてください。"
 ${LangFileString} Reinstall_MessageNewer "新しいバージョンのVLCが既にインストールされています。古いバージョンへのダウングレードは推奨されていません。処理したいオペレーションを選択して次へをクリックしてください。"
-${LangFileString} Reinstall_MessageSame "VLX ${VERSION} は既にインストールされています。処理したいオペレーションを選択して次へをクリックしてください。"
+${LangFileString} Reinstall_MessageSame "VLZ ${VERSION} は既にインストールされています。処理したいオペレーションを選択して次へをクリックしてください。"
 ${LangFileString} Reinstall_OptionUpgrade "以前の設定を使ってVLCをアップグレード (推奨)"
 ${LangFileString} Reinstall_OptionDowngrade "以前の設定を使ってVLCをダウングレード (推奨)"
 ${LangFileString} Reinstall_OptionComponents "コンポーネントの追加/削除/再インストール"

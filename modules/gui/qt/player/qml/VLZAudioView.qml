@@ -1,7 +1,7 @@
 /*****************************************************************************
- * VLXAudioView.qml: VLX music view for files without video (DESIGN.md › Audio player)
+ * VLZAudioView.qml: VLZ music view for files without video (DESIGN.md › Audio player)
  *****************************************************************************
- * Copyright (C) 2026 VLX contributors
+ * Copyright (C) 2026 VLZ contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ import VLC.Widgets as Widgets
 FocusScope {
     id: root
 
-    property string skin: VLXSettings.audioSkin
+    property string skin: VLZSettings.audioSkin
     property real topPadding: 0
     property real bottomPadding: 0
 
@@ -56,8 +56,8 @@ FocusScope {
         colorSet: ColorContext.View
     }
 
-    // VLX: the skin's colours: the app theme, or the skin's own theme (Settings › Audio player › Colours)
-    readonly property var ownPalette: VLXSettings.audioTheme !== "app" ? VLXSettings.themePalette(VLXSettings.audioTheme) : null
+    // VLZ: the skin's colours: the app theme, or the skin's own theme (Settings › Audio player › Colours)
+    readonly property var ownPalette: VLZSettings.audioTheme !== "app" ? VLZSettings.themePalette(VLZSettings.audioTheme) : null
     readonly property QtObject palette_: QtObject {
         id: pal
         readonly property color bg: root.ownPalette ? root.ownPalette.bg : theme.bg.primary
@@ -80,11 +80,11 @@ FocusScope {
         color: pal.bg
     }
 
-    // VLX: "Tinted from the cover art": the cover drawn tiny and scaled up, so it blurs into a wash of its colours;
+    // VLZ: "Tinted from the cover art": the cover drawn tiny and scaled up, so it blurs into a wash of its colours;
     // without art, the title's hue. A veil of the background keeps text readable.
     Item {
         anchors.fill: parent
-        visible: VLXSettings.audioBackground === "tinted"
+        visible: VLZSettings.audioBackground === "tinted"
 
         Image {
             id: tintArt
@@ -319,8 +319,8 @@ FocusScope {
 
     // ---------- layouts ----------
 
-    // VLX: nothing playing (the file ended and Settings › Player › When playback ends is "Stay on the player"):
-    //      an idle screen with the VLX icon, as VLC 3 showed its cone, instead of a music card for any file
+    // VLZ: nothing playing (the file ended and Settings › Player › When playback ends is "Stay on the player"):
+    //      an idle screen with the VLZ icon, as VLC 3 showed its cone, instead of a music card for any file
     readonly property bool idle: Player.playingState === Player.PLAYING_STATE_STOPPED
 
     Column {
@@ -333,7 +333,7 @@ FocusScope {
 
         Image {
             anchors.horizontalCenter: parent.horizontalCenter
-            source: "qrc:///misc/cone.svg" // the VLX icon
+            source: "qrc:///misc/cone.svg" // the VLZ icon
             readonly property real side: Math.min(root.width, root.height) * 0.22
             width: side; height: side
             sourceSize: Qt.size(side * Screen.devicePixelRatio, side * Screen.devicePixelRatio)
@@ -355,7 +355,7 @@ FocusScope {
         anchors.fill: parent
         anchors.topMargin: root.topPadding
         anchors.bottomMargin: root.bottomPadding
-        opacity: root.idle ? 0 : 1 // VLX: hidden while idle
+        opacity: root.idle ? 0 : 1 // VLZ: hidden while idle
         visible: opacity > 0
         Behavior on opacity { NumberAnimation { duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter } }
 

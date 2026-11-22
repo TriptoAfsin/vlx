@@ -1,10 +1,10 @@
-// Renders the installer's side panel (welcome and finish pages) from the VLX icon:
+// Renders the installer's side panel (welcome and finish pages) from the VLZ icon:
 // extras/package/win32/NSIS/vlc_branding.bmp, 164 x 314, 24-bit, as NSIS expects.
 //
-//   node extras/vlx/scripts/installer-art.mjs
+//   node extras/vlz/scripts/installer-art.mjs
 //
 // Needs Node and Playwright (set PLAYWRIGHT_CORE to its playwright-core folder if `playwright-core` isn't
-// resolvable from here). Also writes a PNG preview next to the BMP's source in extras/vlx/brand/.
+// resolvable from here). Also writes a PNG preview next to the BMP's source in extras/vlz/brand/.
 import { createRequire } from 'node:module';
 import { writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -30,7 +30,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
     <path d="M128 8C40 8 8 40 8 128s32 120 120 120 120-32 120-120S216 8 128 8z" fill="#fff6ec"/>
     ${tri(52, '#ffc28e')}${tri(80, '#ff9a4d')}${tri(108, '#ff7a1a')}
   </g>
-  <text x="84" y="61" font-family="Segoe UI, Arial, sans-serif" font-weight="700" font-size="26" fill="#fff6ec">VLX</text>
+  <text x="84" y="61" font-family="Segoe UI, Arial, sans-serif" font-weight="700" font-size="26" fill="#fff6ec">VLZ</text>
 </svg>`;
 
 // Playwright's own Chromium if downloaded, else the Edge or Chrome already on the PC
@@ -74,5 +74,5 @@ for (let y = 0; y < H; y++) {
   }
 }
 writeFileSync(join(ROOT, 'extras/package/win32/NSIS/vlc_branding.bmp'), bmp);
-writeFileSync(join(ROOT, 'extras/vlx/brand/installer-side.png'), Buffer.from(pixels.png.split(',')[1], 'base64'));
+writeFileSync(join(ROOT, 'extras/vlz/brand/installer-side.png'), Buffer.from(pixels.png.split(',')[1], 'base64'));
 console.log('wrote vlc_branding.bmp and brand/installer-side.png');

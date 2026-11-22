@@ -381,7 +381,7 @@ void PrefsDialog::save()
         int restart = QMessageBox::question(
                           this,
                           qtr( "Restart Required" ),
-                          qtr( "VLX needs to be restarted for the reset to take full effect.\n\nRestart now?" ),
+                          qtr( "VLZ needs to be restarted for the reset to take full effect.\n\nRestart now?" ),
                           QMessageBox::Yes | QMessageBox::No,
                           QMessageBox::Yes);
         
@@ -418,7 +418,7 @@ void PrefsDialog::reset()
     int ret = QMessageBox::question(
                  this,
                  qtr( "Reset Preferences" ),
-                 qtr( "Are you sure you want to reset your VLX preferences?" ),
+                 qtr( "Are you sure you want to reset your VLZ preferences?" ),
                  QMessageBox::Ok | QMessageBox::Cancel,
                  QMessageBox::Ok);
 

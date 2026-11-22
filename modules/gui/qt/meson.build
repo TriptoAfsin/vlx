@@ -3,7 +3,7 @@
 #
 
 qt6 = import('qt6')
-fs = import('fs') # VLX: qmlcachegen file names
+fs = import('fs') # VLZ: qmlcachegen file names
 
 qt_include_dir = include_directories('.')
 
@@ -115,7 +115,7 @@ moc_headers = files(
     'network/networkmediamodel.hpp',
     'network/standardpathmodel.hpp',
     'style/systempalette.hpp',
-    'vlx/vlxsettings.hpp', # VLX
+    'vlz/vlzsettings.hpp', # VLZ
     'style/vlcicons.hpp',
     'style/colorcontext.hpp',
     'player/input_models.hpp',
@@ -169,7 +169,7 @@ moc_headers = files(
     'widgets/native/searchlineedit.hpp',
     'widgets/native/viewblockingrectangle.hpp',
 )
-# VLX: VLM is cut (extras/vlx/vlx.ini); its header has nothing to moc without ENABLE_VLM
+# VLZ: VLM is cut (extras/vlz/vlz.ini); its header has nothing to moc without ENABLE_VLM
 if get_option('videolan_manager')
     moc_headers += files('dialogs/vlm/vlm.hpp')
 endif
@@ -410,12 +410,12 @@ qt_plugin_sources = files(
     'style/colorcontext.cpp',
     'style/colorcontext.hpp',
     'style/systempalette.cpp',
-    'vlx/theme.cpp', # VLX: theme presets and accent
-    'vlx/vlxsettings.cpp', # VLX: look-and-layout settings for QML
-    'vlx/lookpanel.cpp', # VLX: look settings in the preferences dialog
-    'vlx/lookpanel.hpp',
+    'vlz/theme.cpp', # VLZ: theme presets and accent
+    'vlz/vlzsettings.cpp', # VLZ: look-and-layout settings for QML
+    'vlz/lookpanel.cpp', # VLZ: look settings in the preferences dialog
+    'vlz/lookpanel.hpp',
     'style/systempalette.hpp',
-    'vlx/vlxsettings.hpp', # VLX
+    'vlz/vlzsettings.hpp', # VLZ
     'style/vlcicons.cpp',
     'style/vlcicons.hpp',
     'style/defaultthemeproviders.hpp',
@@ -554,8 +554,8 @@ if host_system == 'windows'
         'maininterface/compositor_win7.cpp',
         'maininterface/compositor_win7.hpp',
         'style/windowsthemeprovider.cpp',
-        'vlx/fileicons_win32.cpp', # VLX: file icons that follow the theme
-        'vlx/fileicons_win32.hpp', # VLX
+        'vlz/fileicons_win32.cpp', # VLZ: file icons that follow the theme
+        'vlz/fileicons_win32.hpp', # VLZ
         'util/csdmenu_win32.c',
         'util/csdmenu_win32.h',
         'maininterface/compositor_dcomp.cpp',
@@ -650,8 +650,8 @@ qml_modules += {
         'maininterface/qml/MainInterface.qml',
         'maininterface/qml/MainViewLoader.qml',
         'maininterface/qml/MainDisplay.qml',
-        'maininterface/qml/VLXSettingsPage.qml', # VLX: settings with search
-        'maininterface/qml/VLXCommandPalette.qml', # VLX: Ctrl+K command palette
+        'maininterface/qml/VLZSettingsPage.qml', # VLZ: settings with search
+        'maininterface/qml/VLZCommandPalette.qml', # VLZ: Ctrl+K command palette
         'maininterface/qml/NoMedialibHome.qml',
         'maininterface/qml/OpenFileSplitButton.qml',
         qml_maininterface_extra_files,
@@ -751,7 +751,7 @@ qml_modules += {
        'player/qml/MiniPlayer.qml',
        'player/qml/PIPPlayer.qml',
        'player/qml/PlayerView.qml',
-       'player/qml/VLXAudioView.qml', # VLX: audio skins
+       'player/qml/VLZAudioView.qml', # VLZ: audio skins
        'player/qml/PlayerControlLayout.qml',
        'player/qml/PlayerPlaylistVisibilityFSM.qml',
        'player/qml/PlayerToolbarVisibilityFSM.qml',
@@ -994,7 +994,7 @@ if qt6_dep.found()
     prog_python = find_program('python3')
     modules_qrc = []
 
-    # VLX: precompile QML with qmlcachegen, as the autotools build does (faster start-up)
+    # VLZ: precompile QML with qmlcachegen, as the autotools build does (faster start-up)
     qmlcachegen = disabler()
     qt_bindir = qt6_dep.get_variable(pkgconfig: 'bindir', configtool: '-query QT_INSTALL_BINS', default_value: '')
     qt_qmake_prog = find_program(qt_bindir / 'qmake6', 'qmake6', required: false)
@@ -1048,7 +1048,7 @@ if qt6_dep.found()
 
         #FIXME copy every files to the outdir module so they can be used by qt tooling
 
-        # VLX: one compiled unit per QML/JS file, plus the loader that maps qrc URLs to them
+        # VLZ: one compiled unit per QML/JS file, plus the loader that maps qrc URLs to them
         module_cache = []
         if qmlcachegen.found()
             module_res_qrc = meson.current_build_dir() / module['outdir'] / 'res.qrc'
@@ -1143,7 +1143,7 @@ if qt6_dep.found()
         qt_extra_deps += [
             cc.find_library('dwmapi'),
             cc.find_library('comctl32'),
-            cc.find_library('shell32'), # VLX: SHChangeNotify for file icons
+            cc.find_library('shell32'), # VLZ: SHChangeNotify for file icons
         ]
     endif
 

@@ -3,13 +3,13 @@
 ; (http://nsis.sourceforge.net) ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-!define PRODUCT_NAME "VLX"
+!define PRODUCT_NAME "VLZ"
 !define VERSION @VERSION@
 !define PRODUCT_VERSION @VERSION@
-!define PRODUCT_GROUP "VLX"
-!define PRODUCT_PUBLISHER "VLX"
+!define PRODUCT_GROUP "VLZ"
+!define PRODUCT_PUBLISHER "VLZ"
 !define PRODUCT_WEB_SITE "https://github.com/TriptoAfsin/vlx"
-!define PRODUCT_DIR_REGKEY "Software\VLX" ; VLX: own key, so it never reuses a VLC install folder
+!define PRODUCT_DIR_REGKEY "Software\VLZ" ; VLZ: own key, so it never reuses a VLC install folder
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 !define PRODUCT_ID "{6b1f3c2e-4d7a-4f6e-9a8b-5c2d1e0f7a91}"
@@ -44,9 +44,9 @@ Var 32bitPath
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Name "${PRODUCT_NAME}"
-@HAVE_WIN64_FALSE@                   OutFile ..\vlx-${VERSION}-win32.exe
-@HAVE_WIN64_TRUE@ @HAVE_ARM64_FALSE@ OutFile ..\vlx-${VERSION}-win64.exe
-@HAVE_WIN64_TRUE@ @HAVE_ARM64_TRUE@  OutFile ..\vlx-${VERSION}-winarm64.exe
+@HAVE_WIN64_FALSE@                   OutFile ..\vlz-${VERSION}-win32.exe
+@HAVE_WIN64_TRUE@ @HAVE_ARM64_FALSE@ OutFile ..\vlz-${VERSION}-win64.exe
+@HAVE_WIN64_TRUE@ @HAVE_ARM64_TRUE@  OutFile ..\vlz-${VERSION}-winarm64.exe
 
 @HAVE_WIN64_FALSE@                   CPU "x86"
 @HAVE_WIN64_TRUE@ @HAVE_ARM64_FALSE@ CPU "amd64"
@@ -118,7 +118,7 @@ RequestExecutionLevel admin
     !define MUI_PAGE_CUSTOMFUNCTION_PRE PageFastUpdatePre
     !define MUI_FINISHPAGE_RUN
     !define MUI_FINISHPAGE_RUN_FUNCTION AppExecAs
-    !define MUI_FINISHPAGE_LINK "VLX on GitHub" ; VLX
+    !define MUI_FINISHPAGE_LINK "VLZ on GitHub" ; VLZ
     !define MUI_FINISHPAGE_LINK_LOCATION "${PRODUCT_WEB_SITE}"
     !define MUI_FINISHPAGE_NOREBOOTSUPPORT
     !insertmacro MUI_PAGE_FINISH
@@ -310,7 +310,7 @@ skip_uninstall32_cleanup:
   !insertmacro OpenUninstallLog
 
   ; VLC.exe, libvlc.dll
-  !insertmacro InstallFile vlx.exe
+  !insertmacro InstallFile vlz.exe
   !insertmacro InstallFile vlc-cache-gen.exe
   !insertmacro InstallFile vlc-preparser.exe
 
@@ -324,7 +324,7 @@ skip_uninstall32_cleanup:
   !insertmacro InstallFolder plugins
 @HAVE_NLS_TRUE@ !insertmacro InstallFolderOptional locale
   !insertmacro InstallFolder hrtfs
-  !insertmacro InstallFolder filetypes  ; VLX: file-type icons
+  !insertmacro InstallFolder filetypes  ; VLZ: file-type icons
 @BUILD_SKINS_TRUE@   !insertmacro InstallFolder skins
 @BUILD_LUA_TRUE@     !insertmacro InstallFolder lua
 
@@ -338,49 +338,49 @@ skip_uninstall32_cleanup:
   ; URLs
   WriteIniStr "$INSTDIR\${PRODUCT_GROUP} Website.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
   FileWrite $UninstallLog "${PRODUCT_GROUP} Website.url$\r$\n"
-  ; VLX: removed the VideoLAN documentation and skins links
+  ; VLZ: removed the VideoLAN documentation and skins links
 
   !insertmacro CloseUninstallLog
 
   ; Add VLC to "recommended programs" for the following extensions
-  WriteRegStr HKCR Applications\vlx.exe "" ""
-  WriteRegStr HKCR Applications\vlx.exe "FriendlyAppName" "${PRODUCT_NAME}"
-  WriteRegStr HKCR Applications\vlx.exe\shell\Open "" "$(ContextMenuEntry_PlayWith)"
-  WriteRegStr HKCR Applications\vlx.exe\shell\Open\command "" '"$INSTDIR\vlx.exe" --started-from-file "%1"'
+  WriteRegStr HKCR Applications\vlz.exe "" ""
+  WriteRegStr HKCR Applications\vlz.exe "FriendlyAppName" "${PRODUCT_NAME}"
+  WriteRegStr HKCR Applications\vlz.exe\shell\Open "" "$(ContextMenuEntry_PlayWith)"
+  WriteRegStr HKCR Applications\vlz.exe\shell\Open\command "" '"$INSTDIR\vlz.exe" --started-from-file "%1"'
   !insertmacro MacroAllExtensions RegisterExtensionMacro
 @BUILD_SKINS_TRUE@   !insertmacro MacroSkinExtensions RegisterSkinExtensionMacro
 
   ; Add VLC to "App Paths" to run VLC from ShellExecute/ShellExecuteEx/run dialog without giving a full path
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\vlx.exe" "" "$INSTDIR\vlx.exe"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\vlx.exe" "Path" "$INSTDIR"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\vlz.exe" "" "$INSTDIR\vlz.exe"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\vlz.exe" "Path" "$INSTDIR"
 
   ; Windows default programs Registration
-    WriteRegStr HKLM "Software\RegisteredApplications" "VLX" "Software\Clients\Media\VLX\Capabilities"
-    WriteRegStr HKLM "Software\Clients\Media\VLX\Capabilities" "ApplicationName" "${PRODUCT_NAME}"
-    WriteRegStr HKLM "Software\Clients\Media\VLX\Capabilities" "ApplicationDescription" "VLX, a modern media player based on VLC"
-    WriteRegStr HKLM "Software\Clients\Media\VLX" "" "${PRODUCT_NAME}"
-    WriteRegStr HKLM "Software\Clients\Media\VLX\InstallInfo" "HideIconsCommand" "$\"$INSTDIR\spad-setup.exe$\" /HideIcons /S"
-    WriteRegStr HKLM "Software\Clients\Media\VLX\InstallInfo" "ShowIconsCommand" "$\"$INSTDIR\spad-setup.exe$\" /ShowIcons /S"
-    WriteRegStr HKLM "Software\Clients\Media\VLX\InstallInfo" "ReinstallCommand" "$\"$INSTDIR\spad-setup.exe$\" /Reinstall /S"
-    WriteRegDWORD HKLM "Software\Clients\Media\VLX\InstallInfo" "IconsVisible" 0x001
+    WriteRegStr HKLM "Software\RegisteredApplications" "VLZ" "Software\Clients\Media\VLZ\Capabilities"
+    WriteRegStr HKLM "Software\Clients\Media\VLZ\Capabilities" "ApplicationName" "${PRODUCT_NAME}"
+    WriteRegStr HKLM "Software\Clients\Media\VLZ\Capabilities" "ApplicationDescription" "VLZ, a modern media player based on VLC"
+    WriteRegStr HKLM "Software\Clients\Media\VLZ" "" "${PRODUCT_NAME}"
+    WriteRegStr HKLM "Software\Clients\Media\VLZ\InstallInfo" "HideIconsCommand" "$\"$INSTDIR\spad-setup.exe$\" /HideIcons /S"
+    WriteRegStr HKLM "Software\Clients\Media\VLZ\InstallInfo" "ShowIconsCommand" "$\"$INSTDIR\spad-setup.exe$\" /ShowIcons /S"
+    WriteRegStr HKLM "Software\Clients\Media\VLZ\InstallInfo" "ReinstallCommand" "$\"$INSTDIR\spad-setup.exe$\" /Reinstall /S"
+    WriteRegDWORD HKLM "Software\Clients\Media\VLZ\InstallInfo" "IconsVisible" 0x001
 ${MementoSectionEnd}
 
 ${MementoSection} "$(Name_Section02a)" SEC02a
   SectionIn 1 2 3
   CreateDirectory "$SMPROGRAMS\${PRODUCT_PUBLISHER}"
   CreateShortCut "$SMPROGRAMS\${PRODUCT_PUBLISHER}\${PRODUCT_NAME}.lnk" \
-    "$INSTDIR\vlx.exe" ""
-  ; VLX: removed the skinned, documentation and VLC release-notes shortcuts
+    "$INSTDIR\vlz.exe" ""
+  ; VLZ: removed the skinned, documentation and VLC release-notes shortcuts
   CreateShortCut "$SMPROGRAMS\${PRODUCT_PUBLISHER}\${PRODUCT_GROUP} Website.lnk" \
     "$INSTDIR\${PRODUCT_GROUP} Website.url"
   CreateShortCut "$SMPROGRAMS\${PRODUCT_PUBLISHER}\${PRODUCT_NAME} - reset preferences and cache files.lnk" \
-    "$INSTDIR\vlx.exe" "--reset-config --reset-plugins-cache vlc://quit"
+    "$INSTDIR\vlz.exe" "--reset-config --reset-plugins-cache vlc://quit"
 ${MementoSectionEnd}
 
 ${MementoSection} "$(Name_Section02b)" SEC02b
   SectionIn 1 2 3
   CreateShortCut "$DESKTOP\${PRODUCT_NAME}.lnk" \
-    "$INSTDIR\vlx.exe" ""
+    "$INSTDIR\vlz.exe" ""
 ${MementoSectionEnd}
 
 !ifdef INSTALL_ACTIVEX
@@ -402,104 +402,104 @@ SectionGroupEnd
 
 ${MementoSection} "$(Name_Section05)" SEC05
   SectionIn 1 2 3
-  WriteRegStr HKCR "AudioCD\shell\PlayWithVLX" "" "$(ContextMenuEntry_PlayWith)"
-  WriteRegStr HKCR "AudioCD\shell\PlayWithVLX\command" "" \
-    '"$INSTDIR\vlx.exe" --started-from-file cdda:///%1'
-  WriteRegStr HKCR "DVD\shell\PlayWithVLX" "" "$(ContextMenuEntry_PlayWith)"
-  WriteRegStr HKCR "DVD\shell\PlayWithVLX\command" "" \
-    '"$INSTDIR\vlx.exe" --started-from-file dvd:///%1'
+  WriteRegStr HKCR "AudioCD\shell\PlayWithVLZ" "" "$(ContextMenuEntry_PlayWith)"
+  WriteRegStr HKCR "AudioCD\shell\PlayWithVLZ\command" "" \
+    '"$INSTDIR\vlz.exe" --started-from-file cdda:///%1'
+  WriteRegStr HKCR "DVD\shell\PlayWithVLZ" "" "$(ContextMenuEntry_PlayWith)"
+  WriteRegStr HKCR "DVD\shell\PlayWithVLZ\command" "" \
+    '"$INSTDIR\vlz.exe" --started-from-file dvd:///%1'
 
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayDVDMovieOnArrival" "VLXPlayDVDMovieOnArrival" ""
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayDVDMovieOnArrival" "Action" "$(Action_OnArrivalDVD)"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayDVDMovieOnArrival" "DefaultIcon" '"$INSTDIR\vlx.exe",0'
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayDVDMovieOnArrival" "InvokeProgID" "VLX.DVDMovie"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayDVDMovieOnArrival" "InvokeVerb" "Open"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayDVDMovieOnArrival" "Provider" "${PRODUCT_PUBLISHER} ${PRODUCT_NAME}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayDVDMovieOnArrival" "VLZPlayDVDMovieOnArrival" ""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayDVDMovieOnArrival" "Action" "$(Action_OnArrivalDVD)"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayDVDMovieOnArrival" "DefaultIcon" '"$INSTDIR\vlz.exe",0'
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayDVDMovieOnArrival" "InvokeProgID" "VLZ.DVDMovie"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayDVDMovieOnArrival" "InvokeVerb" "Open"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayDVDMovieOnArrival" "Provider" "${PRODUCT_PUBLISHER} ${PRODUCT_NAME}"
 
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayCDAudioOnArrival" "VLXPlayCDAudioOnArrival" ""
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayCDAudioOnArrival" "Action" "$(Action_OnArrivalAudioCD)"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayCDAudioOnArrival" "DefaultIcon" '"$INSTDIR\vlx.exe",0'
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayCDAudioOnArrival" "InvokeProgID" "VLX.CDAudio"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayCDAudioOnArrival" "InvokeVerb" "Open"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayCDAudioOnArrival" "Provider" "${PRODUCT_PUBLISHER} ${PRODUCT_NAME}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayCDAudioOnArrival" "VLZPlayCDAudioOnArrival" ""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayCDAudioOnArrival" "Action" "$(Action_OnArrivalAudioCD)"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayCDAudioOnArrival" "DefaultIcon" '"$INSTDIR\vlz.exe",0'
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayCDAudioOnArrival" "InvokeProgID" "VLZ.CDAudio"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayCDAudioOnArrival" "InvokeVerb" "Open"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayCDAudioOnArrival" "Provider" "${PRODUCT_PUBLISHER} ${PRODUCT_NAME}"
 
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayVideoCDMovieOnArrival" "VLXPlayVCDMovieOnArrival" ""
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayVCDMovieOnArrival" "Action" "$(Action_OnArrivalVCDMovie)"
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayVCDMovieOnArrival" "DefaultIcon" '"$INSTDIR\vlx.exe",0'
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayVCDMovieOnArrival" "InvokeProgID" "VLX.VCDMovie"
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayVCDMovieOnArrival" "InvokeVerb" "Open"
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayVCDMovieOnArrival" "Provider" "${PRODUCT_PUBLISHER} ${PRODUCT_NAME}"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayVideoCDMovieOnArrival" "VLZPlayVCDMovieOnArrival" ""
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayVCDMovieOnArrival" "Action" "$(Action_OnArrivalVCDMovie)"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayVCDMovieOnArrival" "DefaultIcon" '"$INSTDIR\vlz.exe",0'
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayVCDMovieOnArrival" "InvokeProgID" "VLZ.VCDMovie"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayVCDMovieOnArrival" "InvokeVerb" "Open"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayVCDMovieOnArrival" "Provider" "${PRODUCT_PUBLISHER} ${PRODUCT_NAME}"
 
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlaySuperVideoCDMovieOnArrival" "VLXPlaySVCDMovieOnArrival" ""
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlaySVCDMovieOnArrival" "Action" "$(Action_OnArrivalSVCDMovie)"
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlaySVCDMovieOnArrival" "DefaultIcon" '"$INSTDIR\vlx.exe",0'
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlaySVCDMovieOnArrival" "InvokeProgID" "VLX.SVCDMovie"
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlaySVCDMovieOnArrival" "InvokeVerb" "Open"
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlaySVCDMovieOnArrival" "Provider" "${PRODUCT_PUBLISHER} ${PRODUCT_NAME}"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlaySuperVideoCDMovieOnArrival" "VLZPlaySVCDMovieOnArrival" ""
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlaySVCDMovieOnArrival" "Action" "$(Action_OnArrivalSVCDMovie)"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlaySVCDMovieOnArrival" "DefaultIcon" '"$INSTDIR\vlz.exe",0'
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlaySVCDMovieOnArrival" "InvokeProgID" "VLZ.SVCDMovie"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlaySVCDMovieOnArrival" "InvokeVerb" "Open"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlaySVCDMovieOnArrival" "Provider" "${PRODUCT_PUBLISHER} ${PRODUCT_NAME}"
 
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayDVDAudioOnArrival" "VLXPlayDVDAudioOnArrival" ""
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayDVDAudioOnArrival" "Action" "$(Action_OnArrivalDVDAudio)"
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayDVDAudioOnArrival" "DefaultIcon" '"$INSTDIR\vlx.exe",0'
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayDVDAudioOnArrival" "InvokeProgID" "VLX.OPENFolder"
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayDVDAudioOnArrival" "InvokeVerb" "Open"
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayDVDAudioOnArrival" "Provider" "${PRODUCT_PUBLISHER} ${PRODUCT_NAME}"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayDVDAudioOnArrival" "VLZPlayDVDAudioOnArrival" ""
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayDVDAudioOnArrival" "Action" "$(Action_OnArrivalDVDAudio)"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayDVDAudioOnArrival" "DefaultIcon" '"$INSTDIR\vlz.exe",0'
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayDVDAudioOnArrival" "InvokeProgID" "VLZ.OPENFolder"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayDVDAudioOnArrival" "InvokeVerb" "Open"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayDVDAudioOnArrival" "Provider" "${PRODUCT_PUBLISHER} ${PRODUCT_NAME}"
 
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayVideoFilesOnArrival" "VLXPlayVideoFilesOnArrival" ""
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayVideoFilesOnArrival" "Action" "$(Action_OnArrivalVideoFiles)"
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayVideoFilesOnArrival" "DefaultIcon" '"$INSTDIR\vlx.exe",0'
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayVideoFilesOnArrival" "InvokeProgID" "VLX.OPENFolder"
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayVideoFilesOnArrival" "InvokeVerb" "Open"
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayVideoFilesOnArrival" "Provider" "${PRODUCT_PUBLISHER} ${PRODUCT_NAME}"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayVideoFilesOnArrival" "VLZPlayVideoFilesOnArrival" ""
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayVideoFilesOnArrival" "Action" "$(Action_OnArrivalVideoFiles)"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayVideoFilesOnArrival" "DefaultIcon" '"$INSTDIR\vlz.exe",0'
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayVideoFilesOnArrival" "InvokeProgID" "VLZ.OPENFolder"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayVideoFilesOnArrival" "InvokeVerb" "Open"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayVideoFilesOnArrival" "Provider" "${PRODUCT_PUBLISHER} ${PRODUCT_NAME}"
 
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayMusicFilesOnArrival" "VLXPlayMusicFilesOnArrival" ""
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayMusicFilesOnArrival" "Action" "$(Action_OnArrivalMusicFiles)"
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayMusicFilesOnArrival" "DefaultIcon" '"$INSTDIR\vlx.exe",0'
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayMusicFilesOnArrival" "InvokeProgID" "VLX.OPENFolder"
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayMusicFilesOnArrival" "InvokeVerb" "Open"
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayMusicFilesOnArrival" "Provider" "${PRODUCT_PUBLISHER} ${PRODUCT_NAME}"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayMusicFilesOnArrival" "VLZPlayMusicFilesOnArrival" ""
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayMusicFilesOnArrival" "Action" "$(Action_OnArrivalMusicFiles)"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayMusicFilesOnArrival" "DefaultIcon" '"$INSTDIR\vlz.exe",0'
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayMusicFilesOnArrival" "InvokeProgID" "VLZ.OPENFolder"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayMusicFilesOnArrival" "InvokeVerb" "Open"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayMusicFilesOnArrival" "Provider" "${PRODUCT_PUBLISHER} ${PRODUCT_NAME}"
 
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayBlurayOnArrival" "VLXPlayBlurayOnArrival" ""
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayBlurayOnArrival" "Action" "$(Action_OnArrivalBluray)"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayBlurayOnArrival" "DefaultIcon" '"$INSTDIR\vlx.exe",0'
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayBlurayOnArrival" "InvokeProgID" "VLX.Bluray"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayBlurayOnArrival" "InvokeVerb" "Open"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayBlurayOnArrival" "Provider" "${PRODUCT_PUBLISHER} ${PRODUCT_NAME}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayBlurayOnArrival" "VLZPlayBlurayOnArrival" ""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayBlurayOnArrival" "Action" "$(Action_OnArrivalBluray)"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayBlurayOnArrival" "DefaultIcon" '"$INSTDIR\vlz.exe",0'
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayBlurayOnArrival" "InvokeProgID" "VLZ.Bluray"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayBlurayOnArrival" "InvokeVerb" "Open"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayBlurayOnArrival" "Provider" "${PRODUCT_PUBLISHER} ${PRODUCT_NAME}"
 
-  WriteRegStr HKCR "VLX.DVDMovie" "" "VLX DVD Movie"
-  WriteRegStr HKCR "VLX.DVDMovie\shell" "" "Open"
-  WriteRegStr HKCR "VLX.DVDMovie\shell\Open\command" "" \
-    '"$INSTDIR\vlx.exe" --started-from-file dvd:///%1'
-  WriteRegStr HKCR "VLX.DVDMovie\DefaultIcon" "" '"$INSTDIR\vlx.exe",0'
+  WriteRegStr HKCR "VLZ.DVDMovie" "" "VLZ DVD Movie"
+  WriteRegStr HKCR "VLZ.DVDMovie\shell" "" "Open"
+  WriteRegStr HKCR "VLZ.DVDMovie\shell\Open\command" "" \
+    '"$INSTDIR\vlz.exe" --started-from-file dvd:///%1'
+  WriteRegStr HKCR "VLZ.DVDMovie\DefaultIcon" "" '"$INSTDIR\vlz.exe",0'
 
-  WriteRegStr HKCR "VLX.CDAudio" "" "VLX CD Audio"
-  WriteRegStr HKCR "VLX.CDAudio\shell" "" "Open"
-  WriteRegStr HKCR "VLX.CDAudio\shell\Open\command" "" \
-    '"$INSTDIR\vlx.exe" --started-from-file cdda:///%1'
-  WriteRegStr HKCR "VLX.CDAudio\DefaultIcon" "" '"$INSTDIR\vlx.exe",0'
+  WriteRegStr HKCR "VLZ.CDAudio" "" "VLZ CD Audio"
+  WriteRegStr HKCR "VLZ.CDAudio\shell" "" "Open"
+  WriteRegStr HKCR "VLZ.CDAudio\shell\Open\command" "" \
+    '"$INSTDIR\vlz.exe" --started-from-file cdda:///%1'
+  WriteRegStr HKCR "VLZ.CDAudio\DefaultIcon" "" '"$INSTDIR\vlz.exe",0'
 
-  WriteRegStr HKCR "VLX.VCDMovie" "" "VLX VCD Movie"
-  WriteRegStr HKCR "VLX.VCDMovie\shell" "" "Open"
-  WriteRegStr HKCR "VLX.VCDMovie\shell\Open\command" "" \
-     '"$INSTDIR\vlx.exe" --started-from-file vcd:///%1'
-  WriteRegStr HKCR "VLX.VCDMovie\DefaultIcon" "" '"$INSTDIR\vlx.exe",0'
+  WriteRegStr HKCR "VLZ.VCDMovie" "" "VLZ VCD Movie"
+  WriteRegStr HKCR "VLZ.VCDMovie\shell" "" "Open"
+  WriteRegStr HKCR "VLZ.VCDMovie\shell\Open\command" "" \
+     '"$INSTDIR\vlz.exe" --started-from-file vcd:///%1'
+  WriteRegStr HKCR "VLZ.VCDMovie\DefaultIcon" "" '"$INSTDIR\vlz.exe",0'
 
-  WriteRegStr HKCR "VLX.SVCDMovie" "" "VLX SVCD Movie"
-  WriteRegStr HKCR "VLX.SVCDMovie\shell" "" "Open"
-  WriteRegStr HKCR "VLX.SVCDMovie\shell\Open\command" "" \
-     '"$INSTDIR\vlx.exe" --started-from-file vcd:///%1'
-  WriteRegStr HKCR "VLX.SVCDMovie\DefaultIcon" "" '"$INSTDIR\vlx.exe",0'
+  WriteRegStr HKCR "VLZ.SVCDMovie" "" "VLZ SVCD Movie"
+  WriteRegStr HKCR "VLZ.SVCDMovie\shell" "" "Open"
+  WriteRegStr HKCR "VLZ.SVCDMovie\shell\Open\command" "" \
+     '"$INSTDIR\vlz.exe" --started-from-file vcd:///%1'
+  WriteRegStr HKCR "VLZ.SVCDMovie\DefaultIcon" "" '"$INSTDIR\vlz.exe",0'
 
-  WriteRegStr HKCR "VLX.OPENFolder" "" "VLX Play content"
-  WriteRegStr HKCR "VLX.OPENFolder\shell" "" "Open"
-  WriteRegStr HKCR "VLX.OPENFolder\shell\Open\command" "" \
-     '"$INSTDIR\vlx.exe" %1'
-  WriteRegStr HKCR "VLX.OPENFolder\DefaultIcon" "" '"$INSTDIR\vlx.exe",0'
+  WriteRegStr HKCR "VLZ.OPENFolder" "" "VLZ Play content"
+  WriteRegStr HKCR "VLZ.OPENFolder\shell" "" "Open"
+  WriteRegStr HKCR "VLZ.OPENFolder\shell\Open\command" "" \
+     '"$INSTDIR\vlz.exe" %1'
+  WriteRegStr HKCR "VLZ.OPENFolder\DefaultIcon" "" '"$INSTDIR\vlz.exe",0'
 
-  WriteRegStr HKCR "VLX.Bluray" "" "VLX Bluray"
-  WriteRegStr HKCR "VLX.Bluray\shell" "" "Open"
-  WriteRegStr HKCR "VLX.Bluray\shell\Open\command" "" \
-    '"$INSTDIR\vlx.exe" --started-from-file bluray:///%1'
-  WriteRegStr HKCR "VLX.Bluray\DefaultIcon" "" '"$INSTDIR\vlx.exe",0'
+  WriteRegStr HKCR "VLZ.Bluray" "" "VLZ Bluray"
+  WriteRegStr HKCR "VLZ.Bluray\shell" "" "Open"
+  WriteRegStr HKCR "VLZ.Bluray\shell\Open\command" "" \
+    '"$INSTDIR\vlz.exe" --started-from-file bluray:///%1'
+  WriteRegStr HKCR "VLZ.Bluray\DefaultIcon" "" '"$INSTDIR\vlz.exe",0'
 
 ${MementoSectionEnd}
 
@@ -562,7 +562,7 @@ ${Endif}
 
 ReadRegStr "$INSTDIR" HKLM "${PRODUCT_DIR_REGKEY}" "InstallDir"
 StrCmp "$INSTDIR" "" 0 WinOk
-StrCpy "$INSTDIR" "$@PROGRAMFILES@\${PRODUCT_NAME}" ; VLX: Program Files\VLX
+StrCpy "$INSTDIR" "$@PROGRAMFILES@\${PRODUCT_NAME}" ; VLZ: Program Files\VLZ
 Goto WinOk
 
 WinTooOld:
@@ -769,7 +769,7 @@ Section -Post
   WriteUninstaller "$INSTDIR\uninstall.exe"
   WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "InstallDir" "$INSTDIR"
   WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "Version" "${VERSION}"
-  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\vlx.exe"
+  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\vlz.exe"
 
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" \
     "DisplayName" "$(^Name)"
@@ -778,7 +778,7 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" \
     "InstallLocation" "$INSTDIR"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" \
-    "DisplayIcon" "$INSTDIR\vlx.exe"
+    "DisplayIcon" "$INSTDIR\vlz.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" \
     "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" \
@@ -861,34 +861,34 @@ Section "un.$(Name_Section91)" SEC91
 
   DeleteRegKey HKLM Software\VideoLAN
 
-  DeleteRegKey HKCR Applications\vlx.exe
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\vlx.exe"
-  DeleteRegKey HKCR AudioCD\shell\PlayWithVLX
-  DeleteRegKey HKCR DVD\shell\PlayWithVLX
-  DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayDVDMovieOnArrival" "VLXPlayDVDMovieOnArrival"
-  DeleteRegKey HKLM Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayDVDMovieOnArrival
-  DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayCDAudioOnArrival" "VLXPlayCDAudioOnArrival"
-  DeleteRegKey HKLM Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayCDAudioOnArrival
-  DeleteRegValue HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayVideoCDMovieOnArrival" "VLXPlayVCDMovieOnArrival"
-  DeleteRegKey HKLM SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayVCDMovieOnArrival
-  DeleteRegValue HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlaySuperVideoCDMovieOnArrival" "VLXPlaySVCDMovieOnArrival"
-  DeleteRegKey HKLM SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlaySVCDMovieOnArrival
-  DeleteRegValue HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayDVDAudioOnArrival" "VLXPlayDVDAudioOnArrival"
-  DeleteRegKey HKLM SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayDVDAudioOnArrival
-  DeleteRegValue HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayVideoFilesOnArrival" "VLXPlayVideoFilesOnArrival"
-  DeleteRegKey HKLM SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayVideoFilesOnArrival
-  DeleteRegValue HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayMusicFilesOnArrival" "VLXPlayMusicFilesOnArrival"
-  DeleteRegKey HKLM SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLXPlayMusicFilesOnArrival
+  DeleteRegKey HKCR Applications\vlz.exe
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\vlz.exe"
+  DeleteRegKey HKCR AudioCD\shell\PlayWithVLZ
+  DeleteRegKey HKCR DVD\shell\PlayWithVLZ
+  DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayDVDMovieOnArrival" "VLZPlayDVDMovieOnArrival"
+  DeleteRegKey HKLM Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayDVDMovieOnArrival
+  DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayCDAudioOnArrival" "VLZPlayCDAudioOnArrival"
+  DeleteRegKey HKLM Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayCDAudioOnArrival
+  DeleteRegValue HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayVideoCDMovieOnArrival" "VLZPlayVCDMovieOnArrival"
+  DeleteRegKey HKLM SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayVCDMovieOnArrival
+  DeleteRegValue HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlaySuperVideoCDMovieOnArrival" "VLZPlaySVCDMovieOnArrival"
+  DeleteRegKey HKLM SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlaySVCDMovieOnArrival
+  DeleteRegValue HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayDVDAudioOnArrival" "VLZPlayDVDAudioOnArrival"
+  DeleteRegKey HKLM SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayDVDAudioOnArrival
+  DeleteRegValue HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayVideoFilesOnArrival" "VLZPlayVideoFilesOnArrival"
+  DeleteRegKey HKLM SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayVideoFilesOnArrival
+  DeleteRegValue HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayMusicFilesOnArrival" "VLZPlayMusicFilesOnArrival"
+  DeleteRegKey HKLM SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLZPlayMusicFilesOnArrival
 
-  DeleteRegKey HKLM Software\Clients\Media\VLX
-  DeleteRegValue HKLM "Software\RegisteredApplications" "VLX"
-  DeleteRegKey HKCR "VLX.MediaFile"
-  DeleteRegKey HKCR "VLX.DVDMovie"
-  DeleteRegKey HKCR "VLX.CDAudio"
-  DeleteRegKey HKCR "VLX.VCDMovie"
-  DeleteRegKey HKCR "VLX.SVCDMovie"
-  DeleteRegKey HKCR "VLX.OPENFolder"
-  DeleteRegKey HKCR "VLX.Bluray"
+  DeleteRegKey HKLM Software\Clients\Media\VLZ
+  DeleteRegValue HKLM "Software\RegisteredApplications" "VLZ"
+  DeleteRegKey HKCR "VLZ.MediaFile"
+  DeleteRegKey HKCR "VLZ.DVDMovie"
+  DeleteRegKey HKCR "VLZ.CDAudio"
+  DeleteRegKey HKCR "VLZ.VCDMovie"
+  DeleteRegKey HKCR "VLZ.SVCDMovie"
+  DeleteRegKey HKCR "VLZ.OPENFolder"
+  DeleteRegKey HKCR "VLZ.Bluray"
 
 
   DeleteRegKey HKLM \

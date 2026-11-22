@@ -30,7 +30,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Function AppExecAs
-    Exec '"$WINDIR\explorer.exe" "$INSTDIR\vlx.exe"'
+    Exec '"$WINDIR\explorer.exe" "$INSTDIR\vlz.exe"'
 FunctionEnd
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -288,13 +288,13 @@ FunctionEnd
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Function CheckRunningProcesses
-    ${nsProcess::FindProcess} "vlx.exe" $R0
+    ${nsProcess::FindProcess} "vlz.exe" $R0
     StrCmp $R0 0 0 end
     IfSilent +3
     BringToFront
     MessageBox MB_OKCANCEL|MB_ICONQUESTION "$(MessageBox_VLCRunning)" IDCANCEL stop
 
-    ${nsProcess::CloseProcess} "vlx.exe" $R0
+    ${nsProcess::CloseProcess} "vlz.exe" $R0
     IfSilent end
     StrCmp $R0 0 end 0      ; Success
     StrCmp $R0 603 end 0    ; Not running

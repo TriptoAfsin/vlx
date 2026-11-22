@@ -1,7 +1,7 @@
 /*****************************************************************************
- * vlxsettings.hpp: VLX interface settings exposed to QML (DESIGN.md › Player)
+ * vlzsettings.hpp: VLZ interface settings exposed to QML (DESIGN.md › Player)
  *****************************************************************************
- * Copyright (C) 2026 VLX contributors
+ * Copyright (C) 2026 VLZ contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#ifndef VLX_VLXSETTINGS_HPP
-#define VLX_VLXSETTINGS_HPP
+#ifndef VLZ_VLZSETTINGS_HPP
+#define VLZ_VLZSETTINGS_HPP
 
 #include <QObject>
 #include <QString>
@@ -27,11 +27,11 @@
 struct qt_intf_t;
 
 /*
- * One place for VLX's look-and-layout options, read from and saved to VLC's config
- * ("qt-vlx-*" options declared in qt.cpp). Setters save at once and notify, so a
+ * One place for VLZ's look-and-layout options, read from and saved to VLC's config
+ * ("qt-vlz-*" options declared in qt.cpp). Setters save at once and notify, so a
  * settings page can preview a change live.
  */
-class VLXSettings : public QObject
+class VLZSettings : public QObject
 {
     Q_OBJECT
 
@@ -59,11 +59,11 @@ class VLXSettings : public QObject
     // band, echo / auto, light, dark
     Q_PROPERTY(QString fileIcons READ fileIcons WRITE setFileIcons NOTIFY fileIconsChanged FINAL)
     Q_PROPERTY(QString fileIconLook READ fileIconLook WRITE setFileIconLook NOTIFY fileIconsChanged FINAL)
-    // page to open at start (--qt-vlx-start-view), for screenshots and tests; empty for the usual home
+    // page to open at start (--qt-vlz-start-view), for screenshots and tests; empty for the usual home
     Q_PROPERTY(QString startView READ startView CONSTANT FINAL)
 
 public:
-    explicit VLXSettings(qt_intf_t *intf, QObject *parent = nullptr);
+    explicit VLZSettings(qt_intf_t *intf, QObject *parent = nullptr);
 
     QString barStyle() const { return m_barStyle; }
     void setBarStyle(const QString &style);
@@ -104,13 +104,13 @@ public:
     /* VLC's own integer options (e.g. "mouse-hide-timeout"), for the settings page. */
     Q_INVOKABLE int intOption(const QString &name) const;
     Q_INVOKABLE void setIntOption(const QString &name, int value);
-    // Opening a file from Explorer while VLX runs: "new" (a new window each time, several videos at once),
+    // Opening a file from Explorer while VLZ runs: "new" (a new window each time, several videos at once),
     // "running" (play it in the open window, VLC's default) or "queue" (add it to the open window's queue).
     // Sets VLC's one-instance, one-instance-when-started-from-file and playlist-enqueue; takes effect for the
     // next file opened.
     Q_INVOKABLE QString openMode() const;
     // Memory saver: 2 decoder threads and 0.3 s read-ahead (VLC's avcodec-threads and file-caching), for the
-    // next file played. Media library: whether it starts with VLX (next start).
+    // next file played. Media library: whether it starts with VLZ (next start).
     Q_INVOKABLE bool memorySaver() const;
     Q_INVOKABLE void setMemorySaver(bool on);
     Q_INVOKABLE bool mediaLibrary() const;
@@ -124,7 +124,7 @@ public:
     Q_INVOKABLE bool runCommand(const QString &id);
 
     /* The interface's instance, for C++ code that reacts to changes (the palette). */
-    static VLXSettings *instance() { return s_instance; }
+    static VLZSettings *instance() { return s_instance; }
 
 signals:
     void barStyleChanged();
@@ -156,7 +156,7 @@ private:
     QString m_fileIconLook;
     QString m_startView;
 
-    static VLXSettings *s_instance;
+    static VLZSettings *s_instance;
 };
 
 #endif

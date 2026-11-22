@@ -24,25 +24,25 @@ ${LangFileString} Desc_Section04 \
 ${LangFileString} Desc_Section05 \
     "DVD and CD playback registration"
 ${LangFileString} Desc_Section06 \
-    "Sets VLX as the default application for the specified file type"
+    "Sets VLZ as the default application for the specified file type"
 ${LangFileString} Desc_Section07 \
-    "Add context menu items ('Play With VLX' and 'Add To VLX's Playlist')"
+    "Add context menu items ('Play With VLZ' and 'Add To VLZ's Playlist')"
 ${LangFileString} Desc_Section08 \
-    "Deletes VLX preferences and cache files leftover from previous installations"
+    "Deletes VLZ preferences and cache files leftover from previous installations"
 
 ${LangFileString} Name_Section91 "Uninstall"
 ${LangFileString} Name_Section92 "Delete preferences and cache"
 
 ${LangFileString} Desc_Section91 \
-"Uninstall VLX and all its components"
+"Uninstall VLZ and all its components"
 ${LangFileString} Desc_Section92 \
-"Deletes VLX preferences and cache files"
+"Deletes VLZ preferences and cache files"
 
 ${LangFileString} ShellAssociation_Play "Play"
-${LangFileString} ContextMenuEntry_PlayWith "Play with VLX"
-${LangFileString} ContextMenuEntry_AddToPlaylist "Add to VLX playlist"
+${LangFileString} ContextMenuEntry_PlayWith "Play with VLZ"
+${LangFileString} ContextMenuEntry_AddToPlaylist "Add to VLZ playlist"
 
-${LangFileString} Link_VisitWebsite "Visit the VLX Website"
+${LangFileString} Link_VisitWebsite "Visit the VLZ Website"
 
 ${LangFileString} Name_InstTypeRecommended "Recommended"
 ${LangFileString} Name_InstTypeMinimum "Minimum"
@@ -60,18 +60,18 @@ ${LangFileString} Action_OnArrivalBluray "Play Blu-ray"
 ${LangFileString} License_NextText "You are now aware of your rights. Click Next to continue."
 
 ${LangFileString} Detail_CheckProcesses "Checking processes..."
-${LangFileString} MessageBox_VLCRunning "VLX appears to be running and will now be closed."
-${LangFileString} MessageBox_VLCUnableToClose "This installer was unable to close VLX, please do it manually."
+${LangFileString} MessageBox_VLCRunning "VLZ appears to be running and will now be closed."
+${LangFileString} MessageBox_VLCUnableToClose "This installer was unable to close VLZ, please do it manually."
 ${LangFileString} MessageBox_InstallAborted "Installation aborted!"
 
 ${LangFileString} Reinstall_Headline "Already Installed"
-${LangFileString} Reinstall_HeadlineInstall "Choose how you want to install VLX."
+${LangFileString} Reinstall_HeadlineInstall "Choose how you want to install VLZ."
 ${LangFileString} Reinstall_HeadlineMaintenance "Choose the maintenance option to perform."
-${LangFileString} Reinstall_MessageOlder "An older version of VLX is installed on your system. Select the operation you want to perform and click Next to continue."
-${LangFileString} Reinstall_MessageNewer "A newer version of VLX is already installed! It is not recommended that you downgrade to an older version. Select the operation you want to perform and click Next to continue."
-${LangFileString} Reinstall_MessageSame "VLX ${VERSION} is already installed. Select the operation you want to perform and click Next to continue."
-${LangFileString} Reinstall_OptionUpgrade "Upgrade VLX using previous settings (recommended)"
-${LangFileString} Reinstall_OptionDowngrade "Downgrade VLX using previous settings (recommended)"
+${LangFileString} Reinstall_MessageOlder "An older version of VLZ is installed on your system. Select the operation you want to perform and click Next to continue."
+${LangFileString} Reinstall_MessageNewer "A newer version of VLZ is already installed! It is not recommended that you downgrade to an older version. Select the operation you want to perform and click Next to continue."
+${LangFileString} Reinstall_MessageSame "VLZ ${VERSION} is already installed. Select the operation you want to perform and click Next to continue."
+${LangFileString} Reinstall_OptionUpgrade "Upgrade VLZ using previous settings (recommended)"
+${LangFileString} Reinstall_OptionDowngrade "Downgrade VLZ using previous settings (recommended)"
 ${LangFileString} Reinstall_OptionComponents "Add/Remove/Reinstall components"
 ${LangFileString} Reinstall_OptionAdvanced "Change settings (advanced)"
-${LangFileString} Reinstall_OptionUninstall "Uninstall VLX"
+${LangFileString} Reinstall_OptionUninstall "Uninstall VLZ"

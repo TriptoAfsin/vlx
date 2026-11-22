@@ -1,7 +1,7 @@
 /*****************************************************************************
- * lookpanel.cpp: VLX look settings inside the classic preferences dialog
+ * lookpanel.cpp: VLZ look settings inside the classic preferences dialog
  *****************************************************************************
- * Copyright (C) 2026 VLX contributors
+ * Copyright (C) 2026 VLZ contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@
 # include "config.h"
 #endif
 
-#include "vlx/lookpanel.hpp"
-#include "vlx/vlxsettings.hpp"
+#include "vlz/lookpanel.hpp"
+#include "vlz/vlzsettings.hpp"
 #include "maininterface/mainctx.hpp"
 #include "dialogs/dialogs_provider.hpp"
 
@@ -44,7 +44,7 @@ namespace {
 
 using Options = QList<QPair<QString, QString>>; // value, label
 
-/* A small VLX window: sidebar, a playing video, and the player bar in the chosen style and position. */
+/* A small VLZ window: sidebar, a playing video, and the player bar in the chosen style and position. */
 class LookPreview : public QWidget
 {
 public:
@@ -60,7 +60,7 @@ public:
 protected:
     void paintEvent(QPaintEvent *) override
     {
-        const vlx::ThemeColors c = vlx::themeColors(theme, accent);
+        const vlz::ThemeColors c = vlz::themeColors(theme, accent);
         QPainter p(this);
         p.setRenderHint(QPainter::Antialiasing);
 
@@ -236,8 +236,8 @@ public:
 protected:
     void paintEvent(QPaintEvent *) override
     {
-        const vlx::ThemeColors c = audioTheme == QLatin1String("app")
-                ? vlx::themeColors(appTheme, accent) : vlx::themeColors(audioTheme, QStringLiteral("default"));
+        const vlz::ThemeColors c = audioTheme == QLatin1String("app")
+                ? vlz::themeColors(appTheme, accent) : vlz::themeColors(audioTheme, QStringLiteral("default"));
         QPainter p(this);
         p.setRenderHint(QPainter::Antialiasing);
         p.setPen(Qt::NoPen);
@@ -370,10 +370,10 @@ QComboBox *addChoice(QFormLayout *form, const QString &label, const Options &opt
 
 } // namespace
 
-QWidget *vlx::createLookPanel(qt_intf_t *intf, QWidget *parent)
+QWidget *vlz::createLookPanel(qt_intf_t *intf, QWidget *parent)
 {
-    VLXSettings *s = VLXSettings::instance();
-    auto *group = new QGroupBox(qtr("Look (VLX)"), parent);
+    VLZSettings *s = VLZSettings::instance();
+    auto *group = new QGroupBox(qtr("Look (VLZ)"), parent);
     if (!s)
     {
         group->hide();

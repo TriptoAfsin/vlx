@@ -1,11 +1,11 @@
-# Keyboard and mouse: what VLX must keep
+# Keyboard and mouse: what VLZ must keep
 
-Rule: **every keyboard shortcut and mouse behaviour VLC has keeps working in VLX, with the same default.** A new
-VLX layout (island, docked, minimal, pill, classic; any playlist mode) wires the same actions to its own controls.
+Rule: **every keyboard shortcut and mouse behaviour VLC has keeps working in VLZ, with the same default.** A new
+VLZ layout (island, docked, minimal, pill, classic; any playlist mode) wires the same actions to its own controls.
 Users can still remap keys in Settings › Hotkeys.
 
 - Keyboard: [`hotkeys.md`](hotkeys.md), generated from `src/libvlc-module.c` (113 actions). Regenerate it after
-  every upstream update (`python -I extras/vlx/scripts/list-hotkeys.py > extras/vlx/hotkeys.md`) and read the diff.
+  every upstream update (`python -I extras/vlz/scripts/list-hotkeys.py > extras/vlz/hotkeys.md`) and read the diff.
 - Mouse: the table below, gathered from VLC's code at the fork point. Check each one by hand after a UI change.
 
 ## Mouse

@@ -23,25 +23,25 @@ ${LangFileString} Desc_Section04 \
 ${LangFileString} Desc_Section05 \
     "خۆتۆمارکردنی لێدانی CD و DVD"
 ${LangFileString} Desc_Section06 \
-    "لێدەری ڕەنگاڵەی VLX دەکاتە پۆگرامی بنەڕەتی بۆ لێدانی جۆرە پەڕگە دیاریکراوەکان"
+    "لێدەری ڕەنگاڵەی VLZ دەکاتە پۆگرامی بنەڕەتی بۆ لێدانی جۆرە پەڕگە دیاریکراوەکان"
 ${LangFileString} Desc_Section07 \
-    "دانەکانی ('لێدان لەگەڵ VLX' و 'زیادکردن بۆ لیستی لێدانی VLX') بۆ مێنیو زیاد دەکات"
+    "دانەکانی ('لێدان لەگەڵ VLZ' و 'زیادکردن بۆ لیستی لێدانی VLZ') بۆ مێنیو زیاد دەکات"
 ${LangFileString} Desc_Section08 \
-    "ویستراوەکان و پەڕگەکانی کاشی لێدەری ڕەنگاڵەی VLX دەسڕێتەوە بۆ هەمیشە کە پێشتر دامەزراوە"
+    "ویستراوەکان و پەڕگەکانی کاشی لێدەری ڕەنگاڵەی VLZ دەسڕێتەوە بۆ هەمیشە کە پێشتر دامەزراوە"
 
 ${LangFileString} Name_Section91 "سڕینەوە"
 ${LangFileString} Name_Section92 "ویستراوەکان و کاش بسڕەوە"
 
 ${LangFileString} Desc_Section91 \
-"لێدەری ڕەنگاڵەی VLX و هەموو پێکهاتەکانی بسڕەوە"
+"لێدەری ڕەنگاڵەی VLZ و هەموو پێکهاتەکانی بسڕەوە"
 ${LangFileString} Desc_Section92 \
-"ویستراوەکان و پەڕگەکانی کاشی لێدەری ڕەنگاڵەی VLX دەسڕێتەوە"
+"ویستراوەکان و پەڕگەکانی کاشی لێدەری ڕەنگاڵەی VLZ دەسڕێتەوە"
 
 ${LangFileString} ShellAssociation_Play "لێدان"
-${LangFileString} ContextMenuEntry_PlayWith "لێیبدە لەگەڵ لێدەری ڕەنگاڵەی VLX"
-${LangFileString} ContextMenuEntry_AddToPlaylist "زیادی بکە بۆ لیستی لێدانی لێدەری ڕەنگاڵەی VLX"
+${LangFileString} ContextMenuEntry_PlayWith "لێیبدە لەگەڵ لێدەری ڕەنگاڵەی VLZ"
+${LangFileString} ContextMenuEntry_AddToPlaylist "زیادی بکە بۆ لیستی لێدانی لێدەری ڕەنگاڵەی VLZ"
 
-${LangFileString} Link_VisitWebsite "سەردانی وێبگەی لێدەری ڕەنگاڵەی VLX بکە"
+${LangFileString} Link_VisitWebsite "سەردانی وێبگەی لێدەری ڕەنگاڵەی VLZ بکە"
 
 ${LangFileString} Name_InstTypeRecommended "ئامۆژگاریراو"
 ${LangFileString} Name_InstTypeMinimum "کەمترین"

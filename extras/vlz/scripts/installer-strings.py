@@ -1,5 +1,5 @@
-"""VLX installer strings: VLX instead of VLC in every language (context menu, reinstall, uninstall). Re-run after
-an upstream merge:  python extras/vlx/scripts/installer-strings.py"""
+"""VLZ installer strings: VLZ instead of VLC in every language (context menu, reinstall, uninstall). Re-run after
+an upstream merge:  python extras/vlz/scripts/installer-strings.py"""
 import glob
 import os
 import re
@@ -17,8 +17,8 @@ for p in sorted(glob.glob(os.path.join(ROOT, "*.nsh"))):
     out, n = [], 0
     for line in s.splitlines(keepends=True):
         if "VLC" in line and "ActiveX" not in line:
-            new = line.replace("VideoLAN VLC media player", "VLX").replace("VLC media player", "VLX")
-            new = re.sub(r"\bVLC\b", "VLX", new)
+            new = line.replace("VideoLAN VLC media player", "VLZ").replace("VLC media player", "VLZ")
+            new = re.sub(r"\bVLC\b", "VLZ", new)
             if new != line:
                 n += 1
             line = new

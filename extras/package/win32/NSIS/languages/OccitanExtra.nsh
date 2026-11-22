@@ -23,25 +23,25 @@ ${LangFileString} Desc_Section04 \
 ${LangFileString} Desc_Section05 \
     "DVD and CD playback registration"
 ${LangFileString} Desc_Section06 \
-    "Causir VLX coma programa per defaut per aqueste tipe de fichièr"
+    "Causir VLZ coma programa per defaut per aqueste tipe de fichièr"
 ${LangFileString} Desc_Section07 \
-    "Apondre los menuts ('Legir amb VLX' e 'Apondre a la lista de lectura')"
+    "Apondre los menuts ('Legir amb VLZ' e 'Apondre a la lista de lectura')"
 ${LangFileString} Desc_Section08 \
-    "Suprimir las preferéncias de VLX e los fichièrs cache de las ancianas versions"
+    "Suprimir las preferéncias de VLZ e los fichièrs cache de las ancianas versions"
 
 ${LangFileString} Name_Section91 "Desinstallar"
 ${LangFileString} Name_Section92 "Suprimir las preferéncias e lo cache"
 
 ${LangFileString} Desc_Section91 \
-"Suprimir VLX e totes los sieus compausants"
+"Suprimir VLZ e totes los sieus compausants"
 ${LangFileString} Desc_Section92 \
-"Suprimir las preferéncias de VLX e los fichièrs cache"
+"Suprimir las preferéncias de VLZ e los fichièrs cache"
 
 ${LangFileString} ShellAssociation_Play "Legir"
-${LangFileString} ContextMenuEntry_PlayWith "Legir amb VLX"
-${LangFileString} ContextMenuEntry_AddToPlaylist "Apondre a la lista de lectura de VLX"
+${LangFileString} ContextMenuEntry_PlayWith "Legir amb VLZ"
+${LangFileString} ContextMenuEntry_AddToPlaylist "Apondre a la lista de lectura de VLZ"
 
-${LangFileString} Link_VisitWebsite "Anar sul sit de VLX"
+${LangFileString} Link_VisitWebsite "Anar sul sit de VLZ"
 
 ${LangFileString} Name_InstTypeRecommended "Recomandat"
 ${LangFileString} Name_InstTypeMinimum "Minimum"

@@ -1,7 +1,7 @@
-// Generates VLX file-type icons: extras/vlx/brand/filetypes/<style>-<look>/<name>.ico
+// Generates VLZ file-type icons: extras/vlz/brand/filetypes/<style>-<look>/<name>.ico
 // Styles: band (Page and band), echo. Looks: light, dark. See DESIGN.md › File icons.
 //
-//   node extras/vlx/scripts/fileicons.mjs
+//   node extras/vlz/scripts/fileicons.mjs
 //
 // Needs Node and Playwright (any install: set PLAYWRIGHT_CORE to its playwright-core folder if `playwright-core`
 // isn't resolvable) with Microsoft Edge or Chromium. Outputs are committed, so builds need neither.

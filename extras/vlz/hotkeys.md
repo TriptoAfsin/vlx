@@ -1,7 +1,7 @@
 # VLC default hotkeys (Windows)
 
-Generated from `src/libvlc-module.c` by `extras/vlx/scripts/list-hotkeys.py`. Every one of these must keep
-working in VLX, with the same default. Regenerate after taking an upstream update and diff it.
+Generated from `src/libvlc-module.c` by `extras/vlz/scripts/list-hotkeys.py`. Every one of these must keep
+working in VLZ, with the same default. Regenerate after taking an upstream update and diff it.
 
 | Action | Default keys | Option |
 |---|---|---|

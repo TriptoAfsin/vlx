@@ -1,4 +1,4 @@
-# VLX benchmarks
+# VLZ benchmarks
 
 Measured with [`scripts/bench.ps1`](scripts/bench.ps1) (VERIFY.md §4). Each player is a portable copy with its own
 throwaway profile and a generated plugin cache (`vlc-cache-gen`), run one at a time on the same PC.
@@ -10,7 +10,7 @@ QML precompiled with `qmlcachegen` (the Meson build didn't do it; the nightly's 
 palette loads on first Ctrl+K, network discovery in the media library is off by default (no libupnp at launch), and
 the libgme plugin loads (it needed `libgcc_s_seh-1.dll`, which nobody ships; the nightly still fails to load it).
 
-| Metric | VLC 4.0 nightly `7f0d5b95` | VLX |
+| Metric | VLC 4.0 nightly `7f0d5b95` | VLZ |
 |---|---:|---:|
 | Install size (MB) | 254.5 | 176.9 |
 | Without translations (MB) | 220.7 | 176.9 |
@@ -23,7 +23,7 @@ the libgme plugin loads (it needed `libgcc_s_seh-1.dll`, which nobody ships; the
 | Playing peak working set (MB) | 352.5 | 335.3 |
 | Playing CPU (% of all cores) | 0.3 | 0.3 |
 
-VLX now starts slightly faster than the nightly. A timed `-vv` log puts the interface load (Qt window to QML ready) at
+VLZ now starts slightly faster than the nightly. A timed `-vv` log puts the interface load (Qt window to QML ready) at
 293 ms against the nightly's 292 ms, down from 319 ms without precompiled QML. The size went up 3.3 MB from the
 compiled QML.
 
@@ -32,7 +32,7 @@ compiled QML.
 PC: 24 logical cores, NVIDIA GeForce RTX 5070, Windows 11, 3840 × 2160 at 150 %.
 Sample: Big Buck Bunny 1080p H.264 clip, 45 s of looped playback. Start-up: 6 launches, median of the last 5.
 
-| Metric | VLC 3.0.24 (stable) | VLC 4.0 nightly `7f0d5b95` | VLX |
+| Metric | VLC 3.0.24 (stable) | VLC 4.0 nightly `7f0d5b95` | VLZ |
 |---|---:|---:|---:|
 | Install size (MB) | 188.2 | 254.5 | 173.6 |
 | Without translations (MB) | 146.3 | 220.7 | 173.6 |
@@ -48,13 +48,13 @@ Sample: Big Buck Bunny 1080p H.264 clip, 45 s of looped playback. Start-up: 6 la
 
 How to read it:
 
-- **The fair comparison is VLX against the VLC 4 nightly.** The nightly is the commit right before VLX's upstream base.
+- **The fair comparison is VLZ against the VLC 4 nightly.** The nightly is the commit right before VLZ's upstream base.
   VLC 3.0.24 has a different, much lighter interface (Qt 5 widgets instead of Qt 6 QML), which explains most of its
-  lead in start-up time and idle memory. That cost comes with VLC 4's interface, not with VLX.
-- **Size:** VLX is 21 % smaller than the nightly without translations (173.6 vs 220.7 MB), from the feature cuts in
-  `vlx.ini`: 385 plugins instead of 410. VLX doesn't ship translations yet (`-l` isn't passed to `build.sh`).
+  lead in start-up time and idle memory. That cost comes with VLC 4's interface, not with VLZ.
+- **Size:** VLZ is 21 % smaller than the nightly without translations (173.6 vs 220.7 MB), from the feature cuts in
+  `vlz.ini`: 385 plugins instead of 410. VLZ doesn't ship translations yet (`-l` isn't passed to `build.sh`).
 - **Memory and CPU** are within noise of the nightly; all three decode with D3D11VA on the GPU.
 - **Start-up** is about 55 ms slower than the nightly. Single runs vary, so treat this as a lead to check, not a result.
   (Found and fixed: the QML wasn't precompiled. See the run above.)
-- VLX's build here is the local WSL build (GCC 13, MinGW runtime linked statically); the release workflow builds with
+- VLZ's build here is the local WSL build (GCC 13, MinGW runtime linked statically); the release workflow builds with
   VideoLAN's GCC 14 image. Neither uses LTO yet.

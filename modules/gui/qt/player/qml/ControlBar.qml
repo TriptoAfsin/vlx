@@ -321,9 +321,9 @@ T.Pane {
 
             identifier: root.identifier
 
-            // VLX: Settings › Player › Bar size (compact, normal, large); buttons shrink to fit a compact bar
-            implicitHeight: VLXSettings.barSize === "compact" ? VLCStyle.dp(36, VLCStyle.scale)
-                          : VLXSettings.barSize === "large" ? VLCStyle.dp(80, VLCStyle.scale)
+            // VLZ: Settings › Player › Bar size (compact, normal, large); buttons shrink to fit a compact bar
+            implicitHeight: VLZSettings.barSize === "compact" ? VLCStyle.dp(36, VLCStyle.scale)
+                          : VLZSettings.barSize === "large" ? VLCStyle.dp(80, VLCStyle.scale)
                           : VLCStyle.controlLayoutHeight
 
             visible: !model?.empty ?? false

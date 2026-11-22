@@ -1012,10 +1012,10 @@ endif
 cdata.set_quoted('VERSION',         vlc_version)
 cdata.set_quoted('PACKAGE_VERSION', vlc_version)
 cdata.set_quoted('VERSION_MESSAGE', f'@vlc_version@ @vlc_version_codename@')
-# VLX: VLX's own version (extras/vlx/VERSION) for the app, the installer and About; libvlc keeps VLC's
-vlx_version = import('fs').read('extras/vlx/VERSION').strip()
-vlx_version_parts = vlx_version.split('-')[0].split('.')
-cdata.set_quoted('VLX_VERSION', vlx_version)
+# VLZ: VLZ's own version (extras/vlz/VERSION) for the app, the installer and About; libvlc keeps VLC's
+vlz_version = import('fs').read('extras/vlz/VERSION').strip()
+vlz_version_parts = vlz_version.split('-')[0].split('.')
+cdata.set_quoted('VLZ_VERSION', vlz_version)
 
 cdata.set('VERSION_MAJOR',      vlc_version_major)
 cdata.set('VERSION_MINOR',      vlc_version_minor)
@@ -1216,14 +1216,14 @@ if host_system == 'windows'
     rc_conf.merge_from(cdata)
     rc_conf.set('VERSION', vlc_version)
     rc_conf.set('COPYRIGHT_YEARS', vlc_copyright_years)
-    # VLX: vlc.exe carries VLX's version
-    vlx_rc_conf = configuration_data()
-    vlx_rc_conf.merge_from(rc_conf)
-    vlx_rc_conf.set('VERSION', vlx_version)
-    vlx_rc_conf.set('VERSION_MAJOR', vlx_version_parts[0])
-    vlx_rc_conf.set('VERSION_MINOR', vlx_version_parts[1])
-    vlx_rc_conf.set('VERSION_REVISION', vlx_version_parts[2])
-    vlx_rc_conf.set('VERSION_EXTRA', 0)
+    # VLZ: vlc.exe carries VLZ's version
+    vlz_rc_conf = configuration_data()
+    vlz_rc_conf.merge_from(rc_conf)
+    vlz_rc_conf.set('VERSION', vlz_version)
+    vlz_rc_conf.set('VERSION_MAJOR', vlz_version_parts[0])
+    vlz_rc_conf.set('VERSION_MINOR', vlz_version_parts[1])
+    vlz_rc_conf.set('VERSION_REVISION', vlz_version_parts[2])
+    vlz_rc_conf.set('VERSION_EXTRA', 0)
 endif
 
 # libvlccore

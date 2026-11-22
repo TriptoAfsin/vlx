@@ -1,7 +1,7 @@
 /*****************************************************************************
- * VLXCommandPalette.qml: Ctrl+K command palette with every command and its keys
+ * VLZCommandPalette.qml: Ctrl+K command palette with every command and its keys
  *****************************************************************************
- * Copyright (C) 2026 VLX contributors
+ * Copyright (C) 2026 VLZ contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,9 +46,9 @@ FocusScope {
     readonly property color raised: Qt.tint(theme.bg.primary, darkTheme ? Qt.rgba(1, 1, 1, 0.07) : Qt.rgba(0, 0, 0, 0.03))
     readonly property color raisedMore: Qt.tint(theme.bg.primary, darkTheme ? Qt.rgba(1, 1, 1, 0.13) : Qt.rgba(0, 0, 0, 0.07))
 
-    // the interface's own window shortcuts (menus/qml/GlobalShortcuts.qml), plus VLX pages
+    // the interface's own window shortcuts (menus/qml/GlobalShortcuts.qml), plus VLZ pages
     readonly property var appCommands: [
-        { id: "app-settings", label: qsTr("Open VLX settings"), keys: [], run: () => History.push(["vlxsettings"]) },
+        { id: "app-settings", label: qsTr("Open VLZ settings"), keys: [], run: () => History.push(["vlzsettings"]) },
         { id: "app-toolbar", label: qsTr("Customise player buttons"), keys: [], run: () => DialogsProvider.showToolbarEditorDialog() },
         { id: "app-open", label: qsTr("Open file"), keys: ["Ctrl+O"], run: () => DialogsProvider.simpleOpenDialog() },
         { id: "app-open-adv", label: qsTr("Open file (advanced)"), keys: ["Ctrl+Shift+O"], run: () => DialogsProvider.openFileDialog() },
@@ -75,7 +75,7 @@ FocusScope {
             close()
             return
         }
-        entries = appCommands.concat(VLXSettings.commands())
+        entries = appCommands.concat(VLZSettings.commands())
         search.text = ""
         filter()
         open = true
@@ -101,12 +101,12 @@ FocusScope {
             if (entry.run)
                 entry.run()
             else
-                VLXSettings.runCommand(entry.id)
+                VLZSettings.runCommand(entry.id)
         })
     }
 
-    // --qt-vlx-start-view=palette opens it at start, for screenshots and tests
-    Component.onCompleted: if (VLXSettings.startView === "palette") Qt.callLater(root.toggle)
+    // --qt-vlz-start-view=palette opens it at start, for screenshots and tests
+    Component.onCompleted: if (VLZSettings.startView === "palette") Qt.callLater(root.toggle)
 
     Rectangle { // scrim
         anchors.fill: parent

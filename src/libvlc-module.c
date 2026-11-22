@@ -1717,7 +1717,7 @@ vlc_module_begin ()
         change_safe()
         change_integer_list( pi_pos_values, ppsz_pos_descriptions )
     // autohide after 1 second
-    add_integer( "mouse-hide-timeout", 2000, MOUSE_HIDE_TIMEOUT_TEXT, /* VLX: was 1000 (DESIGN.md › Player) */
+    add_integer( "mouse-hide-timeout", 2000, MOUSE_HIDE_TIMEOUT_TEXT, /* VLZ: was 1000 (DESIGN.md › Player) */
                  MOUSE_HIDE_TIMEOUT_LONGTEXT )
     set_section( N_("Snapshot") , NULL )
     add_directory("snapshot-path", NULL, SNAP_PATH_TEXT, SNAP_PATH_LONGTEXT)

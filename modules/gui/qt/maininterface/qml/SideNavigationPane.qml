@@ -274,13 +274,13 @@ T.Pane {
                 rightInset: root.safeAreaRightMargin + implicitRightInset
 
                 iconTxt: VLCIcons.settings
-                text: qsTr("Settings") // VLX: was Preferences
+                text: qsTr("Settings") // VLZ: was Preferences
 
-                checked: History.match(History.viewPath, ["vlxsettings"]) // VLX: the VLX settings page
+                checked: History.match(History.viewPath, ["vlzsettings"]) // VLZ: the VLZ settings page
 
                 showText: root.delegateShowText
 
-                onClicked: History.push(["vlxsettings"]) // VLX: VLC's dialog is under Advanced
+                onClicked: History.push(["vlzsettings"]) // VLZ: VLC's dialog is under Advanced
 
                 //SideNavigationDelegate is an ItemDelegate and has NoFocus by default
                 focusPolicy: Qt.StrongFocus

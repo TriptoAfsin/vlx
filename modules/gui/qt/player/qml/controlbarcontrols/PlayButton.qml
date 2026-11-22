@@ -260,7 +260,7 @@ T.Control {
 
             radius: width / 2
 
-            // VLX: the ring follows the accent colour (VLC's orange gradient on the default accent)
+            // VLZ: the ring follows the accent colour (VLC's orange gradient on the default accent)
             gradient: Gradient {
                 GradientStop { position: 0.0; color: Qt.darker(theme.accent, 1.08) }
                 GradientStop { position: 1.0; color: Qt.lighter(theme.accent, 1.12) }

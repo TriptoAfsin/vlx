@@ -1,7 +1,7 @@
 /*****************************************************************************
- * VLXSettingsPage.qml: VLX settings, with search and live previews (DESIGN.md › Settings)
+ * VLZSettingsPage.qml: VLZ settings, with search and live previews (DESIGN.md › Settings)
  *****************************************************************************
- * Copyright (C) 2026 VLX contributors
+ * Copyright (C) 2026 VLZ contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,70 +52,70 @@ FocusScope {
     readonly property var settings: [
         { id: "theme", section: "look", name: qsTr("Theme"), help: qsTr("Colours for the whole app."), keys: "dark light mode colour color scheme appearance",
           options: [["default", qsTr("VLC default")], ["dark", qsTr("Dark")], ["light", qsTr("Light")], ["paper", qsTr("Paper")], ["ink", qsTr("Ink")], ["nord", qsTr("Nord")], ["mocha", qsTr("Mocha")], ["tokyo", qsTr("Tokyo")]],
-          get: () => VLXSettings.theme, set: (v) => { VLXSettings.theme = v } },
+          get: () => VLZSettings.theme, set: (v) => { VLZSettings.theme = v } },
         { id: "accent", section: "look", name: qsTr("Accent colour"), help: qsTr("Progress, selection and buttons. Adjusted so it stays readable on the theme."), keys: "color highlight tint",
           options: [["default", qsTr("Theme")], ["#FF8800", qsTr("VLC orange")], ["#E6B450", qsTr("Amber")], ["#E0466A", qsTr("Rose")], ["#5B8CFF", qsTr("Blue")], ["#10B981", qsTr("Emerald")], ["#8B5CF6", qsTr("Grape")], ["#9F234A", qsTr("Wine")], ["system", qsTr("Windows")]],
-          get: () => VLXSettings.accent, set: (v) => { VLXSettings.accent = v } },
+          get: () => VLZSettings.accent, set: (v) => { VLZSettings.accent = v } },
         { id: "scale", section: "look", name: qsTr("Interface size"), help: qsTr("Text, controls and spacing together. Ctrl + and Ctrl − also work."), keys: "zoom scale dpi bigger smaller",
           options: [["0.8", "80 %"], ["0.9", "90 %"], ["1", "100 %"], ["1.1", "110 %"], ["1.25", "125 %"], ["1.5", "150 %"]],
           get: () => String(+MainCtx.getIntfUserScaleFactor().toFixed(2)), set: (v) => MainCtx.setIntfUserScaleFactor(+v) },
         { id: "barStyle", section: "player", name: qsTr("Bar style"), help: qsTr("How the player controls look."), keys: "controls toolbar island docked minimal pill classic bottom bar",
           options: [["island", qsTr("Island")], ["docked", qsTr("Docked bar")], ["minimal", qsTr("Minimal")], ["pill", qsTr("Compact pill")], ["classic", qsTr("Classic")]],
-          get: () => VLXSettings.barStyle, set: (v) => { VLXSettings.barStyle = v } },
+          get: () => VLZSettings.barStyle, set: (v) => { VLZSettings.barStyle = v } },
         { id: "barPosition", section: "player", name: qsTr("Controls position"), help: qsTr("Dock the player controls at the bottom or at the top, under the title."), keys: "top bottom dock controls position",
           options: [["bottom", qsTr("Bottom")], ["top", qsTr("Top")]],
-          get: () => VLXSettings.barPosition, set: (v) => { VLXSettings.barPosition = v } },
+          get: () => VLZSettings.barPosition, set: (v) => { VLZSettings.barPosition = v } },
         { id: "barAlign", section: "player", name: qsTr("Controls alignment"), help: qsTr("Where the play, previous and next buttons sit on the bar."), keys: "align alignment left center centre right controls buttons layout",
           options: [["center", qsTr("Centered")], ["left", qsTr("Left")], ["right", qsTr("Right")]],
-          get: () => VLXSettings.barAlign, set: (v) => { VLXSettings.barAlign = v } },
+          get: () => VLZSettings.barAlign, set: (v) => { VLZSettings.barAlign = v } },
         { id: "barSize", section: "player", name: qsTr("Bar size"), help: qsTr("How tall the player controls are. Compact keeps them slim."), keys: "compact small large big height slim bar size controls",
           options: [["compact", qsTr("Compact")], ["normal", qsTr("Normal")], ["large", qsTr("Large")]],
-          get: () => VLXSettings.barSize, set: (v) => { VLXSettings.barSize = v } },
+          get: () => VLZSettings.barSize, set: (v) => { VLZSettings.barSize = v } },
         { id: "pinControls", section: "player", name: qsTr("Always show the controls"), help: qsTr("Keep the controls under the video, always visible, as in VLC 3. Off: they float over the video and hide."), keys: "always show pin pinned dock controls bar visible hide vlc 3 under below",
           options: [["false", qsTr("Over the video, auto-hide")], ["true", qsTr("Always, under the video")]],
-          get: () => String(VLXSettings.pinControls), set: (v) => { VLXSettings.pinControls = (v === "true") } },
+          get: () => String(VLZSettings.pinControls), set: (v) => { VLZSettings.pinControls = (v === "true") } },
         { id: "pinTopBar", section: "player", name: qsTr("Always show the top bar"), help: qsTr("Keep the title bar above the video, always visible. Off: it floats over the video and hides."), keys: "always show pin pinned top bar title visible hide",
           options: [["false", qsTr("Over the video, auto-hide")], ["true", qsTr("Always, above the video")]],
-          get: () => String(VLXSettings.pinTopBar), set: (v) => { VLXSettings.pinTopBar = (v === "true") } },
+          get: () => String(VLZSettings.pinTopBar), set: (v) => { VLZSettings.pinTopBar = (v === "true") } },
         { id: "endView", section: "player", name: qsTr("When playback ends"), help: qsTr("Stay on the player with its controls, as VLC 3 did, or go back to Home."),
           keys: "end ends finished stop stopped done playback player home library return back vlc 3",
           options: [["player", qsTr("Stay on the player")], ["home", qsTr("Go back to Home")]],
-          get: () => VLXSettings.endView, set: (v) => { VLXSettings.endView = v } },
+          get: () => VLZSettings.endView, set: (v) => { VLZSettings.endView = v } },
         { id: "hideDelay", section: "player", name: qsTr("Hide controls after"), help: qsTr("How long the controls and the mouse pointer stay after the mouse stops moving."), keys: "auto hide timeout mouse pointer cursor",
           options: [["1000", "1 s"], ["2000", "2 s"], ["3000", "3 s"], ["5000", "5 s"], ["86400000", qsTr("Never")]],
-          get: () => String(VLXSettings.intOption("mouse-hide-timeout")), set: (v) => VLXSettings.setIntOption("mouse-hide-timeout", +v) },
-        { id: "openMode", section: "player", name: qsTr("Opening files"), help: qsTr("What happens when you open a video from Explorer while VLX is already running. A new window lets you watch several at once."),
+          get: () => String(VLZSettings.intOption("mouse-hide-timeout")), set: (v) => VLZSettings.setIntOption("mouse-hide-timeout", +v) },
+        { id: "openMode", section: "player", name: qsTr("Opening files"), help: qsTr("What happens when you open a video from Explorer while VLZ is already running. A new window lets you watch several at once."),
           keys: "instance instances multiple windows several one instance new window explorer double click queue enqueue",
           options: [["new", qsTr("A new window for each file")], ["running", qsTr("Play in the open window")], ["queue", qsTr("Queue in the open window")]],
-          get: () => VLXSettings.openMode(), set: (v) => VLXSettings.setOpenMode(v) },
+          get: () => VLZSettings.openMode(), set: (v) => VLZSettings.setOpenMode(v) },
         { id: "buttons", section: "player", name: qsTr("Player buttons"), help: qsTr("Choose and arrange the buttons on the video, audio and mini player bars, with profiles."),
           keys: "toolbar buttons customise customize editor controls layout bar profile drag",
           action: qsTr("Customise"), run: () => DialogsProvider.showToolbarEditorDialog() },
         { id: "audioSkin", section: "audio", name: qsTr("Audio player skin"), help: qsTr("What the player shows for files without video."), keys: "music skin album turntable vinyl record mini",
           options: [["albumcompact", qsTr("Album compact")], ["album", qsTr("Album")], ["turntable", qsTr("Turntable")], ["turntablecompact", qsTr("Turntable compact")], ["mini", qsTr("Mini player")], ["classic", qsTr("VLC classic")]],
-          get: () => VLXSettings.audioSkin, set: (v) => { VLXSettings.audioSkin = v } },
+          get: () => VLZSettings.audioSkin, set: (v) => { VLZSettings.audioSkin = v } },
         { id: "audioBackground", section: "audio", name: qsTr("Background"), help: qsTr("The theme's plain background, or a soft wash of the cover art's colours."), keys: "tint tinted blur cover art colour color background",
           options: [["plain", qsTr("Plain theme")], ["tinted", qsTr("Tinted from the cover art")]],
-          get: () => VLXSettings.audioBackground, set: (v) => { VLXSettings.audioBackground = v } },
+          get: () => VLZSettings.audioBackground, set: (v) => { VLZSettings.audioBackground = v } },
         { id: "audioTheme", section: "audio", name: qsTr("Colours"), help: qsTr("Follow the app theme, or give the audio player a theme of its own."), keys: "theme colour color dark light own audio music",
           options: [["app", qsTr("Follow the app theme")], ["dark", qsTr("Dark")], ["light", qsTr("Light")], ["paper", qsTr("Paper")], ["ink", qsTr("Ink")], ["nord", qsTr("Nord")], ["mocha", qsTr("Mocha")], ["tokyo", qsTr("Tokyo")]],
-          get: () => VLXSettings.audioTheme, set: (v) => { VLXSettings.audioTheme = v } },
+          get: () => VLZSettings.audioTheme, set: (v) => { VLZSettings.audioTheme = v } },
         { id: "fileIcons", section: "files", name: qsTr("File icon style"), help: qsTr("Icons for media files in Explorer."), keys: "explorer icons file types association",
           options: [["band", qsTr("Page and band")], ["echo", qsTr("Echo")]],
-          get: () => VLXSettings.fileIcons, set: (v) => { VLXSettings.fileIcons = v } },
+          get: () => VLZSettings.fileIcons, set: (v) => { VLZSettings.fileIcons = v } },
         { id: "fileIconLook", section: "files", name: qsTr("File icon look"), help: qsTr("Light or dark icons, or follow the Windows app theme."), keys: "explorer icons dark light",
           options: [["auto", qsTr("Follow Windows")], ["light", qsTr("Light")], ["dark", qsTr("Dark")]],
-          get: () => VLXSettings.fileIconLook, set: (v) => { VLXSettings.fileIconLook = v } },
+          get: () => VLZSettings.fileIconLook, set: (v) => { VLZSettings.fileIconLook = v } },
         { id: "memorySaver", section: "performance", name: qsTr("Memory saver"),
           help: qsTr("Decode with 2 threads and read 0.3 s ahead instead of 1 s: about 35 MB less when playing 1080p. Applies to the next file you open. CPU-only decoding of heavy 4K files may stutter."),
           keys: "memory ram usage lighter low saver threads cache caching buffer performance",
           options: [["false", qsTr("Off")], ["true", qsTr("On")]],
-          get: () => String(VLXSettings.memorySaver()), set: (v) => VLXSettings.setMemorySaver(v === "true") },
+          get: () => String(VLZSettings.memorySaver()), set: (v) => VLZSettings.setMemorySaver(v === "true") },
         { id: "mediaLibrary", section: "performance", name: qsTr("Media library"),
-          help: qsTr("Indexes your videos and music for the Video and Music pages. Off saves about 10 MB; Home then shows a simple open-file page. Takes effect the next time VLX starts."),
+          help: qsTr("Indexes your videos and music for the Video and Music pages. Off saves about 10 MB; Home then shows a simple open-file page. Takes effect the next time VLZ starts."),
           keys: "media library index videos music collection memory ram performance scan",
           options: [["true", qsTr("On")], ["false", qsTr("Off")]],
-          get: () => String(VLXSettings.mediaLibrary()), set: (v) => VLXSettings.setMediaLibrary(v === "true") },
+          get: () => String(VLZSettings.mediaLibrary()), set: (v) => VLZSettings.setMediaLibrary(v === "true") },
         { id: "allSettings", section: "advanced", name: qsTr("Every VLC setting"), help: qsTr("VLC's full preferences, for the rare deep change: codecs, hardware decoding, network caching, hotkeys and more."),
           keys: "advanced preferences expert gpu hardware decoding codec network caching buffer hotkeys shortcuts subtitles audio output video output",
           action: qsTr("Open"), run: () => DialogsProvider.prefsDialog() }
@@ -150,11 +150,11 @@ FocusScope {
 
     Timer { id: flashTimer; interval: 1400; onTriggered: root.flashId = "" }
 
-    // --qt-vlx-start-view=vlxsettings:<setting id> opens here scrolled to that setting, for screenshots and tests
+    // --qt-vlz-start-view=vlzsettings:<setting id> opens here scrolled to that setting, for screenshots and tests
     Timer {
         interval: 600
-        running: VLXSettings.startView.startsWith("vlxsettings:")
-        onTriggered: root.jumpTo(VLXSettings.startView.split(":")[1])
+        running: VLZSettings.startView.startsWith("vlzsettings:")
+        onTriggered: root.jumpTo(VLZSettings.startView.split(":")[1])
     }
 
     Rectangle { anchors.fill: parent; color: theme.bg.primary }
@@ -266,7 +266,7 @@ FocusScope {
                     Widgets.ListLabel {
                         visible: search.hits.length === 0
                         padding: VLCStyle.margin_small
-                        text: qsTr("No VLX setting matches. Advanced › Every VLC setting has the rest.")
+                        text: qsTr("No VLZ setting matches. Advanced › Every VLC setting has the rest.")
                         color: theme.fg.secondary
                     }
                 }
@@ -309,14 +309,14 @@ FocusScope {
                                 visible: modelData.id === "audioSkin"
                                 width: Math.min(parent.width, VLCStyle.dp(420, VLCStyle.scale))
                                 height: visible ? width * 0.42 : 0
-                                readonly property var own: VLXSettings.audioTheme !== "app" ? VLXSettings.themePalette(VLXSettings.audioTheme) : null
+                                readonly property var own: VLZSettings.audioTheme !== "app" ? VLZSettings.themePalette(VLZSettings.audioTheme) : null
                                 readonly property color cBg: own ? own.bg : theme.bg.primary
                                 readonly property color cPanel: own ? own.panel : theme.bg.secondary
                                 readonly property color cLine: own ? own.line : theme.border
                                 readonly property color cText: own ? own.text : theme.fg.primary
                                 readonly property color cMuted: own ? own.muted : theme.fg.secondary
                                 readonly property color cAccent: own ? own.accent : theme.accent
-                                readonly property string sk: VLXSettings.audioSkin
+                                readonly property string sk: VLZSettings.audioSkin
                                 readonly property bool disc: sk === "turntable" || sk === "turntablecompact"
                                 readonly property bool compact: sk === "albumcompact" || sk === "turntablecompact"
                                 readonly property real u: width / 42 // layout unit
@@ -333,7 +333,7 @@ FocusScope {
                                     Rectangle { // "tinted from the cover art"
                                         anchors.fill: parent
                                         radius: parent.radius
-                                        visible: VLXSettings.audioBackground === "tinted"
+                                        visible: VLZSettings.audioBackground === "tinted"
                                         gradient: Gradient {
                                             GradientStop { position: 0; color: Qt.hsla(0.06, 0.6, 0.5, 0.45) }
                                             GradientStop { position: 1; color: Qt.alpha(audioPreview.cBg, 0.6) }
@@ -431,13 +431,13 @@ FocusScope {
                                 visible: modelData.id === "barStyle"
                                 width: Math.min(parent.width, VLCStyle.dp(420, VLCStyle.scale))
                                 height: visible ? width * 0.5 : 0
-                                readonly property string s: VLXSettings.barStyle
-                                readonly property string align: VLXSettings.barAlign
-                                readonly property bool pinBar: VLXSettings.pinControls
-                                readonly property bool pinTop: VLXSettings.pinTopBar
-                                readonly property bool atTop: VLXSettings.barPosition === "top"
+                                readonly property string s: VLZSettings.barStyle
+                                readonly property string align: VLZSettings.barAlign
+                                readonly property bool pinBar: VLZSettings.pinControls
+                                readonly property bool pinTop: VLZSettings.pinTopBar
+                                readonly property bool atTop: VLZSettings.barPosition === "top"
                                 readonly property bool floating: (s === "island" || s === "pill") && !pinBar
-                                readonly property real sizeK: VLXSettings.barSize === "compact" ? 0.62 : VLXSettings.barSize === "large" ? 1.25 : 1
+                                readonly property real sizeK: VLZSettings.barSize === "compact" ? 0.62 : VLZSettings.barSize === "large" ? 1.25 : 1
                                 readonly property real barH: height * ((s === "pill" && !pinBar) ? 0.17 : 0.24) * sizeK
                                 readonly property real topH: height * 0.1
                                 readonly property real r: VLCStyle.dp(12, VLCStyle.scale)
@@ -598,7 +598,7 @@ FocusScope {
 
     // a change made elsewhere (keyboard zoom, another window) refreshes the chips
     Connections {
-        target: VLXSettings
+        target: VLZSettings
         function onThemeChanged() { root.revision++ }
         function onBarStyleChanged() { root.revision++ }
         function onBarPositionChanged() { root.revision++ }

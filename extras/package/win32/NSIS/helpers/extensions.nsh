@@ -13,10 +13,10 @@ Function AssociateExtension
   ; back up old value for extension $R0 (eg. ".opt")
   ReadRegStr $1 HKCR "$R0" ""
   StrCmp $1 "" NoBackup
-    StrCmp $1 "VLX$R0" "NoBackup"
-    WriteRegStr HKCR "$R0" "VLX.backup" $1
+    StrCmp $1 "VLZ$R0" "NoBackup"
+    WriteRegStr HKCR "$R0" "VLZ.backup" $1
 NoBackup:
-  WriteRegStr HKCR "$R0" "" "VLX$R0"
+  WriteRegStr HKCR "$R0" "" "VLZ$R0"
 FunctionEnd
 
 ;; Function that registers one extension for VLC
@@ -27,60 +27,60 @@ Function RegisterExtension
   ; And capitalize the extension
   ${StrCase} $R2 $R2 "U"
   ; for instance: MKV Video File (VLC)
-  WriteRegStr HKCR "VLX$R0" "" "$R2 $R1 File (VLX)"
-  WriteRegStr HKCR "VLX$R0\shell" "" "Open"
-  WriteRegStr HKCR "VLX$R0\shell\Open" "" "$(ShellAssociation_Play)"
-  WriteRegStr HKCR "VLX$R0\shell\Open" "MultiSelectModel" "Player"
-  WriteRegStr HKCR "VLX$R0\shell\Open\command" "" '"$INSTDIR\vlx.exe" --started-from-file "%1"'
-  ; VLX: the type's own icon (Page and band, light; VLX switches style and look at run time),
+  WriteRegStr HKCR "VLZ$R0" "" "$R2 $R1 File (VLZ)"
+  WriteRegStr HKCR "VLZ$R0\shell" "" "Open"
+  WriteRegStr HKCR "VLZ$R0\shell\Open" "" "$(ShellAssociation_Play)"
+  WriteRegStr HKCR "VLZ$R0\shell\Open" "MultiSelectModel" "Player"
+  WriteRegStr HKCR "VLZ$R0\shell\Open\command" "" '"$INSTDIR\vlz.exe" --started-from-file "%1"'
+  ; VLZ: the type's own icon (Page and band, light; VLZ switches style and look at run time),
   ; falling back to the icon for its kind
   Push $R3
   Push $R4
   ${StrRep} $R3 $R0 "." ""
   ${StrCase} $R3 $R3 "L"
   StrCpy $R4 "$INSTDIR\filetypes\band-light\$R3.ico"
-  IfFileExists "$R4" vlx_icon_done
+  IfFileExists "$R4" vlz_icon_done
   StrCpy $R4 "$INSTDIR\filetypes\band-light\playlist.ico"
   StrCmp $R1 "Audio" 0 +2
   StrCpy $R4 "$INSTDIR\filetypes\band-light\audio.ico"
   StrCmp $R1 "Video" 0 +2
   StrCpy $R4 "$INSTDIR\filetypes\band-light\video.ico"
-  vlx_icon_done:
-  WriteRegStr HKCR "VLX$R0\DefaultIcon" "" '"$R4"'
+  vlz_icon_done:
+  WriteRegStr HKCR "VLZ$R0\DefaultIcon" "" '"$R4"'
   Pop $R4
   Pop $R3
-  WriteRegStr HKCR "Applications\vlx.exe\SupportedTypes" $0 ""
+  WriteRegStr HKCR "Applications\vlz.exe\SupportedTypes" $0 ""
 
-    WriteRegStr HKLM "Software\Clients\Media\VLX\Capabilities\FileAssociations" "$R0" "VLX$R0"
+    WriteRegStr HKLM "Software\Clients\Media\VLZ\Capabilities\FileAssociations" "$R0" "VLZ$R0"
 FunctionEnd
 
 ;; Function that registers one skin extension for VLC
 Function RegisterSkinExtension
-  WriteRegStr HKCR "VLX$R0" "" "VLC skin file ($R0)"
-  WriteRegStr HKCR "VLX$R0\shell" "" "Open"
-  WriteRegStr HKCR "VLX$R0\shell\Open" "" ""
-  WriteRegStr HKCR "VLX$R0\shell\Open\command" "" '"$INSTDIR\vlx.exe" -Iskins --skins2-last "%1"'
-  WriteRegStr HKCR "VLX$R0\DefaultIcon" "" '"$INSTDIR\vlx.exe",0'
+  WriteRegStr HKCR "VLZ$R0" "" "VLC skin file ($R0)"
+  WriteRegStr HKCR "VLZ$R0\shell" "" "Open"
+  WriteRegStr HKCR "VLZ$R0\shell\Open" "" ""
+  WriteRegStr HKCR "VLZ$R0\shell\Open\command" "" '"$INSTDIR\vlz.exe" -Iskins --skins2-last "%1"'
+  WriteRegStr HKCR "VLZ$R0\DefaultIcon" "" '"$INSTDIR\vlz.exe",0'
 
-    WriteRegStr HKLM "Software\Clients\Media\VLX\Capabilities\FileAssociations" "$R0" "VLX$R0"
+    WriteRegStr HKLM "Software\Clients\Media\VLZ\Capabilities\FileAssociations" "$R0" "VLZ$R0"
 FunctionEnd
 
 ;; Function that removes one extension that VLC owns.
 Function un.RegisterExtension
   ;start of restore script
   ReadRegStr $1 HKCR "$R0" ""
-  StrCmp $1 "VLX$R0" 0 NoOwn ; only do this if we own it
+  StrCmp $1 "VLZ$R0" 0 NoOwn ; only do this if we own it
     ; Read the old value from Backup
-    ReadRegStr $1 HKCR "$R0" "VLX.backup"
+    ReadRegStr $1 HKCR "$R0" "VLZ.backup"
     StrCmp $1 "" 0 Restore ; if backup="" then delete the whole key
       DeleteRegKey HKCR "$R0"
     Goto NoOwn
 Restore:
       WriteRegStr HKCR "$R0" "" $1
-      DeleteRegValue HKCR "$R0" "VLX.backup"
+      DeleteRegValue HKCR "$R0" "VLZ.backup"
 NoOwn:
-    DeleteRegKey HKCR "VLX$R0" ;Delete key with association settings
-    DeleteRegKey HKLM "Software\Clients\Media\VLX\Capabilities\FileAssociations\VLX$R0" ; for vista
+    DeleteRegKey HKCR "VLZ$R0" ;Delete key with association settings
+    DeleteRegKey HKLM "Software\Clients\Media\VLZ\Capabilities\FileAssociations\VLZ$R0" ; for vista
 FunctionEnd
 
 !macro AssociateExtensionSection TYPE EXT
@@ -303,15 +303,15 @@ FunctionEnd
 
 ; Generic function for adding the context menu for one ext.
 !macro AddContextMenuExt EXT
-  WriteRegStr HKCR ${EXT}\shell\PlayWithVLX "" "$(ContextMenuEntry_PlayWith)"
-  WriteRegStr HKCR ${EXT}\shell\PlayWithVLX "Icon" '"$INSTDIR\vlx.exe",0'
-  WriteRegStr HKCR ${EXT}\shell\PlayWithVLX "MultiSelectModel" "Player"
-  WriteRegStr HKCR ${EXT}\shell\PlayWithVLX\command "" '"$INSTDIR\vlx.exe" --started-from-file --no-playlist-enqueue "%1"'
+  WriteRegStr HKCR ${EXT}\shell\PlayWithVLZ "" "$(ContextMenuEntry_PlayWith)"
+  WriteRegStr HKCR ${EXT}\shell\PlayWithVLZ "Icon" '"$INSTDIR\vlz.exe",0'
+  WriteRegStr HKCR ${EXT}\shell\PlayWithVLZ "MultiSelectModel" "Player"
+  WriteRegStr HKCR ${EXT}\shell\PlayWithVLZ\command "" '"$INSTDIR\vlz.exe" --started-from-file --no-playlist-enqueue "%1"'
 
-  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLX "" "$(ContextMenuEntry_AddToPlaylist)"
-  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLX "Icon" '"$INSTDIR\vlx.exe",0'
-  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLX "MultiSelectModel" "Player"
-  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLX\command "" '"$INSTDIR\vlx.exe" --started-from-file --playlist-enqueue "%1"'
+  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLZ "" "$(ContextMenuEntry_AddToPlaylist)"
+  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLZ "Icon" '"$INSTDIR\vlz.exe",0'
+  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLZ "MultiSelectModel" "Player"
+  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLZ\command "" '"$INSTDIR\vlz.exe" --started-from-file --playlist-enqueue "%1"'
 !macroend
 
 !macro AddContextMenu TYPE EXT
@@ -319,8 +319,8 @@ FunctionEnd
 !macroend
 
 !macro DeleteContextMenuExt EXT
-  DeleteRegKey HKCR ${EXT}\shell\PlayWithVLX
-  DeleteRegKey HKCR ${EXT}\shell\AddToPlaylistVLX
+  DeleteRegKey HKCR ${EXT}\shell\PlayWithVLZ
+  DeleteRegKey HKCR ${EXT}\shell\AddToPlaylistVLZ
 !macroend
 
 !macro DeleteContextMenu TYPE EXT

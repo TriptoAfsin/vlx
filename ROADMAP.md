@@ -1,4 +1,4 @@
-# VLX roadmap
+# VLZ roadmap
 
 Found by auditing VLC 4.0-dev at fork time. Paths are relative to `modules/gui/qt/` unless they start at the repo root.
 Status: **planned**. The UI items wait for the design direction in `DESIGN.md`.

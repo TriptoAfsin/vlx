@@ -1,4 +1,4 @@
-# VLX: Windows installer and portable build.
+# VLZ: Windows installer and portable build.
 #
 # Run it from the Actions tab (Run workflow) to get the files as a build artifact, or push a tag like v0.1.0
 # to also publish a GitHub release with them. It cross-compiles in VideoLAN's own Windows build image, the
@@ -36,8 +36,8 @@ jobs:
       # it) refuses to start there, so give root its own home.
       HOME: /root
       # Wine can't run in GitHub's containers ("wine: socket: Function not implemented"); Meson used it to run its
-      # compiler checks and hung. Build without it (extras/package/win32/build.sh, VLX_NO_WINE).
-      VLX_NO_WINE: "1"
+      # compiler checks and hung. Build without it (extras/package/win32/build.sh, VLZ_NO_WINE).
+      VLZ_NO_WINE: "1"
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -46,35 +46,35 @@ jobs:
 
       - name: Version
         run: |
-          # extras/vlx/VERSION is the version; a v<version> tag must match it. Manual runs are <version>-dev.<run>.
-          v=$(tr -d '[:space:]' < extras/vlx/VERSION)
+          # extras/vlz/VERSION is the version; a v<version> tag must match it. Manual runs are <version>-dev.<run>.
+          v=$(tr -d '[:space:]' < extras/vlz/VERSION)
           if [ "${GITHUB_REF_TYPE}" = tag ]; then
             tag="${GITHUB_REF_NAME#v}"
-            case "$tag" in "$v"|"$v"-*) ;; *) echo "::error::Tag $GITHUB_REF_NAME doesn't match extras/vlx/VERSION ($v)"; exit 1;; esac
+            case "$tag" in "$v"|"$v"-*) ;; *) echo "::error::Tag $GITHUB_REF_NAME doesn't match extras/vlz/VERSION ($v)"; exit 1;; esac
             v="$tag"
           else
             v="$v-dev.${GITHUB_RUN_NUMBER}"
           fi
-          echo "VLX_VERSION=$v" >> "$GITHUB_ENV"
+          echo "VLZ_VERSION=$v" >> "$GITHUB_ENV"
           # a plain x.y.z tag is a stable release; one with a suffix (-beta, -rc1) is a pre-release
-          case "$v" in *-*) echo "VLX_PRERELEASE=true" >> "$GITHUB_ENV";; *) echo "VLX_PRERELEASE=false" >> "$GITHUB_ENV";; esac
+          case "$v" in *-*) echo "VLZ_PRERELEASE=true" >> "$GITHUB_ENV";; *) echo "VLZ_PRERELEASE=false" >> "$GITHUB_ENV";; esac
           echo "Version $v"
 
       - name: Build
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          # Link the MinGW runtime into VLX, as VideoLAN's own builds do: this image's GCC links libgcc, libstdc++
-          # and winpthread as DLLs by default, and VLX doesn't ship them (0.1.0's first build hung on start with a
+          # Link the MinGW runtime into VLZ, as VideoLAN's own builds do: this image's GCC links libgcc, libstdc++
+          # and winpthread as DLLs by default, and VLZ doesn't ship them (0.1.0's first build hung on start with a
           # "libgcc_s_seh-1.dll not found" error). Hiding winpthread's import library makes the linker use the
           # static one.
           export LDFLAGS="-static-libgcc -static-libstdc++"
           # (both libwinpthread.dll.a and libpthread.dll.a: GCC's posix threads link -lpthread)
           for f in $(find /usr -path '*x86_64-w64-mingw32*' -name 'lib*pthread*.dll.a' 2>/dev/null); do
-            mv "$f" "$f.vlx-static" && echo "static winpthread: hid $f"
+            mv "$f" "$f.vlz-static" && echo "static winpthread: hid $f"
           done
-          # VideoLAN's prebuilt dependencies for VLX's upstream base (see UPSTREAM.md); without them
+          # VideoLAN's prebuilt dependencies for VLZ's upstream base (see UPSTREAM.md); without them
           # every dependency, Qt included, is compiled from source, which takes hours.
-          url="https://artifacts.videolan.org/vlc/win64/vlc-contrib-x86_64-w64-mingw32-$(cat .vlx-contrib-sha).tar.zst"
+          url="https://artifacts.videolan.org/vlc/win64/vlc-contrib-x86_64-w64-mingw32-$(cat .vlz-contrib-sha).tar.zst"
           if curl -sfI "$url" > /dev/null; then
             export VLC_PREBUILT_CONTRIBS_URL="$url"
             echo "Using prebuilt dependencies: $url"
@@ -94,15 +94,15 @@ jobs:
           # Meson and Ninja (the image's older Meson can't read the build folder)
           export PATH="$GITHUB_WORKSPACE/extras/tools/build/bin:$PATH"
           cd win64-meson
-          if ! ls vlx-*-win64.exe vlx-*-win64.7z > /dev/null 2>&1; then
+          if ! ls vlz-*-win64.exe vlz-*-win64.7z > /dev/null 2>&1; then
             meson install --strip --no-rebuild
             ninja package-win32-7zip package-win32-exe
           fi
-          ls -la vlx-*-win64.exe vlx-*-win64.7z
+          ls -la vlz-*-win64.exe vlz-*-win64.7z
 
       - name: Check DLL imports
         run: |
-          # nothing may need a MinGW runtime DLL that VLX doesn't ship, or VLX won't start (or a plugin won't load)
+          # nothing may need a MinGW runtime DLL that VLZ doesn't ship, or VLZ won't start (or a plugin won't load)
           bad=0
           for f in $(find win64-meson/vlc-win64 -name '*.exe' -o -name '*.dll'); do
             deps=$(x86_64-w64-mingw32-objdump -p "$f" | awk '/DLL Name/ {print $3}' | grep -iE '^(libgcc_s|libwinpthread|libstdc\+\+|libssp)' || true)
@@ -114,31 +114,31 @@ jobs:
       - name: Collect files
         run: |
           mkdir -p dist
-          exe=$(find win64-meson -maxdepth 1 -name 'vlx-*-win64*.exe' ! -name '*spad*' | head -n 1)  # named after the VLX version
-          sz=$(find win64-meson -maxdepth 1 -name 'vlx-*-win64*.7z' ! -name '*debug*' | head -n 1)
+          exe=$(find win64-meson -maxdepth 1 -name 'vlz-*-win64*.exe' ! -name '*spad*' | head -n 1)  # named after the VLZ version
+          sz=$(find win64-meson -maxdepth 1 -name 'vlz-*-win64*.7z' ! -name '*debug*' | head -n 1)
           test -n "$exe" && test -n "$sz"
-          cp "$exe" "dist/VLX-${VLX_VERSION}-windows-x64-setup.exe"
-          cp "$sz"  "dist/VLX-${VLX_VERSION}-windows-x64-portable.7z"
-          cd dist && sha256sum * > "sha256-${VLX_VERSION}.txt" && cat "sha256-${VLX_VERSION}.txt"
+          cp "$exe" "dist/VLZ-${VLZ_VERSION}-windows-x64-setup.exe"
+          cp "$sz"  "dist/VLZ-${VLZ_VERSION}-windows-x64-portable.7z"
+          cd dist && sha256sum * > "sha256-${VLZ_VERSION}.txt" && cat "sha256-${VLZ_VERSION}.txt"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: VLX-${{ env.VLX_VERSION }}-windows-x64
+          name: VLZ-${{ env.VLZ_VERSION }}-windows-x64
           path: dist/*
           retention-days: 14
 
       - name: Write release notes
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          base=$(cat .vlx-base 2>/dev/null || echo unknown)
+          base=$(cat .vlz-base 2>/dev/null || echo unknown)
           cat > notes.md <<EOF
-          VLX ${VLX_VERSION} for Windows (x64), a personal fork of [VLC media player](https://www.videolan.org/vlc/).
-          All credit for the engine and codecs goes to VideoLAN and VLC's contributors. VLX isn't affiliated with VideoLAN.
+          VLZ ${VLZ_VERSION} for Windows (x64), a personal fork of [VLC media player](https://www.videolan.org/vlc/).
+          All credit for the engine and codecs goes to VideoLAN and VLC's contributors. VLZ isn't affiliated with VideoLAN.
 
-          - **Setup:** \`VLX-${VLX_VERSION}-windows-x64-setup.exe\`
-          - **Portable:** \`VLX-${VLX_VERSION}-windows-x64-portable.7z\`. Unpack it and add an empty \`portable\` folder next to \`vlx.exe\` to keep settings beside it.
-          - Checksums: \`sha256-${VLX_VERSION}.txt\`
+          - **Setup:** \`VLZ-${VLZ_VERSION}-windows-x64-setup.exe\`
+          - **Portable:** \`VLZ-${VLZ_VERSION}-windows-x64-portable.7z\`. Unpack it and add an empty \`portable\` folder next to \`vlz.exe\` to keep settings beside it.
+          - Checksums: \`sha256-${VLZ_VERSION}.txt\`
 
           Built on VLC upstream \`${base}\`. The files aren't code-signed, so Windows SmartScreen may warn on first run.
           EOF
@@ -148,7 +148,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          name: VLX ${{ env.VLX_VERSION }}
+          name: VLZ ${{ env.VLZ_VERSION }}
           body_path: notes.md
-          prerelease: ${{ env.VLX_PRERELEASE == 'true' }}
+          prerelease: ${{ env.VLZ_PRERELEASE == 'true' }}
           files: dist/*

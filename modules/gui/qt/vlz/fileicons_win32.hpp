@@ -1,7 +1,7 @@
 /*****************************************************************************
- * fileicons_win32.hpp: VLX file-type icons that follow the style and theme
+ * fileicons_win32.hpp: VLZ file-type icons that follow the style and theme
  *****************************************************************************
- * Copyright (C) 2026 VLX contributors
+ * Copyright (C) 2026 VLZ contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#ifndef VLX_FILEICONS_WIN32_HPP
-#define VLX_FILEICONS_WIN32_HPP
+#ifndef VLZ_FILEICONS_WIN32_HPP
+#define VLZ_FILEICONS_WIN32_HPP
 
 #include <QAbstractNativeEventFilter>
 #include <QObject>
@@ -27,7 +27,7 @@
 struct qt_intf_t;
 class QTimer;
 
-namespace vlx {
+namespace vlz {
 
 /*
  * The installer registers each file type with a light "Page and band" icon from
@@ -48,8 +48,8 @@ public:
     bool nativeEventFilter(const QByteArray &eventType, void *message, qintptr *result) override;
 
     /* Option values, also used by the settings page. */
-    static constexpr const char *StyleOption = "qt-vlx-file-icons";
-    static constexpr const char *LookOption = "qt-vlx-file-icon-look";
+    static constexpr const char *StyleOption = "qt-vlz-file-icons";
+    static constexpr const char *LookOption = "qt-vlz-file-icon-look";
 
 private:
     QString wantedFolder() const;
@@ -59,6 +59,6 @@ private:
     QString m_applied;
 };
 
-} // namespace vlx
+} // namespace vlz
 
 #endif

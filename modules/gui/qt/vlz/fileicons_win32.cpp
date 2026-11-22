@@ -1,7 +1,7 @@
 /*****************************************************************************
- * fileicons_win32.cpp: VLX file-type icons that follow the style and theme
+ * fileicons_win32.cpp: VLZ file-type icons that follow the style and theme
  *****************************************************************************
- * Copyright (C) 2026 VLX contributors
+ * Copyright (C) 2026 VLZ contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,11 +34,11 @@
 #include <windows.h>
 #include <shlobj.h>
 
-namespace vlx {
+namespace vlz {
 
 namespace {
 
-const wchar_t *const kAssociations = L"Software\\Clients\\Media\\VLX\\Capabilities\\FileAssociations";
+const wchar_t *const kAssociations = L"Software\\Clients\\Media\\VLZ\\Capabilities\\FileAssociations";
 
 bool appsUseLightTheme()
 {
@@ -111,7 +111,7 @@ void FileIconSync::apply()
     HKEY caps;
     if (RegOpenKeyExW(HKEY_LOCAL_MACHINE, kAssociations, 0, KEY_READ, &caps) != ERROR_SUCCESS)
     {
-        m_applied = folder; /* VLX isn't registered for any file type */
+        m_applied = folder; /* VLZ isn't registered for any file type */
         return;
     }
 
@@ -133,7 +133,7 @@ void FileIconSync::apply()
         const std::wstring key = std::wstring(L"Software\\Classes\\") + progid + L"\\DefaultIcon";
 
         /* The machine-wide icon the installer wrote. Types installed without
-         * VLX icons (no "\filetypes\" in the path) are left alone. */
+         * VLZ icons (no "\filetypes\" in the path) are left alone. */
         QString machine;
         if (!readString(HKEY_LOCAL_MACHINE, key, machine) || !folderRe.match(machine).hasMatch())
             continue;
@@ -174,4 +174,4 @@ bool FileIconSync::nativeEventFilter(const QByteArray &, void *message, qintptr 
     return false;
 }
 
-} // namespace vlx
+} // namespace vlz

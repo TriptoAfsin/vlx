@@ -175,7 +175,7 @@ QtObject {
     readonly property int button_width_normal: MainCtx.dp(96, scale)
     readonly property int button_width_large: MainCtx.dp(128, scale)
 
-    readonly property real button_radius: MainCtx.dp(8, scale) // VLX: was 4
+    readonly property real button_radius: MainCtx.dp(8, scale) // VLZ: was 4
 
     readonly property int contextButton_width: icon_normal
     readonly property int contextButton_margin: margin_xxsmall
@@ -203,7 +203,7 @@ QtObject {
     readonly property int gridCover_video_height: ( gridCover_video_width * 10.0 ) / 16
     readonly property int gridCover_video_border: MainCtx.dp(4, scale)
 
-    readonly property int gridCover_radius: MainCtx.dp(12, scale) // VLX: was 4
+    readonly property int gridCover_radius: MainCtx.dp(12, scale) // VLZ: was 4
 
     readonly property int expandCover_music_height: MainCtx.dp(171, scale)
     readonly property int expandCover_music_width: MainCtx.dp(171, scale)
@@ -284,18 +284,18 @@ QtObject {
     readonly property int duration_veryLong: 400
 
     //should be used for longer animation (opening/closing panes & dialogs)
-    readonly property int duration_long: 220 // VLX: was 200 (DESIGN.md › Motion, medium)
+    readonly property int duration_long: 220 // VLZ: was 200 (DESIGN.md › Motion, medium)
 
     //should be used for short animations (hovering, accuenting UI event)
-    readonly property int duration_short: 120 // VLX: was 100 (DESIGN.md › Motion, micro)
+    readonly property int duration_short: 120 // VLZ: was 100 (DESIGN.md › Motion, micro)
 
     //should be used for near instant animations
     readonly property int duration_veryShort: 50
 
-    // VLX: view cross-fades and menus (DESIGN.md › Motion, short)
+    // VLZ: view cross-fades and menus (DESIGN.md › Motion, short)
     readonly property int duration_view: 180
 
-    // VLX: easings. Out-cubic for things arriving, in-cubic for things leaving; no springs
+    // VLZ: easings. Out-cubic for things arriving, in-cubic for things leaving; no springs
     readonly property int easing_enter: Easing.OutCubic
     readonly property int easing_exit: Easing.InCubic
 

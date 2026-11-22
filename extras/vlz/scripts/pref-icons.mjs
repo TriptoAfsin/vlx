@@ -1,7 +1,7 @@
-// Renders the preferences dialog's category icons (modules/gui/qt/pixmaps/prefs/spref_*.png) in the VLX style:
-// a cream line glyph on the VLX icon's orange tile, 128 px (the dialog scales them down).
+// Renders the preferences dialog's category icons (modules/gui/qt/pixmaps/prefs/spref_*.png) in the VLZ style:
+// a cream line glyph on the VLZ icon's orange tile, 128 px (the dialog scales them down).
 //
-//   node extras/vlx/scripts/pref-icons.mjs
+//   node extras/vlz/scripts/pref-icons.mjs
 //
 // Needs Node and Playwright (set PLAYWRIGHT_CORE to its playwright-core folder if needed); uses Playwright's
 // Chromium, or the Edge or Chrome already installed.

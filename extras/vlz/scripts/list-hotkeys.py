@@ -3,7 +3,7 @@
 
 Reads src/libvlc-module.c: the KEY_* defaults in the non-macOS block (taking the
 _WIN32 branch of nested #ifdefs) and the add_key() declarations with their labels.
-Run from the repo root:  python -I extras/vlx/scripts/list-hotkeys.py > extras/vlx/hotkeys.md
+Run from the repo root:  python -I extras/vlz/scripts/list-hotkeys.py > extras/vlz/hotkeys.md
 """
 import re
 import sys
@@ -50,8 +50,8 @@ for name, key, label in re.findall(r'add_key\(\s*"([^"]+)"\s*,\s*(\w+)\s*,\s*(\w
 sys.stdout.reconfigure(encoding="utf-8", newline="\n")
 out = sys.stdout
 out.write('# VLC default hotkeys (Windows)\n\n')
-out.write('Generated from `src/libvlc-module.c` by `extras/vlx/scripts/list-hotkeys.py`. Every one of these must keep\n')
-out.write('working in VLX, with the same default. Regenerate after taking an upstream update and diff it.\n\n')
+out.write('Generated from `src/libvlc-module.c` by `extras/vlz/scripts/list-hotkeys.py`. Every one of these must keep\n')
+out.write('working in VLZ, with the same default. Regenerate after taking an upstream update and diff it.\n\n')
 out.write('| Action | Default keys | Option |\n|---|---|---|\n')
 for label, keys, name in rows:
     out.write(f'| {label} | {keys} | `{name}` |\n')

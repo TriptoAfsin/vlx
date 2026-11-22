@@ -40,7 +40,7 @@ T.StackView {
 
     // Settings
 
-    // VLX: views cross-fade with a short rise instead of switching instantly (DESIGN.md › Motion)
+    // VLZ: views cross-fade with a short rise instead of switching instantly (DESIGN.md › Motion)
     replaceEnter: Transition {
         ParallelAnimation {
             NumberAnimation { property: "opacity"; from: 0; to: 1; duration: VLCStyle.duration_view; easing.type: VLCStyle.easing_enter }

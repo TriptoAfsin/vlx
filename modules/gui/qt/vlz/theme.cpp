@@ -1,7 +1,7 @@
 /*****************************************************************************
- * theme.cpp: VLX theme presets and accent (DESIGN.md › Colour)
+ * theme.cpp: VLZ theme presets and accent (DESIGN.md › Colour)
  *****************************************************************************
- * Copyright (C) 2026 VLX contributors
+ * Copyright (C) 2026 VLZ contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@
 
 #include "style/systempalette.hpp"
 #include "maininterface/mainctx.hpp"
-#include "vlx/vlxsettings.hpp"
-#include "vlx/lookpanel.hpp"
+#include "vlz/vlzsettings.hpp"
+#include "vlz/lookpanel.hpp"
 
 #include <QApplication>
 #include <QPalette>
@@ -34,7 +34,7 @@
 
 namespace {
 
-struct VlxTheme
+struct VlzTheme
 {
     const char *id;
     bool dark;
@@ -42,7 +42,7 @@ struct VlxTheme
 };
 
 /* Same tables as DESIGN.md › Colour. */
-const VlxTheme kThemes[] = {
+const VlzTheme kThemes[] = {
     { "dark",  true,  "#141415", "#111112", "#1E1E21", "#27272B", "#ECECEE", "#A1A1A7", "#FF8800" },
     { "light", false, "#FFFFFF", "#FAFAFB", "#F0F0F3", "#E8E8EC", "#18181B", "#55555D", "#D96A00" },
     { "paper", false, "#F4EEE3", "#EFE8DB", "#E8DFCF", "#DCD1BF", "#2B241D", "#5F5346", "#A65424" },
@@ -85,12 +85,12 @@ QColor readableAccent(const QColor &accent, const QColor &bg, bool dark)
 
 /* For previews (the preferences dialog): a theme's colours as the app would apply them. "default" is VLC's own
  * dark palette with its orange. */
-vlx::ThemeColors vlx::themeColors(const QString &themeId, const QString &accentOption)
+vlz::ThemeColors vlz::themeColors(const QString &themeId, const QString &accentOption)
 {
-    static const VlxTheme vlcDefault = { "default", true, "#1E1E1E", "#212121", "#272727", "#303030",
+    static const VlzTheme vlcDefault = { "default", true, "#1E1E1E", "#212121", "#272727", "#303030",
                                          "#FFFFFF", "#AAAAAA", "#FF8800" };
-    const VlxTheme *theme = &vlcDefault;
-    for (const VlxTheme &t : kThemes)
+    const VlzTheme *theme = &vlcDefault;
+    for (const VlzTheme &t : kThemes)
         if (themeId == QLatin1String(t.id))
             theme = &t;
 
@@ -107,26 +107,26 @@ vlx::ThemeColors vlx::themeColors(const QString &themeId, const QString &accentO
     return c;
 }
 
-/* VLX: called from updatePalette(). Returns false to keep VLC's own palette. */
-bool SystemPalette::applyVlxTheme()
+/* VLZ: called from updatePalette(). Returns false to keep VLC's own palette. */
+bool SystemPalette::applyVlzTheme()
 {
     if (!m_ctx)
         return false;
 
-    char *themeId = var_InheritString(m_ctx->getIntf(), "qt-vlx-theme");
-    const VlxTheme *theme = nullptr;
+    char *themeId = var_InheritString(m_ctx->getIntf(), "qt-vlz-theme");
+    const VlzTheme *theme = nullptr;
     if (themeId)
     {
-        for (const VlxTheme &t : kThemes)
+        for (const VlzTheme &t : kThemes)
             if (strcmp(t.id, themeId) == 0)
                 theme = &t;
         free(themeId);
     }
     if (!theme)
     {
-        /* "default": VLC's own palette and colour scheme. Coming back from a VLX theme,
-         * restore the colours that VLX overwrote (values from systempalette.hpp). */
-        if (m_vlxThemed)
+        /* "default": VLC's own palette and colour scheme. Coming back from a VLZ theme,
+         * restore the colours that VLZ overwrote (values from systempalette.hpp). */
+        if (m_vlzThemed)
         {
             darkGrey200 = QColor("#1E1E1E"); darkGrey300 = QColor("#212121"); darkGrey400 = QColor("#242424");
             darkGrey500 = QColor("#272727"); darkGrey600 = QColor("#2A2A2A"); darkGrey700 = QColor("#2D2D2D");
@@ -145,11 +145,11 @@ bool SystemPalette::applyVlxTheme()
                 orange800 = orange500.lighter(150);
                 free(opt);
             }
-            m_vlxThemed = false;
+            m_vlzThemed = false;
         }
         return false;
     }
-    m_vlxThemed = true;
+    m_vlzThemed = true;
 
     const QColor bg(theme->bg), panel(theme->panel), raised(theme->raised), line(theme->line);
     const QColor text(theme->text), muted(theme->muted);
@@ -203,9 +203,9 @@ bool SystemPalette::applyVlxTheme()
     return true;
 }
 
-/* VLX: follow live theme and accent changes from the settings page. */
-void SystemPalette::vlxConnectTheme()
+/* VLZ: follow live theme and accent changes from the settings page. */
+void SystemPalette::vlzConnectTheme()
 {
-    if (VLXSettings *settings = VLXSettings::instance())
-        connect(settings, &VLXSettings::themeChanged, this, &SystemPalette::updatePalette, Qt::UniqueConnection);
+    if (VLZSettings *settings = VLZSettings::instance())
+        connect(settings, &VLZSettings::themeChanged, this, &SystemPalette::updatePalette, Qt::UniqueConnection);
 }

@@ -237,8 +237,8 @@ Item {
         Connections {
             target: Player
             function onPlayingStateChanged() {
-                // VLX: Settings › Player › When playback ends: stay on the player (VLC 3) or go back to Home
-                if (Player.playingState === Player.PLAYING_STATE_STOPPED && VLXSettings.endView === "home") {
+                // VLZ: Settings › Player › When playback ends: stay on the player (VLC 3) or go back to Home
+                if (Player.playingState === Player.PLAYING_STATE_STOPPED && VLZSettings.endView === "home") {
                     MainCtx.playerView = false
                 }
             }
@@ -322,16 +322,16 @@ Item {
                 }
             }
 
-            // VLX: the library fades and rises in when you come back from the player (DESIGN.md › Motion).
+            // VLZ: the library fades and rises in when you come back from the player (DESIGN.md › Motion).
             // The player itself appears at once: the video surface is composited outside the scene,
             // so fading it would flash.
             onLoaded: {
                 if (MainCtx.effectiveMainInterfaceMode === MainCtx.MAININTERFACE_MODE_MAINDISPLAY && item)
-                    vlxViewEnter.restart()
+                    vlzViewEnter.restart()
             }
 
             ParallelAnimation {
-                id: vlxViewEnter
+                id: vlzViewEnter
                 NumberAnimation { target: viewLoader.item; property: "opacity"; from: 0; to: 1; duration: VLCStyle.duration_view; easing.type: VLCStyle.easing_enter }
                 NumberAnimation { target: viewLoader.item; property: "scale"; from: 0.985; to: 1; duration: VLCStyle.duration_view; easing.type: VLCStyle.easing_enter }
             }
@@ -342,23 +342,23 @@ Item {
             source: "qrc:///qt/qml/VLC/Menus/GlobalShortcuts.qml"
         }
 
-        // VLX: Ctrl+K command palette, above everything else. Created on first use, so it costs
-        // nothing at start-up (--qt-vlx-start-view=palette creates and opens it at once).
+        // VLZ: Ctrl+K command palette, above everything else. Created on first use, so it costs
+        // nothing at start-up (--qt-vlz-start-view=palette creates and opens it at once).
         Shortcut {
             sequence: "Ctrl+K"
             context: Qt.ApplicationShortcut
             onActivated: {
-                vlxPalette.active = true
-                vlxPalette.item.toggle()
+                vlzPalette.active = true
+                vlzPalette.item.toggle()
             }
         }
 
         Loader {
-            id: vlxPalette
+            id: vlzPalette
             anchors.fill: parent
             z: 1000
-            active: VLXSettings.startView === "palette"
-            sourceComponent: Component { VLXCommandPalette { } }
+            active: VLZSettings.startView === "palette"
+            sourceComponent: Component { VLZCommandPalette { } }
         }
 
         Loader {

@@ -1,15 +1,15 @@
 # AGENTS.md
 
-Guidance for coding agents (and humans) working on VLX, a personal fork of VLC.
+Guidance for coding agents (and humans) working on VLZ, a personal fork of VLC.
 
 ## What this repo is
 
-- Upstream VLC `master` (4.0-dev) plus VLX changes on `main`. `master` mirrors `upstream/master` and is never edited.
-- The VLX goal, in order: **modern, fluid UI**, then **performance**, then (later) features.
+- Upstream VLC `master` (4.0-dev) plus VLZ changes on `main`. `master` mirrors `upstream/master` and is never edited.
+- The VLZ goal, in order: **modern, fluid UI**, then **performance**, then (later) features.
 - The design system is in [`DESIGN.md`](DESIGN.md). Check changes the way [`VERIFY.md`](VERIFY.md) says. Take upstream VLC the way [`UPSTREAM.md`](UPSTREAM.md) says.
-- Feature cuts live in [`extras/vlx/vlx.ini`](extras/vlx/vlx.ini) (Meson options). Never delete upstream code to cut a feature.
+- Feature cuts live in [`extras/vlz/vlz.ini`](extras/vlz/vlz.ini) (Meson options). Never delete upstream code to cut a feature.
 - Every UI setting (theme, accent, size, bar style, positions) shows a live preview of its effect in Settings.
-- Every VLC keyboard shortcut and mouse behaviour must keep working with the same default: [`extras/vlx/input.md`](extras/vlx/input.md).
+- Every VLC keyboard shortcut and mouse behaviour must keep working with the same default: [`extras/vlz/input.md`](extras/vlz/input.md).
 
 ## Where things live
 
@@ -29,14 +29,14 @@ Guidance for coding agents (and humans) working on VLX, a personal fork of VLC.
 
 ## Rules
 
-1. **Keep diffs small and contained.** VLX takes in new VLC versions by merge. Prefer changing tokens in `VLCStyle.qml`
+1. **Keep diffs small and contained.** VLZ takes in new VLC versions by merge. Prefer changing tokens in `VLCStyle.qml`
    and theme providers over rewriting components. Prefer new files over large edits to upstream files.
-2. **Mark VLX changes** in upstream files with a short `// VLX:` comment so upstream merges are easy to resolve (`git grep -n "VLX:"`).
-3. **Cut features only through `extras/vlx/vlx.ini`**, and only the ones the owner picked. Never delete upstream code.
+2. **Mark VLZ changes** in upstream files with a short `// VLZ:` comment so upstream merges are easy to resolve (`git grep -n "VLZ:"`).
+3. **Cut features only through `extras/vlz/vlz.ini`**, and only the ones the owner picked. Never delete upstream code.
 4. **Follow upstream style:** C/C++ as in the surrounding code (4-space indent, C11/C++17), QML as in the
    surrounding components. Respect `VLCStyle` tokens; no hard-coded colours or pixel sizes in components.
-5. **Licensing:** VLX code is GPLv2+ (LGPLv2.1+ inside `lib/`, `src/`, `include/`). Keep existing copyright headers.
-6. **Branding:** use "VLX" and the VLX icon in user-facing branding. Credit VLC; never imply VideoLAN endorsement.
+5. **Licensing:** VLZ code is GPLv2+ (LGPLv2.1+ inside `lib/`, `src/`, `include/`). Keep existing copyright headers.
+6. **Branding:** use "VLZ" and the VLZ icon in user-facing branding. Credit VLC; never imply VideoLAN endorsement.
 7. **Upstreaming:** if a change is sent to VideoLAN, follow [`doc/VideoLAN_AI_Policy.md`](doc/VideoLAN_AI_Policy.md).
    A human submits it, AI help is disclosed in the merge request, and commit messages don't credit AI tools.
 

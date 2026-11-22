@@ -79,7 +79,7 @@
 #endif
 #include <vlc_modules.h>
 
-#include "vlx/lookpanel.hpp" // VLX
+#include "vlz/lookpanel.hpp" // VLZ
 
 static struct {
     const char iso[6];
@@ -249,7 +249,7 @@ SPrefsCatList::SPrefsCatList( qt_intf_t *_p_intf, QWidget *_parent ) :
         button->setMinimumWidth( 40 + ICON_WIDTH );
         button->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
         button->setAutoRaise( true );
-        /* VLX: a soft rounded highlight for the selected category, not a solid accent block */
+        /* VLZ: a soft rounded highlight for the selected category, not a solid accent block */
         button->setStyleSheet( "QToolButton { border-radius: 10px; padding: 6px; }"
                                "QToolButton:checked { background: rgba(127, 127, 127, 0.18); }"
                                "QToolButton:hover:!checked { background: rgba(127, 127, 127, 0.09); }" );
@@ -705,7 +705,7 @@ SPrefsPanel::SPrefsPanel( qt_intf_t *_p_intf, QWidget *_parent,
             auto& ui = m_interfaceUI;
             ui.setupUi( panel );
             panel_label->setText( qtr("Interface Settings") );
-            ui.verticalLayout->insertWidget( 0, vlx::createLookPanel( p_intf, panel ) ); // VLX: theme, bar, skins with preview
+            ui.verticalLayout->insertWidget( 0, vlz::createLookPanel( p_intf, panel ) ); // VLZ: theme, bar, skins with preview
 
 #ifndef _WIN32
             ui.langBox->hide();
@@ -716,7 +716,7 @@ SPrefsPanel::SPrefsPanel( qt_intf_t *_p_intf, QWidget *_parent,
 
             HKEY h_key;
             char *langReg = NULL;
-            if( RegOpenKeyEx( HKEY_CURRENT_USER, TEXT("Software\\VLX\\") /* VLX: own key */, 0, KEY_READ, &h_key )
+            if( RegOpenKeyEx( HKEY_CURRENT_USER, TEXT("Software\\VLZ\\") /* VLZ: own key */, 0, KEY_READ, &h_key )
                     == ERROR_SUCCESS )
             {
                 WCHAR szData[256];
@@ -1385,9 +1385,9 @@ void SPrefsPanel::configML()
 
 void SPrefsPanel::cleanLang() {
     QVLCRegistry qvReg( HKEY_CURRENT_USER );
-    /* VLX: own key, so VLC's language setting is left alone */
-    qvReg.DeleteValue( "Software\\VLX\\", "Lang" );
-    qvReg.DeleteKey( "Software\\", "VLX" );
+    /* VLZ: own key, so VLC's language setting is left alone */
+    qvReg.DeleteValue( "Software\\VLZ\\", "Lang" );
+    qvReg.DeleteKey( "Software\\", "VLZ" );
 }
 
 void SPrefsPanel::saveLang() {
@@ -1399,7 +1399,7 @@ void SPrefsPanel::saveLang() {
     else
     {
         QVLCRegistry qvReg( HKEY_CURRENT_USER );
-        qvReg.WriteRegistry( "Software\\VLX\\", "Lang", lang ); /* VLX: own key */
+        qvReg.WriteRegistry( "Software\\VLZ\\", "Lang", lang ); /* VLZ: own key */
     }
 }
 
@@ -1407,7 +1407,7 @@ bool SPrefsPanel::addType( const char * psz_ext, QTreeWidgetItem* current,
                            QTreeWidgetItem* parent, QVLCRegistry *qvReg )
 {
     bool b_temp;
-    const char* psz_VLC = "VLX"; /* VLX: VLX.<ext> file types */
+    const char* psz_VLC = "VLZ"; /* VLZ: VLZ.<ext> file types */
     current = new QTreeWidgetItem( parent, QStringList( psz_ext ) );
 
     char* psz_reg = qvReg->ReadRegistry( psz_ext, "", "" );
@@ -1442,7 +1442,7 @@ void SPrefsPanel::assoDialog()
                                 NULL, CLSCTX_INPROC_SERVER,
                                 IID_PPV_ARGS(&p_regui));
             if( SUCCEEDED(hr) )
-                p_regui->LaunchAdvancedAssociationUI(L"VLX" ); /* VLX: registered app name */
+                p_regui->LaunchAdvancedAssociationUI(L"VLZ" ); /* VLZ: registered app name */
         }
         CoUninitialize();
     }
@@ -1587,14 +1587,14 @@ void SPrefsPanel::updateCheckBoxes(QTreeWidgetItem* item, int column)
 
 void addAsso( QVLCRegistry *qvReg, const char *psz_ext )
 {
-    QString s_path( "VLX" ); s_path += psz_ext; /* VLX */
+    QString s_path( "VLZ" ); s_path += psz_ext; /* VLZ */
     QString s_path2 = s_path;
 
     /* Save a backup if already assigned */
     char *psz_value = qvReg->ReadRegistry( psz_ext, "", ""  );
 
     if( !EMPTY_STR(psz_value) && strcmp( qtu(s_path), psz_value ) )
-        qvReg->WriteRegistry( psz_ext, "VLX.backup", psz_value ); /* VLX */
+        qvReg->WriteRegistry( psz_ext, "VLZ.backup", psz_value ); /* VLZ */
     free( psz_value );
 
     /* Put a "link" to VLC.EXT as default */
@@ -1609,7 +1609,7 @@ void addAsso( QVLCRegistry *qvReg, const char *psz_ext )
 
         /* Get the installer path */
         QVLCRegistry qvReg2( HKEY_LOCAL_MACHINE );
-        QString str_temp = qvReg2.ReadRegistry( "Software\\VLX", "", "" ); /* VLX: own key */
+        QString str_temp = qvReg2.ReadRegistry( "Software\\VLZ", "", "" ); /* VLZ: own key */
 
         if( str_temp.size() )
         {
@@ -1624,17 +1624,17 @@ void addAsso( QVLCRegistry *qvReg, const char *psz_ext )
 
 void delAsso( QVLCRegistry *qvReg, const char *psz_ext )
 {
-    QString s_path( "VLX"); s_path += psz_ext; /* VLX */
+    QString s_path( "VLZ"); s_path += psz_ext; /* VLZ */
     char *psz_value = qvReg->ReadRegistry( psz_ext, "", "" );
 
     if( psz_value && !strcmp( qtu(s_path), psz_value ) )
     {
         free( psz_value );
-        psz_value = qvReg->ReadRegistry( psz_ext, "VLX.backup", "" ); /* VLX */
+        psz_value = qvReg->ReadRegistry( psz_ext, "VLZ.backup", "" ); /* VLZ */
         if( psz_value )
             qvReg->WriteRegistry( psz_ext, "", psz_value );
 
-        qvReg->DeleteValue( psz_ext, "VLX.backup" ); /* VLX */
+        qvReg->DeleteValue( psz_ext, "VLZ.backup" ); /* VLZ */
     }
     free( psz_value );
 }

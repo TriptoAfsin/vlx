@@ -6,8 +6,8 @@ install_data('../../../THANKS',    rename : 'THANKS.txt',  install_dir : '.')
 
 install_data('../../../share/icons/vlc.ico',  install_dir : '.')
 
-# VLX: file-type icons (DESIGN.md › File icons), installed as <prefix>/filetypes/<style>-<look>/<type>.ico
-install_subdir('../../vlx/brand/filetypes', install_dir : '.', exclude_files : ['manifest.json'])
+# VLZ: file-type icons (DESIGN.md › File icons), installed as <prefix>/filetypes/<style>-<look>/<type>.ico
+install_subdir('../../vlz/brand/filetypes', install_dir : '.', exclude_files : ['manifest.json'])
 
 have_win64 = host_machine.cpu_family() == 'x86_64' or host_machine.cpu_family() == 'aarch64' or host_machine.cpu() == 'arm64'
 if have_win64
@@ -37,9 +37,9 @@ endif
 sevenz = find_program('7z', required: false)
 if sevenz.found()
     sevenz_opts = ['-t7z', '-m0=lzma', '-mx=9', '-mfb=64', '-md=32m', '-ms=on']
-    # VLX: named after VLX and its version
-    release_7z = 'vlx-' + vlx_version + '-' + winstaller_suffix + '.7z'
-    debug_7z   = 'vlx-' + vlx_version + '-' + winstaller_suffix + '-debug.7z'
+    # VLZ: named after VLZ and its version
+    release_7z = 'vlz-' + vlz_version + '-' + winstaller_suffix + '.7z'
+    debug_7z   = 'vlz-' + vlz_version + '-' + winstaller_suffix + '-debug.7z'
 
     # generate a 7z from the "installed" and stripped folder
     package_win32_7zip = custom_target(

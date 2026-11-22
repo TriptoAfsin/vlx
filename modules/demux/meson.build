@@ -452,7 +452,7 @@ endif
 # GME
 gme_dep = dependency('libgme', required: get_option('gme'))
 if host_system == 'windows' and gme_dep.found() and gme_dep.type_name() == 'pkgconfig'
-    # VLX: libgme.pc links -lgcc_s, a DLL nobody ships, so the plugin failed to load (error 126).
+    # VLZ: libgme.pc links -lgcc_s, a DLL nobody ships, so the plugin failed to load (error 126).
     # Link the GCC and C++ runtimes statically instead.
     gme_dep = declare_dependency(
         dependencies: [gme_dep.partial_dependency(compile_args: true, includes: true),

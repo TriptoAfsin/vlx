@@ -126,9 +126,9 @@ T.ItemDelegate {
                 implicitPlayCoverShowPlay: true
             }
 
-            // VLX: the cover lifts a little on hover (DESIGN.md › Motion)
+            // VLZ: the cover lifts a little on hover (DESIGN.md › Motion)
             PropertyChanges {
-                target: vlxLift
+                target: vlzLift
                 y: -VLCStyle.margin_xxsmall
             }
 
@@ -147,13 +147,13 @@ T.ItemDelegate {
                     property: "implicitPlayCoverShowPlay"
                 }
 
-                ParallelAnimation { // VLX: lift with the shadow
+                ParallelAnimation { // VLZ: lift with the shadow
                     NumberAnimation {
                         properties: "opacity"
                         duration: VLCStyle.duration_long
-                        easing.type: VLCStyle.easing_enter // VLX: was InSine
+                        easing.type: VLCStyle.easing_enter // VLZ: was InSine
                     }
-                    NumberAnimation { target: vlxLift; property: "y"; duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter }
+                    NumberAnimation { target: vlzLift; property: "y"; duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter }
                 }
             }
         },
@@ -168,13 +168,13 @@ T.ItemDelegate {
                     property: "implicitPlayCoverShowPlay"
                 }
 
-                ParallelAnimation { // VLX: settle with the shadow
+                ParallelAnimation { // VLZ: settle with the shadow
                     NumberAnimation {
                         properties: "opacity"
                         duration: VLCStyle.duration_long
-                        easing.type: VLCStyle.easing_exit // VLX: was OutSine
+                        easing.type: VLCStyle.easing_exit // VLZ: was OutSine
                     }
-                    NumberAnimation { target: vlxLift; property: "y"; duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_exit }
+                    NumberAnimation { target: vlzLift; property: "y"; duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_exit }
                 }
             }
         }
@@ -270,7 +270,7 @@ T.ItemDelegate {
 
         enabled: theme.initialized
 
-        radius: VLCStyle.gridCover_radius // VLX: rounded selection
+        radius: VLCStyle.gridCover_radius // VLZ: rounded selection
         //don't show the backgroud unless selected
         color: root.selected ?  theme.bg.highlight : theme.bg.primary
         border.color: visualFocus ? theme.visualFocus : Qt.alpha(theme.visualFocus, 0.0)
@@ -286,7 +286,7 @@ T.ItemDelegate {
 
             implicitPlayCoverShowPlay: false
             radius: VLCStyle.gridCover_radius
-            transform: Translate { id: vlxLift } // VLX: hover lift
+            transform: Translate { id: vlzLift } // VLZ: hover lift
             color: theme.bg.secondary
 
             Layout.preferredWidth: root.width

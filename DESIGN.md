@@ -1,14 +1,14 @@
-# Design: VLX
+# Design: VLZ
 
-How VLX looks and behaves. New UI follows this file; if the code and this file disagree, fix one of them on purpose in
+How VLZ looks and behaves. New UI follows this file; if the code and this file disagree, fix one of them on purpose in
 the same change. Locked 21 November 2026 from the owner's choices:
 
 - Direction **H. Lean** of the mock-ups: https://claude.ai/artifact/WHctzM6vgwGQVqHduTJ4G3
 - Player options and defaults: https://claude.ai/artifact/8JH39dt9NduZ6yGzr9sMNK
-- Icon **Ripple, echo**: [`extras/vlx/brand/`](extras/vlx/brand/)
+- Icon **Ripple, echo**: [`extras/vlz/brand/`](extras/vlz/brand/)
 
-Source of truth in code (planned): `modules/gui/qt/vlx/` (theme tables, accent, density, player layouts, settings
-page). Upstream files only get hooks marked `VLX:` (see [`UPSTREAM.md`](UPSTREAM.md)).
+Source of truth in code (planned): `modules/gui/qt/vlz/` (theme tables, accent, density, player layouts, settings
+page). Upstream files only get hooks marked `VLZ:` (see [`UPSTREAM.md`](UPSTREAM.md)).
 
 ## Principles
 
@@ -18,7 +18,7 @@ page). Upstream files only get hooks marked `VLX:` (see [`UPSTREAM.md`](UPSTREAM
 - **Yours to arrange.** Theme, accent, size, bar style, positions and buttons are all user settings, and **every UI setting shows a live preview** of its effect before you leave the page.
 - **Motion is state.** Things fade and slide when they change state. Nothing decorates.
 - **Plain copy.** Sentence case, short sentences, no tracked capitals.
-- **Nothing VLC users rely on is lost.** Every keyboard shortcut and mouse behaviour VLC has keeps working with the same default, in every layout option. The list is [`extras/vlx/input.md`](extras/vlx/input.md).
+- **Nothing VLC users rely on is lost.** Every keyboard shortcut and mouse behaviour VLC has keeps working with the same default, in every layout option. The list is [`extras/vlz/input.md`](extras/vlz/input.md).
 
 ## Colour
 
@@ -102,9 +102,9 @@ Defaults are the owner's picks.
 | Bar size | Compact, Normal, Large | Normal |
 | Always show the controls (under the video, like VLC 3) | Off (over the video, auto-hide), On | Off |
 | Always show the top bar (above the video) | Off (over the video, auto-hide), On | Off |
-| When playback ends | Stay on the player (VLX icon and the last title, like VLC 3), Go back to Home (VLC 4) | Stay on the player |
+| When playback ends | Stay on the player (VLZ icon and the last title, like VLC 3), Go back to Home (VLC 4) | Stay on the player |
 | Hide controls after | 1, 2, 3, 5 s, Never | 2 s |
-| Opening files (from Explorer while VLX runs) | A new window for each file, Play in the open window, Queue in the open window | Play in the open window (VLC's default) |
+| Opening files (from Explorer while VLZ runs) | A new window for each file, Play in the open window, Queue in the open window | Play in the open window (VLC's default) |
 | Player buttons | VLC 4's toolbar editor: buttons of the video, audio and mini player bars, with profiles | VLC's default layout |
 | Look defaults | Theme, accent, interface size | Ink, Emerald, 100 % |
 
@@ -162,7 +162,7 @@ Settings › Performance. Measured on a 1080p H.264 clip (Task Manager's memory 
 | Memory saver | 2 decoder threads and 0.3 s read-ahead instead of VLC's automatic threads and 1 s: playing 209 → 173 MB | Off (CPU-only 4K decoding may stutter) |
 | Media library | Off: no indexing, Home becomes the open-file page, idle 85 → 75 MB; next start | On |
 
-- Floors: VLC 3.0.24 needs 124 MB to play the same clip with the same savings; VLX's interface (Qt Quick) adds
+- Floors: VLC 3.0.24 needs 124 MB to play the same clip with the same savings; VLZ's interface (Qt Quick) adds
   about 35 MB on top while playing. Under 100 MB while playing 1080p isn't reachable for a VLC-based player.
 
 ## File icons
@@ -179,10 +179,10 @@ Interface › File icons switches them, with an Explorer-style preview.
 
 - Kinds and colours: video `#FF7A1A`, audio `#10B981`, playlist `#4F7CFF`, subtitles `#8B5CF6`, disc image `#64748B`.
 - Light look: white page. Dark look: charcoal page (Page and band) or near-black page (Echo), with a lighter edge so it holds on dark Explorer.
-- **Follow Windows:** Windows has no theme-aware icons for desktop-app file types, so VLX re-registers each type's
-  `DefaultIcon` (light or dark `.ico`) when Windows switches theme while VLX runs (`WM_SETTINGCHANGE`,
+- **Follow Windows:** Windows has no theme-aware icons for desktop-app file types, so VLZ re-registers each type's
+  `DefaultIcon` (light or dark `.ico`) when Windows switches theme while VLZ runs (`WM_SETTINGCHANGE`,
   `ImmersiveColorSet`), checks again at start-up, then calls `SHChangeNotify(SHCNE_ASSOCCHANGED)`.
-- Files: one multi-size `.ico` (16 to 256 px) per kind, style and look, generated from SVG into `extras/vlx/brand/filetypes/` (planned).
+- Files: one multi-size `.ico` (16 to 256 px) per kind, style and look, generated from SVG into `extras/vlz/brand/filetypes/` (planned).
 
 ## Components
 
@@ -194,8 +194,8 @@ Interface › File icons switches them, with an Explorer-style preview.
 
 ## Do and don't
 
-- Do take every colour from a token, and every size from `VLCStyle` / VLX tokens.
+- Do take every colour from a token, and every size from `VLCStyle` / VLZ tokens.
 - Do keep labels in sentence case, body face, a step smaller. Never tracked capitals.
 - Don't add blur, glass or gradients to chrome. The video and cover art are the only colourful things.
-- Don't hide a feature without a setting to bring it back (except the build-time cuts in `extras/vlx/vlx.ini`).
-- Don't change upstream layouts in place. Put VLX components in `modules/gui/qt/vlx/` and hook them in.
+- Don't hide a feature without a setting to bring it back (except the build-time cuts in `extras/vlz/vlz.ini`).
+- Don't change upstream layouts in place. Put VLZ components in `modules/gui/qt/vlz/` and hook them in.

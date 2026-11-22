@@ -91,11 +91,11 @@ AboutDialog::AboutDialog( qt_intf_t *_p_intf)
     setWindowRole( "vlc-about" );
     setWindowModality( Qt::WindowModal );
 
-    ui.version->setText(qfu( " " VLX_VERSION ", based on VLC " VERSION_MESSAGE ) ); // VLX
-    ui.title->setText("<html><head/><body><p><span style=\" font-size:26pt; color:#353535;\"> " + qtr( "VLX" ) + " </span></p></body></html>");
+    ui.version->setText(qfu( " " VLZ_VERSION ", based on VLC " VERSION_MESSAGE ) ); // VLZ
+    ui.title->setText("<html><head/><body><p><span style=\" font-size:26pt; color:#353535;\"> " + qtr( "VLZ" ) + " </span></p></body></html>");
 
     ui.MainBlabla->setText("<html><head/><body>" +
-    qtr( "<p>VLX is a personal, open source fork of <a href=\"https://www.videolan.org/vlc/\">VLC media player</a>. All credit for the engine and codecs goes to the volunteers of the <a href=\"https://www.videolan.org/\">VideoLAN</a> community.</p><p>VLX is not affiliated with VideoLAN.</p><p><a href=\"https://github.com/TriptoAfsin/vlx\">VLX on GitHub</a>" ) +
+    qtr( "<p>VLZ is a personal, open source fork of <a href=\"https://www.videolan.org/vlc/\">VLC media player</a>. All credit for the engine and codecs goes to the volunteers of the <a href=\"https://www.videolan.org/\">VideoLAN</a> community.</p><p>VLZ is not affiliated with VideoLAN.</p><p><a href=\"https://github.com/TriptoAfsin/vlx\">VLZ on GitHub</a>" ) +
     "</p></body> </html>");
 
     const QDate today = QDate::currentDate();
@@ -155,7 +155,7 @@ bool AboutDialog::eventFilter(QObject *obj, QEvent *event)
             }
             else
             {
-                ui.version->setText(qfu( " " VLX_VERSION ", based on VLC " VERSION_MESSAGE ) ); // VLX
+                ui.version->setText(qfu( " " VLZ_VERSION ", based on VLC " VERSION_MESSAGE ) ); // VLZ
                 b_advanced = false;
             }
             return true;

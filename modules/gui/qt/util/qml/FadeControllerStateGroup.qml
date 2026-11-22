@@ -61,7 +61,7 @@ StateGroup {
                     property: "opacity"
 
                     duration: VLCStyle.duration_long
-                    easing.type: VLCStyle.easing_exit // VLX: was Easing.InSine
+                    easing.type: VLCStyle.easing_exit // VLZ: was Easing.InSine
                 }
 
                 PropertyAction {
@@ -81,7 +81,7 @@ StateGroup {
                     property: "opacity"
 
                     duration: VLCStyle.duration_long
-                    easing.type: VLCStyle.easing_enter // VLX: was Easing.OutSine
+                    easing.type: VLCStyle.easing_enter // VLZ: was Easing.OutSine
                 }
             }
         }

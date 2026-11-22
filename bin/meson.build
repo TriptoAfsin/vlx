@@ -27,7 +27,7 @@ if build_vlc and (host_system != 'darwin' or have_osx) and not have_win_store an
         vlc_rc = configure_file(
             input: 'vlc_win32_rc.rc.in',
             output: 'vlc_win32_rc.rc',
-            configuration: vlx_rc_conf, # VLX
+            configuration: vlz_rc_conf, # VLZ
             install: false,
         )
 
@@ -46,8 +46,8 @@ if build_vlc and (host_system != 'darwin' or have_osx) and not have_win_store an
         )
     endif
 
-    # VLX: vlx.exe on Windows, so the shell never confuses it with an installed VLC's vlc.exe
-    executable(host_system == 'windows' ? 'vlx' : 'vlc',
+    # VLZ: vlz.exe on Windows, so the shell never confuses it with an installed VLC's vlc.exe
+    executable(host_system == 'windows' ? 'vlz' : 'vlc',
         vlc_sources + vlc_win_extra,
         link_with: [libvlc, libvlccore],
         link_args: gc_sections_linkargs,

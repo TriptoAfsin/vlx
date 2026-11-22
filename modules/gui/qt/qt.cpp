@@ -140,7 +140,7 @@ static void ShowDialog   ( intf_thread_t *, int, int, intf_dialog_args_t * );
 
 #define SYSTRAY_TEXT N_( "Systray icon" )
 #define SYSTRAY_LONGTEXT N_( "Show an icon in the systray " \
-                             "allowing you to control VLX " \
+                             "allowing you to control VLZ " \
                              "for basic actions." )
 
 #define MINIMIZED_TEXT N_( "Start VLC with only a systray icon" )
@@ -294,52 +294,52 @@ static void ShowDialog   ( intf_thread_t *, int, int, intf_dialog_args_t * );
 #define ACCENT_COLOR_TEXT N_( "Accent color" )
 #define ACCENT_COLOR_LONGTEXT N_( "Adjusts the accent color, special values are 'default' and 'system'." )
 
-/* VLX: theme presets (DESIGN.md › Colour) */
-#define VLX_THEME_TEXT N_( "Theme" )
-#define VLX_THEME_LONGTEXT N_( "VLX colour theme. 'VLC default' keeps VLC's own palette and colour scheme setting." )
-static const char *const vlx_theme_values[] = { "default", "dark", "light", "paper", "ink", "nord", "mocha", "tokyo" };
-static const char *const vlx_theme_texts[] = { N_("VLC default"), N_("Dark"), N_("Light"), N_("Paper"), N_("Ink"), N_("Nord"), N_("Mocha"), N_("Tokyo") };
+/* VLZ: theme presets (DESIGN.md › Colour) */
+#define VLZ_THEME_TEXT N_( "Theme" )
+#define VLZ_THEME_LONGTEXT N_( "VLZ colour theme. 'VLC default' keeps VLC's own palette and colour scheme setting." )
+static const char *const vlz_theme_values[] = { "default", "dark", "light", "paper", "ink", "nord", "mocha", "tokyo" };
+static const char *const vlz_theme_texts[] = { N_("VLC default"), N_("Dark"), N_("Light"), N_("Paper"), N_("Ink"), N_("Nord"), N_("Mocha"), N_("Tokyo") };
 
-/* VLX: player bar (DESIGN.md › Player) */
-#define VLX_BAR_STYLE_TEXT N_( "Player bar style" )
-#define VLX_BAR_STYLE_LONGTEXT N_( "How the player controls look: a floating island, a docked bar, minimal, a compact pill or classic." )
-#define VLX_BAR_POSITION_TEXT N_( "Player bar position" )
-#define VLX_BAR_ALIGN_TEXT N_( "Player controls alignment" )
-static const char *const vlx_bar_align_values[] = { "center", "left", "right" };
-static const char *const vlx_bar_align_texts[] = { N_("Centered"), N_("Left"), N_("Right") };
-#define VLX_BAR_SIZE_TEXT N_( "Player bar size" )
-static const char *const vlx_bar_size_values[] = { "compact", "normal", "large" };
-static const char *const vlx_bar_size_texts[] = { N_("Compact"), N_("Normal"), N_("Large") };
-#define VLX_PIN_CONTROLS_TEXT N_( "Always show the player controls" )
-#define VLX_PIN_CONTROLS_LONGTEXT N_( "Show the controls under the video at all times instead of over it, like VLC 3." )
-#define VLX_PIN_TOPBAR_TEXT N_( "Always show the top bar" )
-#define VLX_END_VIEW_TEXT N_( "When playback ends" )
-static const char *const vlx_end_view_values[] = { "player", "home" };
-static const char *const vlx_end_view_texts[] = { N_("Stay on the player"), N_("Go back to Home") };
-#define VLX_MEMORY_SAVER_TEXT N_( "Memory saver" )
-#define VLX_MEMORY_SAVER_LONGTEXT N_( "Decode with 2 threads and read 0.3 s ahead instead of 1 s: about 35 MB less for 1080p. CPU-only decoding of heavy 4K files may stutter." )
-#define VLX_MEDIA_LIBRARY_TEXT N_( "Media library" )
-#define VLX_MEDIA_LIBRARY_LONGTEXT N_( "Index your videos and music for the Video and Music pages. Off saves about 10 MB; takes effect at the next start." )
-#define VLX_PIN_TOPBAR_LONGTEXT N_( "Show the title bar above the video at all times instead of over it." )
-static const char *const vlx_bar_style_values[] = { "island", "docked", "minimal", "pill", "classic" };
-static const char *const vlx_bar_style_texts[] = { N_("Island"), N_("Docked bar"), N_("Minimal"), N_("Compact pill"), N_("Classic") };
-static const char *const vlx_bar_position_values[] = { "bottom", "top" };
-static const char *const vlx_bar_position_texts[] = { N_("Bottom"), N_("Top") };
-#define VLX_AUDIO_SKIN_TEXT N_( "Audio player skin" )
-static const char *const vlx_audio_skin_values[] = { "albumcompact", "album", "turntable", "turntablecompact", "mini", "classic" };
-static const char *const vlx_audio_skin_texts[] = { N_("Album compact"), N_("Album"), N_("Turntable"), N_("Turntable compact"), N_("Mini player"), N_("VLC classic") };
-#define VLX_AUDIO_BG_TEXT N_( "Audio player background" )
-static const char *const vlx_audio_bg_values[] = { "plain", "tinted" };
-static const char *const vlx_audio_bg_texts[] = { N_("Plain theme"), N_("Tinted from the cover art") };
-#define VLX_AUDIO_THEME_TEXT N_( "Audio player colours" )
-static const char *const vlx_audio_theme_values[] = { "app", "dark", "light", "paper", "ink", "nord", "mocha", "tokyo" };
-static const char *const vlx_audio_theme_texts[] = { N_("Follow the app theme"), N_("Dark"), N_("Light"), N_("Paper"), N_("Ink"), N_("Nord"), N_("Mocha"), N_("Tokyo") };
+/* VLZ: player bar (DESIGN.md › Player) */
+#define VLZ_BAR_STYLE_TEXT N_( "Player bar style" )
+#define VLZ_BAR_STYLE_LONGTEXT N_( "How the player controls look: a floating island, a docked bar, minimal, a compact pill or classic." )
+#define VLZ_BAR_POSITION_TEXT N_( "Player bar position" )
+#define VLZ_BAR_ALIGN_TEXT N_( "Player controls alignment" )
+static const char *const vlz_bar_align_values[] = { "center", "left", "right" };
+static const char *const vlz_bar_align_texts[] = { N_("Centered"), N_("Left"), N_("Right") };
+#define VLZ_BAR_SIZE_TEXT N_( "Player bar size" )
+static const char *const vlz_bar_size_values[] = { "compact", "normal", "large" };
+static const char *const vlz_bar_size_texts[] = { N_("Compact"), N_("Normal"), N_("Large") };
+#define VLZ_PIN_CONTROLS_TEXT N_( "Always show the player controls" )
+#define VLZ_PIN_CONTROLS_LONGTEXT N_( "Show the controls under the video at all times instead of over it, like VLC 3." )
+#define VLZ_PIN_TOPBAR_TEXT N_( "Always show the top bar" )
+#define VLZ_END_VIEW_TEXT N_( "When playback ends" )
+static const char *const vlz_end_view_values[] = { "player", "home" };
+static const char *const vlz_end_view_texts[] = { N_("Stay on the player"), N_("Go back to Home") };
+#define VLZ_MEMORY_SAVER_TEXT N_( "Memory saver" )
+#define VLZ_MEMORY_SAVER_LONGTEXT N_( "Decode with 2 threads and read 0.3 s ahead instead of 1 s: about 35 MB less for 1080p. CPU-only decoding of heavy 4K files may stutter." )
+#define VLZ_MEDIA_LIBRARY_TEXT N_( "Media library" )
+#define VLZ_MEDIA_LIBRARY_LONGTEXT N_( "Index your videos and music for the Video and Music pages. Off saves about 10 MB; takes effect at the next start." )
+#define VLZ_PIN_TOPBAR_LONGTEXT N_( "Show the title bar above the video at all times instead of over it." )
+static const char *const vlz_bar_style_values[] = { "island", "docked", "minimal", "pill", "classic" };
+static const char *const vlz_bar_style_texts[] = { N_("Island"), N_("Docked bar"), N_("Minimal"), N_("Compact pill"), N_("Classic") };
+static const char *const vlz_bar_position_values[] = { "bottom", "top" };
+static const char *const vlz_bar_position_texts[] = { N_("Bottom"), N_("Top") };
+#define VLZ_AUDIO_SKIN_TEXT N_( "Audio player skin" )
+static const char *const vlz_audio_skin_values[] = { "albumcompact", "album", "turntable", "turntablecompact", "mini", "classic" };
+static const char *const vlz_audio_skin_texts[] = { N_("Album compact"), N_("Album"), N_("Turntable"), N_("Turntable compact"), N_("Mini player"), N_("VLC classic") };
+#define VLZ_AUDIO_BG_TEXT N_( "Audio player background" )
+static const char *const vlz_audio_bg_values[] = { "plain", "tinted" };
+static const char *const vlz_audio_bg_texts[] = { N_("Plain theme"), N_("Tinted from the cover art") };
+#define VLZ_AUDIO_THEME_TEXT N_( "Audio player colours" )
+static const char *const vlz_audio_theme_values[] = { "app", "dark", "light", "paper", "ink", "nord", "mocha", "tokyo" };
+static const char *const vlz_audio_theme_texts[] = { N_("Follow the app theme"), N_("Dark"), N_("Light"), N_("Paper"), N_("Ink"), N_("Nord"), N_("Mocha"), N_("Tokyo") };
 
-/* VLX: file-type icons (DESIGN.md › File icons) */
-#define VLX_FILE_ICONS_TEXT N_( "File icons" )
-#define VLX_FILE_ICONS_LONGTEXT N_( "Icon style for the media files VLX opens in Explorer." )
-#define VLX_FILE_ICON_LOOK_TEXT N_( "File icon look" )
-#define VLX_FILE_ICON_LOOK_LONGTEXT N_( "Light or dark file icons, or follow the Windows app theme." )
+/* VLZ: file-type icons (DESIGN.md › File icons) */
+#define VLZ_FILE_ICONS_TEXT N_( "File icons" )
+#define VLZ_FILE_ICONS_LONGTEXT N_( "Icon style for the media files VLZ opens in Explorer." )
+#define VLZ_FILE_ICON_LOOK_TEXT N_( "File icon look" )
+#define VLZ_FILE_ICON_LOOK_LONGTEXT N_( "Light or dark file icons, or follow the Windows app theme." )
 
 static const int initial_prefs_view_list[] = { 0, 1, 2 };
 static const char *const initial_prefs_view_list_texts[] =
@@ -358,11 +358,11 @@ static const int i_raise_list[] =
 static const char *const psz_raise_list_text[] =
     { N_( "Never" ), N_( "Video" ), N_( "Audio" ), _( "Audio/Video" ) };
 
-#ifdef _WIN32 /* VLX: file icon choices */
-static const char *const vlx_file_icons_values[] = { "band", "echo" };
-static const char *const vlx_file_icons_texts[] = { N_("Page and band"), N_("Echo") };
-static const char *const vlx_file_icon_look_values[] = { "auto", "light", "dark" };
-static const char *const vlx_file_icon_look_texts[] = { N_("Follow Windows"), N_("Light"), N_("Dark") };
+#ifdef _WIN32 /* VLZ: file icon choices */
+static const char *const vlz_file_icons_values[] = { "band", "echo" };
+static const char *const vlz_file_icons_texts[] = { N_("Page and band"), N_("Echo") };
+static const char *const vlz_file_icon_look_values[] = { "auto", "light", "dark" };
+static const char *const vlz_file_icon_look_texts[] = { N_("Follow Windows"), N_("Light"), N_("Dark") };
 #endif
 
 static const char *const compositor_vlc[] = {
@@ -529,37 +529,37 @@ vlc_module_begin ()
 
     add_float_with_range( "qt-safe-area", 0, 0, 100.0, SAFE_AREA_TEXT, SAFE_AREA_LONGTEXT )
 
-    add_string( "qt-accent-color", "#10B981", ACCENT_COLOR_TEXT, ACCENT_COLOR_LONGTEXT ) // VLX: Emerald by default
-    add_string( "qt-vlx-theme", "ink", VLX_THEME_TEXT, VLX_THEME_LONGTEXT ) // VLX
-        change_string_list( vlx_theme_values, vlx_theme_texts )
-    add_string( "qt-vlx-bar-style", "classic", VLX_BAR_STYLE_TEXT, VLX_BAR_STYLE_LONGTEXT ) // VLX
-        change_string_list( vlx_bar_style_values, vlx_bar_style_texts )
-    add_string( "qt-vlx-bar-position", "bottom", VLX_BAR_POSITION_TEXT, nullptr ) // VLX
-        change_string_list( vlx_bar_position_values, vlx_bar_position_texts )
-    add_string( "qt-vlx-bar-align", "center", VLX_BAR_ALIGN_TEXT, nullptr ) // VLX
-        change_string_list( vlx_bar_align_values, vlx_bar_align_texts )
-    add_string( "qt-vlx-bar-size", "normal", VLX_BAR_SIZE_TEXT, nullptr ) // VLX
-        change_string_list( vlx_bar_size_values, vlx_bar_size_texts )
-    add_bool( "qt-vlx-pin-controls", false, VLX_PIN_CONTROLS_TEXT, VLX_PIN_CONTROLS_LONGTEXT ) // VLX
-    add_bool( "qt-vlx-pin-topbar", false, VLX_PIN_TOPBAR_TEXT, VLX_PIN_TOPBAR_LONGTEXT ) // VLX
-    add_string( "qt-vlx-end-view", "player", VLX_END_VIEW_TEXT, nullptr ) // VLX: VLC 3 stayed on the player
-        change_string_list( vlx_end_view_values, vlx_end_view_texts )
-    add_bool( "qt-vlx-memory-saver", false, VLX_MEMORY_SAVER_TEXT, VLX_MEMORY_SAVER_LONGTEXT ) // VLX
-    add_bool( "qt-vlx-media-library", true, VLX_MEDIA_LIBRARY_TEXT, VLX_MEDIA_LIBRARY_LONGTEXT ) // VLX
-    add_string( "qt-vlx-start-view", "", N_("Start page"), N_("Page to open at start, for screenshots and tests (e.g. vlxsettings).") ) // VLX
+    add_string( "qt-accent-color", "#10B981", ACCENT_COLOR_TEXT, ACCENT_COLOR_LONGTEXT ) // VLZ: Emerald by default
+    add_string( "qt-vlz-theme", "ink", VLZ_THEME_TEXT, VLZ_THEME_LONGTEXT ) // VLZ
+        change_string_list( vlz_theme_values, vlz_theme_texts )
+    add_string( "qt-vlz-bar-style", "classic", VLZ_BAR_STYLE_TEXT, VLZ_BAR_STYLE_LONGTEXT ) // VLZ
+        change_string_list( vlz_bar_style_values, vlz_bar_style_texts )
+    add_string( "qt-vlz-bar-position", "bottom", VLZ_BAR_POSITION_TEXT, nullptr ) // VLZ
+        change_string_list( vlz_bar_position_values, vlz_bar_position_texts )
+    add_string( "qt-vlz-bar-align", "center", VLZ_BAR_ALIGN_TEXT, nullptr ) // VLZ
+        change_string_list( vlz_bar_align_values, vlz_bar_align_texts )
+    add_string( "qt-vlz-bar-size", "normal", VLZ_BAR_SIZE_TEXT, nullptr ) // VLZ
+        change_string_list( vlz_bar_size_values, vlz_bar_size_texts )
+    add_bool( "qt-vlz-pin-controls", false, VLZ_PIN_CONTROLS_TEXT, VLZ_PIN_CONTROLS_LONGTEXT ) // VLZ
+    add_bool( "qt-vlz-pin-topbar", false, VLZ_PIN_TOPBAR_TEXT, VLZ_PIN_TOPBAR_LONGTEXT ) // VLZ
+    add_string( "qt-vlz-end-view", "player", VLZ_END_VIEW_TEXT, nullptr ) // VLZ: VLC 3 stayed on the player
+        change_string_list( vlz_end_view_values, vlz_end_view_texts )
+    add_bool( "qt-vlz-memory-saver", false, VLZ_MEMORY_SAVER_TEXT, VLZ_MEMORY_SAVER_LONGTEXT ) // VLZ
+    add_bool( "qt-vlz-media-library", true, VLZ_MEDIA_LIBRARY_TEXT, VLZ_MEDIA_LIBRARY_LONGTEXT ) // VLZ
+    add_string( "qt-vlz-start-view", "", N_("Start page"), N_("Page to open at start, for screenshots and tests (e.g. vlzsettings).") ) // VLZ
         change_volatile()
-    add_string( "qt-vlx-audio-skin", "albumcompact", VLX_AUDIO_SKIN_TEXT, nullptr ) // VLX
-        change_string_list( vlx_audio_skin_values, vlx_audio_skin_texts )
-    add_string( "qt-vlx-audio-background", "plain", VLX_AUDIO_BG_TEXT, nullptr ) // VLX
-        change_string_list( vlx_audio_bg_values, vlx_audio_bg_texts )
-    add_string( "qt-vlx-audio-theme", "app", VLX_AUDIO_THEME_TEXT, nullptr ) // VLX
-        change_string_list( vlx_audio_theme_values, vlx_audio_theme_texts )
+    add_string( "qt-vlz-audio-skin", "albumcompact", VLZ_AUDIO_SKIN_TEXT, nullptr ) // VLZ
+        change_string_list( vlz_audio_skin_values, vlz_audio_skin_texts )
+    add_string( "qt-vlz-audio-background", "plain", VLZ_AUDIO_BG_TEXT, nullptr ) // VLZ
+        change_string_list( vlz_audio_bg_values, vlz_audio_bg_texts )
+    add_string( "qt-vlz-audio-theme", "app", VLZ_AUDIO_THEME_TEXT, nullptr ) // VLZ
+        change_string_list( vlz_audio_theme_values, vlz_audio_theme_texts )
 
-#ifdef _WIN32 /* VLX: file icons */
-    add_string( "qt-vlx-file-icons", "band", VLX_FILE_ICONS_TEXT, VLX_FILE_ICONS_LONGTEXT )
-        change_string_list( vlx_file_icons_values, vlx_file_icons_texts )
-    add_string( "qt-vlx-file-icon-look", "auto", VLX_FILE_ICON_LOOK_TEXT, VLX_FILE_ICON_LOOK_LONGTEXT )
-        change_string_list( vlx_file_icon_look_values, vlx_file_icon_look_texts )
+#ifdef _WIN32 /* VLZ: file icons */
+    add_string( "qt-vlz-file-icons", "band", VLZ_FILE_ICONS_TEXT, VLZ_FILE_ICONS_LONGTEXT )
+        change_string_list( vlz_file_icons_values, vlz_file_icons_texts )
+    add_string( "qt-vlz-file-icon-look", "auto", VLZ_FILE_ICON_LOOK_TEXT, VLZ_FILE_ICON_LOOK_LONGTEXT )
+        change_string_list( vlz_file_icon_look_values, vlz_file_icon_look_texts )
 #endif
 
     cannot_unload_broken_library()
@@ -1337,7 +1337,7 @@ static void *Thread( void *obj )
         }
     }
 
-    app.setApplicationDisplayName( qtr("VLX") );
+    app.setApplicationDisplayName( qtr("VLZ") );
     app.setApplicationVersion( QString::fromUtf8(VERSION_MESSAGE) );
 
     if( QDate::currentDate().dayOfYear() >= QT_XMAS_JOKE_DAY && var_InheritBool( p_intf, "qt-icon-change" ) )

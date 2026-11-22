@@ -87,11 +87,11 @@ FocusScope {
         if (History.previousEmpty) {
             History.update(["home"])
         }
-        // VLX: --qt-vlx-start-view, for screenshots and tests ("palette" is handled by MainInterface)
-        if (VLXSettings.startView === "prefs")
+        // VLZ: --qt-vlz-start-view, for screenshots and tests ("palette" is handled by MainInterface)
+        if (VLZSettings.startView === "prefs")
             Qt.callLater(DialogsProvider.prefsDialog)
-        else if (VLXSettings.startView !== "" && VLXSettings.startView !== "palette")
-            History.update([VLXSettings.startView.split(":")[0]]) // "vlxsettings:<setting>" also scrolls to it
+        else if (VLZSettings.startView !== "" && VLZSettings.startView !== "palette")
+            History.update([VLZSettings.startView.split(":")[0]]) // "vlzsettings:<setting>" also scrolls to it
         loadCurrentHistoryView(Qt.OtherFocusReason)
     }
 
@@ -128,8 +128,8 @@ FocusScope {
             name: "discover",
             url: "qrc:///qt/qml/VLC/Network/DiscoverDisplay.qml"
         }, {
-            name: "vlxsettings", // VLX: settings with search and live previews
-            url: "qrc:///qt/qml/VLC/MainInterface/VLXSettingsPage.qml"
+            name: "vlzsettings", // VLZ: settings with search and live previews
+            url: "qrc:///qt/qml/VLC/MainInterface/VLZSettingsPage.qml"
         }, {
             name: "mlsettings",
             url: "qrc:///qt/qml/VLC/MediaLibrary/MLFoldersSettings.qml"
@@ -704,8 +704,8 @@ FocusScope {
 
                 NumberAnimation {
                     property: "width"
-                    duration: VLCStyle.duration_long // VLX: was duration_short
-                    easing.type: VLCStyle.easing_enter // VLX: was InOutSine
+                    duration: VLCStyle.duration_long // VLZ: was duration_short
+                    easing.type: VLCStyle.easing_enter // VLZ: was InOutSine
                 }
             }
 
@@ -786,8 +786,8 @@ FocusScope {
 
                     NumberAnimation {
                         property: "width"
-                        duration: VLCStyle.duration_long // VLX: was duration_short
-                        easing.type: VLCStyle.easing_enter // VLX: was InOutSine
+                        duration: VLCStyle.duration_long // VLZ: was duration_short
+                        easing.type: VLCStyle.easing_enter // VLZ: was InOutSine
                     }
                 }
             }

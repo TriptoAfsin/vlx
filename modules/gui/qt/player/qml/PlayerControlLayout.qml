@@ -37,9 +37,9 @@ FocusScope {
 
     property int identifier: -1
 
-    // VLX: where the playback group (the editor's "center" zone) sits: "center", "left" or "right".
+    // VLZ: where the playback group (the editor's "center" zone) sits: "center", "left" or "right".
     //      Left: [playback][left zone ......][right zone]; right: [left zone][right zone ......][playback].
-    readonly property string vlxAlign: VLXSettings.barAlign
+    readonly property string vlzAlign: VLZSettings.barAlign
 
     readonly property PlayerControlbarModel model: {
         if (!!MainCtx.controlbarProfileModel.currentModel)
@@ -86,7 +86,7 @@ FocusScope {
 
         focus: active
 
-        // VLX: two groups positioned by the alignment instead of one row, so "Controls alignment" also works
+        // VLZ: two groups positioned by the alignment instead of one row, so "Controls alignment" also works
         //      for profiles with an empty centre zone (their playback buttons are in the left zone):
         //      left = VLC's layout; center = the left zone in the middle; right = the right zone first, then
         //      the left (playback) zone at the right edge.
@@ -111,7 +111,7 @@ FocusScope {
                 spacing: playerControlLayout.spacing
 
                 x: {
-                    const a = playerControlLayout.vlxAlign
+                    const a = playerControlLayout.vlzAlign
                     if (a === "right")
                         return Math.max(rightGroup.width + playerControlLayout.layoutSpacing, twoZones.width - width)
                     if (a === "center")
@@ -139,7 +139,7 @@ FocusScope {
                             return false
                     }
 
-                    // VLX: buttons that don't fit in the room left of the right zone hide from the end
+                    // VLZ: buttons that don't fit in the room left of the right zone hide from the end
                     // (the group's x keeps its right edge within this room for every alignment)
                     availableWidth: twoZones.leftRoom
                     availableHeight: loaderLeftRight.height
@@ -162,7 +162,7 @@ FocusScope {
                                 twoZones.width)
                 spacing: playerControlLayout.spacing
 
-                x: playerControlLayout.vlxAlign === "right" ? 0 : twoZones.width - width
+                x: playerControlLayout.vlzAlign === "right" ? 0 : twoZones.width - width
                 Behavior on x { enabled: twoZones.width > 0; NumberAnimation { duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter } }
 
                 ControlRepeater {
@@ -183,7 +183,7 @@ FocusScope {
                             return false
                     }
 
-                    availableWidth: rightGroup.width // VLX
+                    availableWidth: rightGroup.width // VLZ
                     availableHeight: loaderLeftRight.height
 
                     Component.onCompleted: {
@@ -201,19 +201,19 @@ FocusScope {
         id: loaderLeft
 
         anchors {
-            right: playerControlLayout.vlxAlign === "left" ? loaderRight.left
-                 : playerControlLayout.vlxAlign === "right" ? undefined : loaderCenter.left // VLX
-            left: playerControlLayout.vlxAlign === "left" ? loaderCenter.right : parent.left // VLX
+            right: playerControlLayout.vlzAlign === "left" ? loaderRight.left
+                 : playerControlLayout.vlzAlign === "right" ? undefined : loaderCenter.left // VLZ
+            left: playerControlLayout.vlzAlign === "left" ? loaderCenter.right : parent.left // VLZ
             top: parent.top
             bottom: parent.bottom
 
             // Spacing for the filler item acts as padding
-            leftMargin: playerControlLayout.vlxAlign === "left" ? layoutSpacing - spacing : 0 // VLX
-            rightMargin: playerControlLayout.vlxAlign === "right" ? 0 : layoutSpacing - spacing
+            leftMargin: playerControlLayout.vlzAlign === "left" ? layoutSpacing - spacing : 0 // VLZ
+            rightMargin: playerControlLayout.vlzAlign === "right" ? 0 : layoutSpacing - spacing
         }
 
-        // VLX: right alignment leaves this zone one anchor; stop it before the right zone and the playback group
-        width: playerControlLayout.vlxAlign !== "right" ? undefined
+        // VLZ: right alignment leaves this zone one anchor; stop it before the right zone and the playback group
+        width: playerControlLayout.vlzAlign !== "right" ? undefined
              : Math.min(implicitWidth, Math.max(0, loaderCenter.x - layoutSpacing
                                                     - (loaderRight.active ? loaderRight.implicitWidth + layoutSpacing : 0)))
 
@@ -255,10 +255,10 @@ FocusScope {
         id: loaderCenter
 
         anchors {
-            // VLX: centered (VLC's layout), or at the left or right edge
-            horizontalCenter: playerControlLayout.vlxAlign === "center" ? parent.horizontalCenter : undefined
-            left: playerControlLayout.vlxAlign === "left" ? parent.left : undefined
-            right: playerControlLayout.vlxAlign === "right" ? parent.right : undefined
+            // VLZ: centered (VLC's layout), or at the left or right edge
+            horizontalCenter: playerControlLayout.vlzAlign === "center" ? parent.horizontalCenter : undefined
+            left: playerControlLayout.vlzAlign === "left" ? parent.left : undefined
+            right: playerControlLayout.vlzAlign === "right" ? parent.right : undefined
             top: parent.top
             bottom: parent.bottom
         }
@@ -321,22 +321,22 @@ FocusScope {
         id: loaderRight
 
         anchors {
-            // VLX: after the centered group (VLC), at the right edge (left alignment), or right after the left
+            // VLZ: after the centered group (VLC), at the right edge (left alignment), or right after the left
             //      zone (right alignment: every other button on the left, the playback group alone on the right)
-            left: playerControlLayout.vlxAlign === "center" ? loaderCenter.right
-                : playerControlLayout.vlxAlign === "right" ? loaderLeft.right : undefined
-            right: playerControlLayout.vlxAlign === "right" ? undefined : parent.right
+            left: playerControlLayout.vlzAlign === "center" ? loaderCenter.right
+                : playerControlLayout.vlzAlign === "right" ? loaderLeft.right : undefined
+            right: playerControlLayout.vlzAlign === "right" ? undefined : parent.right
             top: parent.top
             bottom: parent.bottom
 
             // Spacing for the filler item acts as padding
-            leftMargin: playerControlLayout.vlxAlign === "left" ? 0 : layoutSpacing - spacing
+            leftMargin: playerControlLayout.vlzAlign === "left" ? 0 : layoutSpacing - spacing
             rightMargin: 0
         }
 
-        // VLX: with left or right alignment this zone has one anchor; keep it clear of the playback group
-        width: playerControlLayout.vlxAlign === "center" ? undefined
-             : playerControlLayout.vlxAlign === "left"
+        // VLZ: with left or right alignment this zone has one anchor; keep it clear of the playback group
+        width: playerControlLayout.vlzAlign === "center" ? undefined
+             : playerControlLayout.vlzAlign === "left"
                ? Math.min(implicitWidth, Math.max(0, parent.width - loaderCenter.width - layoutSpacing))
                : Math.min(implicitWidth, Math.max(0, loaderCenter.x - layoutSpacing - x))
 
