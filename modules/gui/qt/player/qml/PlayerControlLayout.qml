@@ -151,7 +151,10 @@ FocusScope {
                 id: rightGroup
 
                 height: parent.height
-                width: Math.min(implicitWidth, twoZones.width) // a volume slider shrinks before anything hides
+                // the volume slider shrinks (down to the group's minimum) before any playback button hides
+                width: Math.min(implicitWidth, Math.max(Layout.minimumWidth,
+                                                        twoZones.width - leftGroup.implicitWidth - playerControlLayout.layoutSpacing),
+                                twoZones.width)
                 spacing: playerControlLayout.spacing
 
                 x: playerControlLayout.vlxAlign === "right" ? 0 : twoZones.width - width
