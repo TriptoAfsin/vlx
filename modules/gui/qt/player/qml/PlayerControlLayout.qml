@@ -102,7 +102,9 @@ FocusScope {
                 id: leftGroup
 
                 height: parent.height
-                width: implicitWidth
+                // what's left beside the right group; buttons that don't fit hide from the end
+                width: Math.min(implicitWidth, Math.max(0, twoZones.width - rightGroup.width
+                                                           - (rightGroup.width > 0 ? playerControlLayout.layoutSpacing : 0)))
                 spacing: playerControlLayout.spacing
 
                 x: {
@@ -134,7 +136,7 @@ FocusScope {
                             return false
                     }
 
-                    availableWidth: loaderLeftRight.width
+                    availableWidth: leftGroup.width // VLX
                     availableHeight: loaderLeftRight.height
 
                     Component.onCompleted: {
@@ -149,7 +151,7 @@ FocusScope {
                 id: rightGroup
 
                 height: parent.height
-                width: implicitWidth
+                width: Math.min(implicitWidth, twoZones.width) // a volume slider shrinks before anything hides
                 spacing: playerControlLayout.spacing
 
                 x: playerControlLayout.vlxAlign === "right" ? 0 : twoZones.width - width
@@ -173,7 +175,7 @@ FocusScope {
                             return false
                     }
 
-                    availableWidth: loaderLeftRight.width
+                    availableWidth: rightGroup.width // VLX
                     availableHeight: loaderLeftRight.height
 
                     Component.onCompleted: {
@@ -201,6 +203,11 @@ FocusScope {
             leftMargin: playerControlLayout.vlxAlign === "left" ? layoutSpacing - spacing : 0 // VLX
             rightMargin: playerControlLayout.vlxAlign === "right" ? 0 : layoutSpacing - spacing
         }
+
+        // VLX: right alignment leaves this zone one anchor; stop it before the right zone and the playback group
+        width: playerControlLayout.vlxAlign !== "right" ? undefined
+             : Math.min(implicitWidth, Math.max(0, loaderCenter.x - layoutSpacing
+                                                    - (loaderRight.active ? loaderRight.implicitWidth + layoutSpacing : 0)))
 
         active: !!playerControlLayout.model?.left && (playerControlLayout.model.left.count > 0) &&
                 !loaderLeftRight.active
@@ -318,6 +325,12 @@ FocusScope {
             leftMargin: playerControlLayout.vlxAlign === "left" ? 0 : layoutSpacing - spacing
             rightMargin: 0
         }
+
+        // VLX: with left or right alignment this zone has one anchor; keep it clear of the playback group
+        width: playerControlLayout.vlxAlign === "center" ? undefined
+             : playerControlLayout.vlxAlign === "left"
+               ? Math.min(implicitWidth, Math.max(0, parent.width - loaderCenter.width - layoutSpacing))
+               : Math.min(implicitWidth, Math.max(0, loaderCenter.x - layoutSpacing - x))
 
         active: !!playerControlLayout.model && !!playerControlLayout.model.right && (playerControlLayout.model.right.count > 0) &&
                 !loaderLeftRight.active
