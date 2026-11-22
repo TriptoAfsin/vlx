@@ -319,11 +319,45 @@ FocusScope {
 
     // ---------- layouts ----------
 
+    // VLX: nothing playing (the file ended and Settings › Player › When playback ends is "Stay on the player"):
+    //      an idle screen with the VLX icon, as VLC 3 showed its cone, instead of a music card for any file
+    readonly property bool idle: Player.playingState === Player.PLAYING_STATE_STOPPED
+
+    Column {
+        anchors.centerIn: parent
+        anchors.verticalCenterOffset: (root.topPadding - root.bottomPadding) / 2
+        spacing: VLCStyle.margin_normal
+        opacity: root.idle ? 1 : 0
+        visible: opacity > 0
+        Behavior on opacity { NumberAnimation { duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter } }
+
+        Image {
+            anchors.horizontalCenter: parent.horizontalCenter
+            source: "qrc:///misc/cone.svg" // the VLX icon
+            readonly property real side: Math.min(root.width, root.height) * 0.22
+            width: side; height: side
+            sourceSize: Qt.size(side * Screen.devicePixelRatio, side * Screen.devicePixelRatio)
+            fillMode: Image.PreserveAspectFit
+            opacity: 0.9
+        }
+        Widgets.CaptionLabel {
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: Math.min(implicitWidth, root.width * 0.8)
+            horizontalAlignment: Text.AlignHCenter
+            elide: Text.ElideRight
+            text: root.titleText
+            color: pal.muted
+        }
+    }
+
     Item {
         id: area
         anchors.fill: parent
         anchors.topMargin: root.topPadding
         anchors.bottomMargin: root.bottomPadding
+        opacity: root.idle ? 0 : 1 // VLX: hidden while idle
+        visible: opacity > 0
+        Behavior on opacity { NumberAnimation { duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter } }
 
         // Album: cover and titles on the left, the album or queue on the right
         RowLayout {
