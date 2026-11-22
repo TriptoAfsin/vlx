@@ -38,6 +38,8 @@
 namespace {
 const QStringList kBarStyles { "island", "docked", "minimal", "pill", "classic" };
 const QStringList kBarPositions { "bottom", "top" };
+const QStringList kBarAligns { "center", "left", "right" };
+const QStringList kBarSizes { "compact", "normal", "large" };
 const QStringList kAudioSkins { "classic", "albumcompact", "album", "turntable", "turntablecompact", "mini" };
 const QStringList kThemes { "default", "dark", "light", "paper", "ink", "nord", "mocha", "tokyo" };
 const QStringList kFileIcons { "band", "echo" };
@@ -62,6 +64,14 @@ VLXSettings::VLXSettings(qt_intf_t *intf, QObject *parent)
     m_barPosition = readString("qt-vlx-bar-position", "bottom");
     if (!kBarPositions.contains(m_barPosition))
         m_barPosition = "bottom";
+    m_barAlign = readString("qt-vlx-bar-align", "center");
+    if (!kBarAligns.contains(m_barAlign))
+        m_barAlign = "center";
+    m_barSize = readString("qt-vlx-bar-size", "normal");
+    if (!kBarSizes.contains(m_barSize))
+        m_barSize = "normal";
+    m_pinControls = var_InheritBool(m_intf, "qt-vlx-pin-controls");
+    m_pinTopBar = var_InheritBool(m_intf, "qt-vlx-pin-topbar");
     m_audioBackground = readString("qt-vlx-audio-background", "plain") == "tinted" ? "tinted" : "plain";
     m_audioTheme = readString("qt-vlx-audio-theme", "app");
     if (m_audioTheme != "app" && !kThemes.contains(m_audioTheme))
@@ -109,6 +119,42 @@ void VLXSettings::setAudioSkin(const QString &skin)
     m_audioSkin = skin;
     writeString("qt-vlx-audio-skin", skin);
     emit audioSkinChanged();
+}
+
+void VLXSettings::setBarAlign(const QString &align)
+{
+    if (!kBarAligns.contains(align) || align == m_barAlign)
+        return;
+    m_barAlign = align;
+    writeString("qt-vlx-bar-align", align);
+    emit barLayoutChanged();
+}
+
+void VLXSettings::setBarSize(const QString &size)
+{
+    if (!kBarSizes.contains(size) || size == m_barSize)
+        return;
+    m_barSize = size;
+    writeString("qt-vlx-bar-size", size);
+    emit barLayoutChanged();
+}
+
+void VLXSettings::setPinControls(bool pin)
+{
+    if (pin == m_pinControls)
+        return;
+    m_pinControls = pin;
+    config_PutInt("qt-vlx-pin-controls", pin);
+    emit barLayoutChanged();
+}
+
+void VLXSettings::setPinTopBar(bool pin)
+{
+    if (pin == m_pinTopBar)
+        return;
+    m_pinTopBar = pin;
+    config_PutInt("qt-vlx-pin-topbar", pin);
+    emit barLayoutChanged();
 }
 
 void VLXSettings::setAudioBackground(const QString &background)

@@ -37,6 +37,10 @@ FocusScope {
 
     property int identifier: -1
 
+    // VLX: where the playback group (the editor's "center" zone) sits: "center", "left" or "right".
+    //      Left: [playback][left zone ......][right zone]; right: [left zone][right zone ......][playback].
+    readonly property string vlxAlign: VLXSettings.barAlign
+
     readonly property PlayerControlbarModel model: {
         if (!!MainCtx.controlbarProfileModel.currentModel)
             return MainCtx.controlbarProfileModel.currentModel.getModel(identifier)
@@ -173,13 +177,15 @@ FocusScope {
         id: loaderLeft
 
         anchors {
-            right: loaderCenter.left
-            left: parent.left
+            right: playerControlLayout.vlxAlign === "left" ? loaderRight.left
+                 : playerControlLayout.vlxAlign === "right" ? undefined : loaderCenter.left // VLX
+            left: playerControlLayout.vlxAlign === "left" ? loaderCenter.right : parent.left // VLX
             top: parent.top
             bottom: parent.bottom
 
             // Spacing for the filler item acts as padding
-            rightMargin: layoutSpacing - spacing
+            leftMargin: playerControlLayout.vlxAlign === "left" ? layoutSpacing - spacing : 0 // VLX
+            rightMargin: playerControlLayout.vlxAlign === "right" ? 0 : layoutSpacing - spacing
         }
 
         active: !!playerControlLayout.model?.left && (playerControlLayout.model.left.count > 0) &&
@@ -220,7 +226,10 @@ FocusScope {
         id: loaderCenter
 
         anchors {
-            horizontalCenter: parent.horizontalCenter
+            // VLX: centered (VLC's layout), or at the left or right edge
+            horizontalCenter: playerControlLayout.vlxAlign === "center" ? parent.horizontalCenter : undefined
+            left: playerControlLayout.vlxAlign === "left" ? parent.left : undefined
+            right: playerControlLayout.vlxAlign === "right" ? parent.right : undefined
             top: parent.top
             bottom: parent.bottom
         }
@@ -283,13 +292,17 @@ FocusScope {
         id: loaderRight
 
         anchors {
-            left: loaderCenter.right
-            right: parent.right
+            // VLX: after the centered group (VLC), at the right edge (left alignment), or right after the left
+            //      zone (right alignment: every other button on the left, the playback group alone on the right)
+            left: playerControlLayout.vlxAlign === "center" ? loaderCenter.right
+                : playerControlLayout.vlxAlign === "right" ? loaderLeft.right : undefined
+            right: playerControlLayout.vlxAlign === "right" ? undefined : parent.right
             top: parent.top
             bottom: parent.bottom
 
             // Spacing for the filler item acts as padding
-            leftMargin: layoutSpacing - spacing
+            leftMargin: playerControlLayout.vlxAlign === "left" ? 0 : layoutSpacing - spacing
+            rightMargin: 0
         }
 
         active: !!playerControlLayout.model && !!playerControlLayout.model.right && (playerControlLayout.model.right.count > 0) &&

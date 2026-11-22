@@ -304,6 +304,16 @@ static const char *const vlx_theme_texts[] = { N_("VLC default"), N_("Dark"), N_
 #define VLX_BAR_STYLE_TEXT N_( "Player bar style" )
 #define VLX_BAR_STYLE_LONGTEXT N_( "How the player controls look: a floating island, a docked bar, minimal, a compact pill or classic." )
 #define VLX_BAR_POSITION_TEXT N_( "Player bar position" )
+#define VLX_BAR_ALIGN_TEXT N_( "Player controls alignment" )
+static const char *const vlx_bar_align_values[] = { "center", "left", "right" };
+static const char *const vlx_bar_align_texts[] = { N_("Centered"), N_("Left"), N_("Right") };
+#define VLX_BAR_SIZE_TEXT N_( "Player bar size" )
+static const char *const vlx_bar_size_values[] = { "compact", "normal", "large" };
+static const char *const vlx_bar_size_texts[] = { N_("Compact"), N_("Normal"), N_("Large") };
+#define VLX_PIN_CONTROLS_TEXT N_( "Always show the player controls" )
+#define VLX_PIN_CONTROLS_LONGTEXT N_( "Show the controls under the video at all times instead of over it, like VLC 3." )
+#define VLX_PIN_TOPBAR_TEXT N_( "Always show the top bar" )
+#define VLX_PIN_TOPBAR_LONGTEXT N_( "Show the title bar above the video at all times instead of over it." )
 static const char *const vlx_bar_style_values[] = { "island", "docked", "minimal", "pill", "classic" };
 static const char *const vlx_bar_style_texts[] = { N_("Island"), N_("Docked bar"), N_("Minimal"), N_("Compact pill"), N_("Classic") };
 static const char *const vlx_bar_position_values[] = { "bottom", "top" };
@@ -519,6 +529,12 @@ vlc_module_begin ()
         change_string_list( vlx_bar_style_values, vlx_bar_style_texts )
     add_string( "qt-vlx-bar-position", "bottom", VLX_BAR_POSITION_TEXT, nullptr ) // VLX
         change_string_list( vlx_bar_position_values, vlx_bar_position_texts )
+    add_string( "qt-vlx-bar-align", "center", VLX_BAR_ALIGN_TEXT, nullptr ) // VLX
+        change_string_list( vlx_bar_align_values, vlx_bar_align_texts )
+    add_string( "qt-vlx-bar-size", "normal", VLX_BAR_SIZE_TEXT, nullptr ) // VLX
+        change_string_list( vlx_bar_size_values, vlx_bar_size_texts )
+    add_bool( "qt-vlx-pin-controls", false, VLX_PIN_CONTROLS_TEXT, VLX_PIN_CONTROLS_LONGTEXT ) // VLX
+    add_bool( "qt-vlx-pin-topbar", false, VLX_PIN_TOPBAR_TEXT, VLX_PIN_TOPBAR_LONGTEXT ) // VLX
     add_string( "qt-vlx-start-view", "", N_("Start page"), N_("Page to open at start, for screenshots and tests (e.g. vlxsettings).") ) // VLX
         change_volatile()
     add_string( "qt-vlx-audio-skin", "albumcompact", VLX_AUDIO_SKIN_TEXT, nullptr ) // VLX

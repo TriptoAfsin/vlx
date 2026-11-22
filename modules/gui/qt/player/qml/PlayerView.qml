@@ -40,7 +40,7 @@ FocusScope {
 
     // VLX: player bar style (DESIGN.md › Player): island, docked, minimal, pill or classic
     readonly property string vlxBarStyle: VLXSettings.barStyle
-    readonly property bool vlxFloatingBar: vlxBarStyle === "island" || vlxBarStyle === "pill"
+    readonly property bool vlxFloatingBar: (vlxBarStyle === "island" || vlxBarStyle === "pill") && !_barUnderVideo
     // VLX: controls docked at the top, under the top bar, instead of the bottom
     readonly property bool vlxBarTop: VLXSettings.barPosition === "top"
     readonly property real vlxBarSideMargin: (vlxBarStyle === "pill")
@@ -65,9 +65,12 @@ FocusScope {
 
     // Private
 
-    property bool _controlsUnderVideo: (MainCtx.pinVideoControls
-                                        &&
-                                        (MainCtx.intfMainWindow.visibility !== Window.FullScreen))
+    // VLX: the controls and the top bar can each stay outside the video ("always show"), as in VLC 3.
+    //      VLC's own "pin video controls" pins both. Never in full screen.
+    readonly property bool _vlxWindowed: MainCtx.intfMainWindow.visibility !== Window.FullScreen
+    readonly property bool _barUnderVideo: (MainCtx.pinVideoControls || VLXSettings.pinControls) && _vlxWindowed
+    readonly property bool _topAboveVideo: (MainCtx.pinVideoControls || VLXSettings.pinTopBar) && _vlxWindowed
+    property bool _controlsUnderVideo: _barUnderVideo && _topAboveVideo
 
     property bool _keyPressed: false
 
@@ -134,7 +137,7 @@ FocusScope {
         id: windowTheme
 
         // NOTE: We force the night theme when playing a video.
-        palette: (MainCtx.hasEmbededVideo && MainCtx.pinVideoControls === false)
+        palette: (MainCtx.hasEmbededVideo && !rootPlayer._controlsUnderVideo) // VLX: both bars outside the video
                  ? VLCStyle.darkPalette
                  : VLCStyle.palette
 
@@ -192,8 +195,11 @@ FocusScope {
         anchors {
             left: parent.left
             right: parent.right
-            top: (MainCtx.hasEmbededVideo && rootPlayer._controlsUnderVideo) ? topBar.bottom : parent.top
-            bottom: (MainCtx.hasEmbededVideo && rootPlayer._controlsUnderVideo) ? controlBar.top : parent.bottom
+            // VLX: below a pinned top bar (and a pinned bar placed at the top), above a pinned bar at the bottom
+            top: !MainCtx.hasEmbededVideo ? parent.top
+                 : (rootPlayer._barUnderVideo && rootPlayer.vlxBarTop) ? controlBar.bottom
+                 : rootPlayer._topAboveVideo ? topBar.bottom : parent.top
+            bottom: (MainCtx.hasEmbededVideo && rootPlayer._barUnderVideo && !rootPlayer.vlxBarTop) ? controlBar.top : parent.bottom
         }
 
         // VLX: the VLX music view replaces VLC's audio screen unless the skin is "classic"
@@ -969,7 +975,7 @@ FocusScope {
 
         // NOTE: With pinned controls, the top controls are hidden when switching to
         //       fullScreen. Except when resume is visible
-        visible: (MainCtx.pinVideoControls === false
+        visible: (!(MainCtx.pinVideoControls || VLXSettings.pinTopBar) // VLX
                   ||
                   MainCtx.intfMainWindow.visibility !== Window.FullScreen
                   ||
@@ -978,7 +984,7 @@ FocusScope {
         focus: true
         title: Player.title
 
-        pinControls: MainCtx.pinVideoControls
+        pinControls: rootPlayer._topAboveVideo // VLX
 
         showCSD: MainCtx.clientSideDecoration && (MainCtx.intfMainWindow.visibility !== Window.FullScreen)
         showToolbar: MainCtx.hasToolbarMenu && (MainCtx.intfMainWindow.visibility !== Window.FullScreen)
@@ -1007,7 +1013,7 @@ FocusScope {
         //initial state value is "", using a binding avoid animation on startup
         Binding on state {
             when: playerToolbarVisibilityFSM.started
-            value: (playerToolbarVisibilityFSM.isVisible || rootPlayer._controlsUnderVideo) ? "visible" : "hidden"
+            value: (playerToolbarVisibilityFSM.isVisible || rootPlayer._topAboveVideo /* VLX */) ? "visible" : "hidden"
         }
 
         onTogglePlaylistVisibility: playlistVisibility.togglePlaylistVisibility()
@@ -1036,7 +1042,7 @@ FocusScope {
             anchors.fill: parent
 
             opacity: {
-                if (MainCtx.hasEmbededVideo && !MainCtx.pinVideoControls && !rootPlayer.displayFadeRectangles) {
+                if (MainCtx.hasEmbededVideo && !rootPlayer._topAboveVideo && !rootPlayer.displayFadeRectangles) { // VLX
                     return 0.6
                 } else if (MainCtx.intfMainWindow.visibility === Window.FullScreen && MainCtx.hasEmbededVideo) {
                     return MainCtx.pinOpacity
@@ -1047,7 +1053,7 @@ FocusScope {
 
             tintColor: windowTheme.bg.primary
 
-            visible: MainCtx.pinVideoControls || (MainCtx.hasEmbededVideo && !rootPlayer.displayFadeRectangles)
+            visible: rootPlayer._topAboveVideo || (MainCtx.hasEmbededVideo && !rootPlayer.displayFadeRectangles) // VLX
         }
     }
 
@@ -1057,7 +1063,7 @@ FocusScope {
         anchors {
             // NOTE: When the controls are pinned we display the playqueue under the topBar.
             top: rootPlayer.vlxBarTop ? controlBar.bottom // VLX: under the controls when they're at the top
-               : (rootPlayer._controlsUnderVideo) ? topBar.bottom
+               : (rootPlayer._topAboveVideo) ? topBar.bottom // VLX
                                                   : parent.top
 
             right: parent.right
@@ -1133,7 +1139,7 @@ FocusScope {
 
             rightPadding: VLCStyle.applicationHorizontalMargin
             topPadding:  {
-                if (rootPlayer._controlsUnderVideo)
+                if (rootPlayer._topAboveVideo) // VLX
                     return VLCStyle.margin_normal
                 else
                     // NOTE: We increase the padding accordingly to avoid overlapping the TopBar.
@@ -1217,7 +1223,7 @@ FocusScope {
             left: parent.left
             right: parent.right
 
-            bottomMargin: (rootPlayer._controlsUnderVideo || !controlBar.visible)
+            bottomMargin: (rootPlayer._barUnderVideo || !controlBar.visible) // VLX
                           ? 0 : - VLCStyle.margin_large
         }
     }
@@ -1271,7 +1277,7 @@ FocusScope {
         id: toggleControlBarButton
         visible: Player.isInteractive
                  && MainCtx.hasEmbededVideo
-                 && !(MainCtx.pinVideoControls && !Player.fullscreen)
+                 && !rootPlayer._barUnderVideo // VLX
                  && (interactiveAutoHideTimer.running === true
                      || controlBar.state !== "hidden" || toggleControlBarButton.hovered)
         focus: true
@@ -1330,7 +1336,7 @@ FocusScope {
         topInset: (rootPlayer.vlxFloatingBar || rootPlayer.vlxBarStyle === "docked") ? 0 : sliderY
         topPadding: rootPlayer.vlxFloatingBar ? VLCStyle.margin_xsmall : 0
 
-        textPosition: (MainCtx.pinVideoControls)
+        textPosition: (rootPlayer._barUnderVideo) // VLX
                       ? ControlBar.TimeTextPosition.LeftRightSlider
                       : ControlBar.TimeTextPosition.AboveSlider
 
@@ -1357,7 +1363,7 @@ FocusScope {
         //initial state value is "", using a binding avoid animation on startup
         Binding on state {
             when: playerToolbarVisibilityFSM.started
-            value: (playerToolbarVisibilityFSM.isVisible || rootPlayer._controlsUnderVideo) ? "visible" : "hidden"
+            value: (playerToolbarVisibilityFSM.isVisible || rootPlayer._barUnderVideo /* VLX */) ? "visible" : "hidden"
         }
 
         onRequestLockUnlockAutoHide: (lock) => rootPlayer.lockUnlockAutoHide(lock)
@@ -1376,10 +1382,10 @@ FocusScope {
                     return !MainCtx.hasEmbededVideo
                 if (rootPlayer.vlxFloatingBar || rootPlayer.vlxBarStyle === "docked")
                     return true
-                return !MainCtx.hasEmbededVideo || MainCtx.pinVideoControls || !rootPlayer.displayFadeRectangles
+                return !MainCtx.hasEmbededVideo || rootPlayer._barUnderVideo || !rootPlayer.displayFadeRectangles // VLX
             }
 
-            radius: (rootPlayer.vlxBarStyle === "pill") ? height / 2
+            radius: !rootPlayer.vlxFloatingBar ? 0 : (rootPlayer.vlxBarStyle === "pill") ? height / 2
                   : (rootPlayer.vlxBarStyle === "island") ? VLCStyle.dp(16, VLCStyle.scale) : 0 // VLX
             border.width: rootPlayer.vlxFloatingBar ? VLCStyle.border : 0 // VLX
             border.color: windowTheme.border // VLX
@@ -1389,7 +1395,7 @@ FocusScope {
                     return 0.94
                 if (rootPlayer.vlxBarStyle === "docked") // VLX
                     return 1.0
-                if (MainCtx.hasEmbededVideo && !MainCtx.pinVideoControls && !rootPlayer.displayFadeRectangles) {
+                if (MainCtx.hasEmbededVideo && !rootPlayer._barUnderVideo && !rootPlayer.displayFadeRectangles) { // VLX
                     return 0.6
                 } else if ((Window.visibility === Window.FullScreen) && MainCtx.hasEmbededVideo) {
                     return MainCtx.pinOpacity

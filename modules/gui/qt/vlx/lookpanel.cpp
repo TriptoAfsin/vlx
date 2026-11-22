@@ -54,7 +54,8 @@ public:
         setAccessibleName(qtr("Preview"));
     }
 
-    QString theme, accent, barStyle, barPosition;
+    QString theme, accent, barStyle, barPosition, barAlign, barSize;
+    bool pinBar = false, pinTop = false;
 
 protected:
     void paintEvent(QPaintEvent *) override
@@ -89,12 +90,24 @@ protected:
             }
         }
 
-        // the "video"
-        QRectF video(side.right() + 8, title.bottom() + 8, win.right() - side.right() - 16, 0);
-        video.setBottom(win.bottom() - 8);
-        const bool docked = barStyle == QLatin1String("docked");
+        // the "video", between whichever bars are always shown
         const bool top = barPosition == QLatin1String("top");
-        const qreal dockH = 26;
+        const qreal k = barSize == QLatin1String("compact") ? 0.65 : barSize == QLatin1String("large") ? 1.25 : 1.0;
+        const bool docked = pinBar || barStyle == QLatin1String("docked");
+        const QString style = pinBar ? QStringLiteral("docked") : barStyle; // a pinned bar is docked
+        const qreal dockH = 26 * k;
+        const qreal topH = 14;
+        QRectF area(side.right() + 8, title.bottom() + 8, win.right() - side.right() - 16, 0);
+        area.setBottom(win.bottom() - 8);
+        QRectF video = area;
+        if (pinTop)
+        {
+            p.setBrush(c.raised);
+            p.drawRoundedRect(QRectF(area.left(), area.top(), area.width(), topH), 3, 3);
+            p.setBrush(c.muted);
+            p.drawRoundedRect(QRectF(area.left() + 6, area.top() + topH / 2 - 2, area.width() * 0.35, 4), 2, 2);
+            video.setTop(area.top() + topH + 3);
+        }
         if (docked)
         {
             if (top) video.setTop(video.top() + dockH);
@@ -108,40 +121,40 @@ protected:
         videoPath.addRoundedRect(video, docked ? 4 : 6, docked ? 4 : 6);
         p.fillPath(videoPath, sky);
         p.setBrush(QColor(255, 236, 170, 200));
-        p.drawEllipse(QPointF(video.right() - 30, video.top() + 26), 9, 9); // a sun, so it reads as a picture
+        p.drawEllipse(QPointF(video.right() - 30, video.top() + 24), 9, 9); // a sun, so it reads as a picture
 
         // the bar
         QRectF bar;
         qreal radius = 0;
         QColor surface = c.raised;
-        if (barStyle == QLatin1String("island"))
+        if (style == QLatin1String("island"))
         {
-            bar = QRectF(video.left() + video.width() * 0.08, 0, video.width() * 0.84, 30);
+            bar = QRectF(video.left() + video.width() * 0.08, 0, video.width() * 0.84, 30 * k);
             radius = 9;
         }
-        else if (barStyle == QLatin1String("pill"))
+        else if (style == QLatin1String("pill"))
         {
-            bar = QRectF(video.center().x() - video.width() * 0.24, 0, video.width() * 0.48, 24);
-            radius = 12;
+            bar = QRectF(video.center().x() - video.width() * 0.24, 0, video.width() * 0.48, 24 * k);
+            radius = 12 * k;
         }
         else if (docked)
         {
             bar = QRectF(video.left(), 0, video.width(), dockH - 4);
             radius = 4;
         }
-        else if (barStyle == QLatin1String("minimal"))
+        else if (style == QLatin1String("minimal"))
         {
-            bar = QRectF(video.left() + 10, 0, video.width() - 20, 16);
+            bar = QRectF(video.left() + 10, 0, video.width() - 20, 18 * k);
             surface = Qt::transparent;
         }
         else // classic: across the bottom of the video, over a shade
         {
-            bar = QRectF(video.left(), 0, video.width(), 32);
+            bar = QRectF(video.left(), 0, video.width(), 32 * k);
             surface.setAlphaF(0.88);
         }
         if (docked)
             bar.moveTop(top ? video.top() - dockH : video.bottom() + 4);
-        else if (barStyle == QLatin1String("classic"))
+        else if (style == QLatin1String("classic"))
             bar.moveTop(top ? video.top() : video.bottom() - bar.height());
         else
             bar.moveTop(top ? video.top() + 8 : video.bottom() - bar.height() - 8);
@@ -149,45 +162,60 @@ protected:
         if (surface.alpha() > 0)
         {
             QPainterPath barPath;
-            if (barStyle == QLatin1String("classic"))
+            if (style == QLatin1String("classic"))
                 barPath.addRect(bar);
             else
                 barPath.addRoundedRect(bar, radius, radius);
             p.save();
-            p.setClipPath(videoPath.united(barPath));
+            if (!docked)
+                p.setClipPath(videoPath.united(barPath));
             p.fillPath(barPath, surface);
             p.restore();
         }
 
-        // seek line, play button, a few buttons
-        const bool small = barStyle == QLatin1String("pill") || barStyle == QLatin1String("minimal");
-        const qreal seekY = small ? bar.center().y() : bar.top() + 7;
-        const qreal seekL = bar.left() + (small ? 26 : 10), seekR = bar.right() - (small ? 10 : 10);
+        // seek line
+        const bool pill = style == QLatin1String("pill");
+        const qreal seekY = pill ? bar.center().y() : bar.top() + bar.height() * 0.24;
+        const qreal seekL = bar.left() + (pill ? 26 : 10), seekR = bar.right() - 10;
         p.setBrush(QColor(c.text.red(), c.text.green(), c.text.blue(), 70));
         p.drawRoundedRect(QRectF(seekL, seekY - 1.5, seekR - seekL, 3), 1.5, 1.5);
         p.setBrush(c.accent);
         p.drawRoundedRect(QRectF(seekL, seekY - 1.5, (seekR - seekL) * 0.38, 3), 1.5, 1.5);
         p.drawEllipse(QPointF(seekL + (seekR - seekL) * 0.38, seekY), 3.5, 3.5);
 
-        const QPointF play = small ? QPointF(bar.left() + 13, bar.center().y())
-                                   : QPointF(bar.center().x(), bar.bottom() - 11);
-        const qreal r = small ? 7 : 8;
+        // play button with previous and next, placed by the alignment; the other buttons opposite
+        const qreal r = qBound(4.5, 8 * k, 10.0);
+        const qreal rowY = pill ? bar.center().y() : bar.top() + bar.height() * 0.66;
+        const qreal groupW = 2 * r + 2 * 14;
+        qreal playX;
+        if (pill)
+            playX = bar.left() + 13;
+        else if (barAlign == QLatin1String("left"))
+            playX = bar.left() + 10 + groupW / 2;
+        else if (barAlign == QLatin1String("right"))
+            playX = bar.right() - 10 - groupW / 2;
+        else
+            playX = bar.center().x();
+        const QPointF play(playX, rowY);
         p.setBrush(c.accent);
         p.drawEllipse(play, r, r);
         p.setBrush(c.dark || surface.alpha() == 0 ? QColor(Qt::white) : c.bg);
         p.drawEllipse(play, r - 1.6, r - 1.6);
         QPolygonF tri;
-        tri << QPointF(play.x() - 2.2, play.y() - 3.4) << QPointF(play.x() + 3.6, play.y())
-            << QPointF(play.x() - 2.2, play.y() + 3.4);
+        tri << QPointF(play.x() - r * 0.28, play.y() - r * 0.42) << QPointF(play.x() + r * 0.45, play.y())
+            << QPointF(play.x() - r * 0.28, play.y() + r * 0.42);
         p.setBrush(QColor(Qt::black));
         p.drawPolygon(tri);
-        if (!small)
+        if (!pill)
         {
             p.setBrush(c.text);
-            for (int i = 1; i <= 2; ++i)
+            p.drawRoundedRect(QRectF(play.x() - r - 11, play.y() - 2.5, 6, 5), 1.5, 1.5); // previous
+            p.drawRoundedRect(QRectF(play.x() + r + 5, play.y() - 2.5, 6, 5), 1.5, 1.5);  // next
+            const bool othersLeft = barAlign == QLatin1String("right");
+            for (int i = 0; i < 3; ++i) // subtitles, volume, fullscreen
             {
-                p.drawRoundedRect(QRectF(play.x() - r - 12 * i - 4, play.y() - 2.5, 7, 5), 1.5, 1.5);
-                p.drawRoundedRect(QRectF(play.x() + r + 12 * i - 3, play.y() - 2.5, 7, 5), 1.5, 1.5);
+                const qreal x = othersLeft ? bar.left() + 10 + i * 11 : bar.right() - 16 - i * 11;
+                p.drawRoundedRect(QRectF(x, play.y() - 2.5, 6, 5), 1.5, 1.5);
             }
         }
     }
@@ -360,6 +388,10 @@ QWidget *vlx::createLookPanel(qt_intf_t *intf, QWidget *parent)
     preview->accent = s->accent();
     preview->barStyle = s->barStyle();
     preview->barPosition = s->barPosition();
+    preview->barAlign = s->barAlign();
+    preview->barSize = s->barSize();
+    preview->pinBar = s->pinControls();
+    preview->pinTop = s->pinTopBar();
     auto *audio = new AudioPreview(group);
     audio->skin = s->audioSkin();
     audio->background = s->audioBackground();
@@ -408,6 +440,18 @@ QWidget *vlx::createLookPanel(qt_intf_t *intf, QWidget *parent)
               s->barStyle(), [s, preview](const QString &v) { s->setBarStyle(v); preview->barStyle = v; preview->update(); });
     addChoice(form, qtr("Controls position"), { { "bottom", qtr("Bottom") }, { "top", qtr("Top") } },
               s->barPosition(), [s, preview](const QString &v) { s->setBarPosition(v); preview->barPosition = v; preview->update(); });
+    addChoice(form, qtr("Controls alignment"), { { "center", qtr("Centered") }, { "left", qtr("Left") }, { "right", qtr("Right") } },
+              s->barAlign(), [s, preview](const QString &v) { s->setBarAlign(v); preview->barAlign = v; preview->update(); });
+    addChoice(form, qtr("Bar size"), { { "compact", qtr("Compact") }, { "normal", qtr("Normal") }, { "large", qtr("Large") } },
+              s->barSize(), [s, preview](const QString &v) { s->setBarSize(v); preview->barSize = v; preview->update(); });
+    addChoice(form, qtr("Show the controls"),
+              { { "false", qtr("Over the video, auto-hide") }, { "true", qtr("Always, under the video") } },
+              s->pinControls() ? QStringLiteral("true") : QStringLiteral("false"),
+              [s, preview](const QString &v) { s->setPinControls(v == "true"); preview->pinBar = v == "true"; preview->update(); });
+    addChoice(form, qtr("Show the top bar"),
+              { { "false", qtr("Over the video, auto-hide") }, { "true", qtr("Always, above the video") } },
+              s->pinTopBar() ? QStringLiteral("true") : QStringLiteral("false"),
+              [s, preview](const QString &v) { s->setPinTopBar(v == "true"); preview->pinTop = v == "true"; preview->update(); });
     addChoice(form, qtr("Hide controls after"),
               { { "1000", "1 s" }, { "2000", "2 s" }, { "3000", "3 s" }, { "5000", "5 s" }, { "86400000", qtr("Never") } },
               QString::number(s->intOption(QStringLiteral("mouse-hide-timeout"))),

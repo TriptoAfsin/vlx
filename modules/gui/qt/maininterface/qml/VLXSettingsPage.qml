@@ -64,6 +64,21 @@ FocusScope {
         { id: "barPosition", section: "player", name: qsTr("Controls position"), help: qsTr("Dock the player controls at the bottom or at the top, under the title."), keys: "top bottom dock controls position",
           options: [["bottom", qsTr("Bottom")], ["top", qsTr("Top")]],
           get: () => VLXSettings.barPosition, set: (v) => { VLXSettings.barPosition = v } },
+        { id: "barAlign", section: "player", name: qsTr("Controls alignment"), help: qsTr("Where the play, previous and next buttons sit on the bar."), keys: "align alignment left center centre right controls buttons layout",
+          options: [["center", qsTr("Centered")], ["left", qsTr("Left")], ["right", qsTr("Right")]],
+          get: () => VLXSettings.barAlign, set: (v) => { VLXSettings.barAlign = v } },
+        { id: "barSize", section: "player", name: qsTr("Bar size"), help: qsTr("How tall the player controls are. Compact keeps them slim."), keys: "compact small large big height slim bar size controls",
+          options: [["compact", qsTr("Compact")], ["normal", qsTr("Normal")], ["large", qsTr("Large")]],
+          get: () => VLXSettings.barSize, set: (v) => { VLXSettings.barSize = v } },
+        { id: "pinControls", section: "player", name: qsTr("Always show the controls"), help: qsTr("Keep the controls under the video, always visible, as in VLC 3. Off: they float over the video and hide."), keys: "always show pin pinned dock controls bar visible hide vlc 3 under below",
+          options: [["false", qsTr("Over the video, auto-hide")], ["true", qsTr("Always, under the video")]],
+          get: () => String(VLXSettings.pinControls), set: (v) => { VLXSettings.pinControls = (v === "true") } },
+        { id: "pinTopBar", section: "player", name: qsTr("Always show the top bar"), help: qsTr("Keep the title bar above the video, always visible. Off: it floats over the video and hides."), keys: "always show pin pinned top bar title visible hide",
+          options: [["false", qsTr("Over the video, auto-hide")], ["true", qsTr("Always, above the video")]],
+          get: () => String(VLXSettings.pinTopBar), set: (v) => { VLXSettings.pinTopBar = (v === "true") } },
+        { id: "hideDelay", section: "player", name: qsTr("Hide controls after"), help: qsTr("How long the controls and the mouse pointer stay after the mouse stops moving."), keys: "auto hide timeout mouse pointer cursor",
+          options: [["1000", "1 s"], ["2000", "2 s"], ["3000", "3 s"], ["5000", "5 s"], ["86400000", qsTr("Never")]],
+          get: () => String(VLXSettings.intOption("mouse-hide-timeout")), set: (v) => VLXSettings.setIntOption("mouse-hide-timeout", +v) },
         { id: "openMode", section: "player", name: qsTr("Opening files"), help: qsTr("What happens when you open a video from Explorer while VLX is already running. A new window lets you watch several at once."),
           keys: "instance instances multiple windows several one instance new window explorer double click queue enqueue",
           options: [["new", qsTr("A new window for each file")], ["running", qsTr("Play in the open window")], ["queue", qsTr("Queue in the open window")]],
@@ -71,9 +86,6 @@ FocusScope {
         { id: "buttons", section: "player", name: qsTr("Player buttons"), help: qsTr("Choose and arrange the buttons on the video, audio and mini player bars, with profiles."),
           keys: "toolbar buttons customise customize editor controls layout bar profile drag",
           action: qsTr("Customise"), run: () => DialogsProvider.showToolbarEditorDialog() },
-        { id: "hideDelay", section: "player", name: qsTr("Hide controls after"), help: qsTr("How long the controls and the mouse pointer stay after the mouse stops moving."), keys: "auto hide timeout mouse pointer cursor",
-          options: [["1000", "1 s"], ["2000", "2 s"], ["3000", "3 s"], ["5000", "5 s"], ["86400000", qsTr("Never")]],
-          get: () => String(VLXSettings.intOption("mouse-hide-timeout")), set: (v) => VLXSettings.setIntOption("mouse-hide-timeout", +v) },
         { id: "audioSkin", section: "audio", name: qsTr("Audio player skin"), help: qsTr("What the player shows for files without video."), keys: "music skin album turntable vinyl record mini",
           options: [["albumcompact", qsTr("Album compact")], ["album", qsTr("Album")], ["turntable", qsTr("Turntable")], ["turntablecompact", qsTr("Turntable compact")], ["mini", qsTr("Mini player")], ["classic", qsTr("VLC classic")]],
           get: () => VLXSettings.audioSkin, set: (v) => { VLXSettings.audioSkin = v } },
@@ -399,41 +411,111 @@ FocusScope {
                                 }
                             }
 
-                            Item { // bar style preview
+                            Item { // player preview: bar style, position, alignment, size and the always-show switches
+                                id: barPreview
                                 visible: modelData.id === "barStyle"
                                 width: Math.min(parent.width, VLCStyle.dp(420, VLCStyle.scale))
-                                height: visible ? width * 0.42 : 0
-                                Rectangle {
+                                height: visible ? width * 0.5 : 0
+                                readonly property string s: VLXSettings.barStyle
+                                readonly property string align: VLXSettings.barAlign
+                                readonly property bool pinBar: VLXSettings.pinControls
+                                readonly property bool pinTop: VLXSettings.pinTopBar
+                                readonly property bool atTop: VLXSettings.barPosition === "top"
+                                readonly property bool floating: (s === "island" || s === "pill") && !pinBar
+                                readonly property real sizeK: VLXSettings.barSize === "compact" ? 0.62 : VLXSettings.barSize === "large" ? 1.25 : 1
+                                readonly property real barH: height * ((s === "pill" && !pinBar) ? 0.17 : 0.24) * sizeK
+                                readonly property real topH: height * 0.1
+                                readonly property real r: VLCStyle.dp(12, VLCStyle.scale)
+
+                                Rectangle { // window
                                     anchors.fill: parent
-                                    radius: VLCStyle.dp(12, VLCStyle.scale)
+                                    radius: barPreview.r
+                                    color: theme.bg.primary
+                                }
+                                Rectangle { // the video, between whichever bars are always shown
+                                    id: pVideo
+                                    readonly property real t: (barPreview.pinTop ? barPreview.topH : 0) + ((barPreview.pinBar && barPreview.atTop) ? barPreview.barH : 0)
+                                    readonly property real b: (barPreview.pinBar && !barPreview.atTop) ? barPreview.barH : 0
+                                    x: 0; y: t
+                                    width: parent.width
+                                    height: parent.height - t - b
+                                    radius: (t === 0 && b === 0) ? barPreview.r : 0
                                     gradient: Gradient {
                                         GradientStop { position: 0; color: Qt.rgba(0.77, 0.42, 0.18, 1) }
                                         GradientStop { position: 1; color: Qt.rgba(0.06, 0.1, 0.13, 1) }
                                     }
+                                    Behavior on y { NumberAnimation { duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter } }
+                                    Behavior on height { NumberAnimation { duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter } }
                                 }
-                                Rectangle {
-                                    readonly property string s: VLXSettings.barStyle
-                                    readonly property bool floating: s === "island" || s === "pill"
-                                    anchors.horizontalCenter: parent.horizontalCenter
-                                    readonly property bool atTop: VLXSettings.barPosition === "top"
-                                    anchors.bottom: atTop ? undefined : parent.bottom
-                                    anchors.top: atTop ? parent.top : undefined
-                                    anchors.bottomMargin: floating ? parent.height * 0.08 : 0
-                                    anchors.topMargin: floating ? parent.height * 0.08 : 0
-                                    width: s === "pill" ? parent.width * 0.5 : s === "island" ? parent.width * 0.8 : parent.width
-                                    height: s === "pill" ? parent.height * 0.16 : parent.height * 0.26
-                                    radius: s === "pill" ? height / 2 : s === "island" ? VLCStyle.dp(10, VLCStyle.scale) : 0
-                                    color: theme.bg.primary
-                                    opacity: s === "minimal" ? 0 : s === "docked" ? 1 : 0.94
+                                Rectangle { // top bar, when always shown
+                                    visible: barPreview.pinTop
+                                    width: parent.width; height: barPreview.topH
+                                    color: theme.bg.secondary
+                                    Rectangle { x: parent.height * 0.6; anchors.verticalCenter: parent.verticalCenter; width: parent.width * 0.3; height: parent.height * 0.22; radius: height / 2; color: Qt.alpha(theme.fg.primary, 0.5) }
+                                }
+                                Rectangle { // the bar
+                                    id: pBar
+                                    readonly property real inset: barPreview.floating ? barPreview.height * 0.06 : 0
+                                    width: barPreview.floating ? (barPreview.s === "pill" ? parent.width * 0.5 : parent.width * 0.8) : parent.width
+                                    height: barPreview.barH
+                                    x: (parent.width - width) / 2
+                                    y: barPreview.pinBar ? (barPreview.atTop ? (barPreview.pinTop ? barPreview.topH : 0) : parent.height - height)
+                                       : barPreview.atTop ? pVideo.y + inset
+                                       : pVideo.y + pVideo.height - height - inset
+                                    radius: !barPreview.floating ? 0 : barPreview.s === "pill" ? height / 2 : VLCStyle.dp(10, VLCStyle.scale)
+                                    color: Qt.alpha((barPreview.pinBar || barPreview.s === "docked") ? theme.bg.secondary : theme.bg.primary,
+                                                    (barPreview.s === "minimal" && !barPreview.pinBar) ? 0 : (barPreview.pinBar || barPreview.s === "docked") ? 1 : 0.94)
                                     Behavior on width { NumberAnimation { duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter } }
                                     Behavior on height { NumberAnimation { duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter } }
-                                    Behavior on opacity { NumberAnimation { duration: VLCStyle.duration_long } }
+                                    Behavior on y { NumberAnimation { duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter } }
+
                                     Rectangle { // seek line
-                                        anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter; margins: parent.height * 0.5 }
-                                        height: Math.max(2, parent.height * 0.08); radius: height / 2
+                                        anchors { left: parent.left; right: parent.right; leftMargin: parent.height * 0.4; rightMargin: parent.height * 0.4 }
+                                        y: barPreview.s === "pill" && !barPreview.pinBar ? parent.height * 0.5 - height / 2 : parent.height * 0.22
+                                        height: Math.max(2, parent.height * 0.07); radius: height / 2
                                         color: Qt.alpha(theme.fg.primary, 0.2)
                                         Rectangle { width: parent.width * 0.38; height: parent.height; radius: height / 2; color: theme.accent }
                                     }
+                                    Row { // playback group: previous, play, next
+                                        id: pPlay
+                                        visible: !(barPreview.s === "pill" && !barPreview.pinBar)
+                                        spacing: parent.height * 0.14
+                                        y: parent.height * 0.62 - height / 2
+                                        x: barPreview.align === "left" ? parent.height * 0.4
+                                           : barPreview.align === "right" ? parent.width - width - parent.height * 0.4
+                                           : (parent.width - width) / 2
+                                        Behavior on x { NumberAnimation { duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter } }
+                                        Repeater {
+                                            model: 3
+                                            Rectangle {
+                                                required property int index
+                                                anchors.verticalCenter: parent.verticalCenter
+                                                width: index === 1 ? pBar.height * 0.42 : pBar.height * 0.18
+                                                height: width; radius: width / 2
+                                                color: index === 1 ? "transparent" : theme.fg.primary
+                                                border.color: theme.accent
+                                                border.width: index === 1 ? Math.max(2, width * 0.12) : 0
+                                            }
+                                        }
+                                    }
+                                    Row { // the other buttons
+                                        visible: pPlay.visible
+                                        spacing: parent.height * 0.12
+                                        y: parent.height * 0.62 - height / 2
+                                        x: barPreview.align === "right" ? parent.height * 0.4 : parent.width - width - parent.height * 0.4
+                                        Behavior on x { NumberAnimation { duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter } }
+                                        Repeater {
+                                            model: 3
+                                            Rectangle { width: pBar.height * 0.16; height: width; radius: width * 0.3; color: Qt.alpha(theme.fg.primary, 0.75) }
+                                        }
+                                    }
+                                }
+                                Rectangle { // frame
+                                    anchors.fill: parent
+                                    radius: barPreview.r
+                                    color: "transparent"
+                                    border.color: theme.border
+                                    border.width: VLCStyle.border
                                 }
                             }
 

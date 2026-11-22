@@ -39,6 +39,12 @@ class VLXSettings : public QObject
     Q_PROPERTY(QString barStyle READ barStyle WRITE setBarStyle NOTIFY barStyleChanged FINAL)
     // bottom, top
     Q_PROPERTY(QString barPosition READ barPosition WRITE setBarPosition NOTIFY barPositionChanged FINAL)
+    // controls alignment ("center", "left", "right") and bar size ("compact", "normal", "large")
+    Q_PROPERTY(QString barAlign READ barAlign WRITE setBarAlign NOTIFY barLayoutChanged FINAL)
+    Q_PROPERTY(QString barSize READ barSize WRITE setBarSize NOTIFY barLayoutChanged FINAL)
+    // always show the controls under the video / the top bar above it (VLC 3 style), each on its own
+    Q_PROPERTY(bool pinControls READ pinControls WRITE setPinControls NOTIFY barLayoutChanged FINAL)
+    Q_PROPERTY(bool pinTopBar READ pinTopBar WRITE setPinTopBar NOTIFY barLayoutChanged FINAL)
     // classic (VLC), albumcompact, album, turntable, turntablecompact, mini
     Q_PROPERTY(QString audioSkin READ audioSkin WRITE setAudioSkin NOTIFY audioSkinChanged FINAL)
     // audio view background ("plain", "tinted") and colours ("app" or a theme id)
@@ -62,6 +68,14 @@ public:
 
     QString barPosition() const { return m_barPosition; }
     void setBarPosition(const QString &position);
+    QString barAlign() const { return m_barAlign; }
+    void setBarAlign(const QString &align);
+    QString barSize() const { return m_barSize; }
+    void setBarSize(const QString &size);
+    bool pinControls() const { return m_pinControls; }
+    void setPinControls(bool pin);
+    bool pinTopBar() const { return m_pinTopBar; }
+    void setPinTopBar(bool pin);
 
     QString audioSkin() const { return m_audioSkin; }
     void setAudioSkin(const QString &skin);
@@ -105,6 +119,7 @@ public:
 signals:
     void barStyleChanged();
     void barPositionChanged();
+    void barLayoutChanged();
     void audioSkinChanged();
     void audioLookChanged();
     void themeChanged();
@@ -118,6 +133,10 @@ private:
     QString m_barStyle;
     QString m_barPosition;
     QString m_audioSkin;
+    QString m_barAlign;
+    QString m_barSize;
+    bool m_pinControls = false;
+    bool m_pinTopBar = false;
     QString m_audioBackground;
     QString m_audioTheme;
     QString m_theme;
