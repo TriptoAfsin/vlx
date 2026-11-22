@@ -48,7 +48,7 @@ STRINGS = [
     ('extras/package/win32/NSIS/vlc.win32.nsi.in', '!define PRODUCT_NAME "VLC media player"', '!define PRODUCT_NAME "VLZ"'),
     ('extras/package/win32/NSIS/vlc.win32.nsi.in', '!define PRODUCT_GROUP "VideoLAN"', '!define PRODUCT_GROUP "VLZ"'),
     ('extras/package/win32/NSIS/vlc.win32.nsi.in', '!define PRODUCT_PUBLISHER "VideoLAN"', '!define PRODUCT_PUBLISHER "VLZ"'),
-    ('extras/package/win32/NSIS/vlc.win32.nsi.in', '!define PRODUCT_WEB_SITE "https://www.videolan.org/"', '!define PRODUCT_WEB_SITE "https://github.com/TriptoAfsin/vlx"'),
+    ('extras/package/win32/NSIS/vlc.win32.nsi.in', '!define PRODUCT_WEB_SITE "https://www.videolan.org/"', '!define PRODUCT_WEB_SITE "https://github.com/TriptoAfsin/vlz"'),
     ('extras/package/win32/NSIS/vlc.win32.nsi.in', '!define PRODUCT_ID "{ea92ef52-afe4-4212-bacb-dfe9fca94cd6}"', '!define PRODUCT_ID "{6b1f3c2e-4d7a-4f6e-9a8b-5c2d1e0f7a91}"'),
     ('extras/package/win32/NSIS/vlc.win32.nsi.in', 'InstallDir "$@PROGRAMFILES@\\${PRODUCT_PUBLISHER}\\VLC"', 'InstallDir "$@PROGRAMFILES@\\${PRODUCT_NAME}"'),
     ('extras/package/win32/NSIS/vlc.win32.nsi.in', 'BrandingText "${PRODUCT_GROUP} ${PRODUCT_NAME}"', 'BrandingText "${PRODUCT_NAME}, based on VLC media player"'),
@@ -62,7 +62,7 @@ PATTERNS = [
      r'qtr\( "<p>VLC media player is a free and open source media player.*?" \) \+',
      'qtr( "<p>VLZ is a personal, open source fork of <a href=\\"https://www.videolan.org/vlc/\\">VLC media player</a>. '
      'All credit for the engine and codecs goes to the volunteers of the <a href=\\"https://www.videolan.org/\\">VideoLAN</a> community.</p>'
-     '<p>VLZ is not affiliated with VideoLAN.</p><p><a href=\\"https://github.com/TriptoAfsin/vlx\\">VLZ on GitHub</a>" ) +'),
+     '<p>VLZ is not affiliated with VideoLAN.</p><p><a href=\\"https://github.com/TriptoAfsin/vlz\\">VLZ on GitHub</a>" ) +'),
 ]
 
 # (source in extras/vlz/brand, destination)

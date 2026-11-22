@@ -95,7 +95,7 @@ AboutDialog::AboutDialog( qt_intf_t *_p_intf)
     ui.title->setText("<html><head/><body><p><span style=\" font-size:26pt; color:#353535;\"> " + qtr( "VLZ" ) + " </span></p></body></html>");
 
     ui.MainBlabla->setText("<html><head/><body>" +
-    qtr( "<p>VLZ is a personal, open source fork of <a href=\"https://www.videolan.org/vlc/\">VLC media player</a>. All credit for the engine and codecs goes to the volunteers of the <a href=\"https://www.videolan.org/\">VideoLAN</a> community.</p><p>VLZ is not affiliated with VideoLAN.</p><p><a href=\"https://github.com/TriptoAfsin/vlx\">VLZ on GitHub</a>" ) +
+    qtr( "<p>VLZ is a personal, open source fork of <a href=\"https://www.videolan.org/vlc/\">VLC media player</a>. All credit for the engine and codecs goes to the volunteers of the <a href=\"https://www.videolan.org/\">VideoLAN</a> community.</p><p>VLZ is not affiliated with VideoLAN.</p><p><a href=\"https://github.com/TriptoAfsin/vlz\">VLZ on GitHub</a>" ) +
     "</p></body> </html>");
 
     const QDate today = QDate::currentDate();

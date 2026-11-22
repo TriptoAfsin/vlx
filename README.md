@@ -40,7 +40,7 @@ Icon files (SVG, PNG from 16 to 512 px, and a Windows `.ico`) are in [`extras/vl
 
 ## Download
 
-Windows x64 builds come from GitHub Actions: see [Releases](https://github.com/TriptoAfsin/vlx/releases) for the setup
+Windows x64 builds come from GitHub Actions: see [Releases](https://github.com/TriptoAfsin/vlz/releases) for the setup
 and the portable `.7z`. There are no Linux or macOS builds; VLZ is made for Windows.
 
 ## Building
@@ -61,7 +61,7 @@ the exact commands used to check a change.
 | `main` | VLZ: upstream VLC plus the VLZ changes |
 | `master` | Untouched mirror of `upstream/master` |
 | `upstream` remote | `https://github.com/videolan/vlc.git` |
-| `origin` remote | `https://github.com/TriptoAfsin/vlx.git` |
+| `origin` remote | `https://github.com/TriptoAfsin/vlz.git` |
 
 To take a newer VLC, follow [`UPSTREAM.md`](UPSTREAM.md). VLZ follows pinned 4.0-dev commits until VLC 4.0 ships, then release tags.
 

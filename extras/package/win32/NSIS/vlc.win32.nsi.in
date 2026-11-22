@@ -8,7 +8,7 @@
 !define PRODUCT_VERSION @VERSION@
 !define PRODUCT_GROUP "VLZ"
 !define PRODUCT_PUBLISHER "VLZ"
-!define PRODUCT_WEB_SITE "https://github.com/TriptoAfsin/vlx"
+!define PRODUCT_WEB_SITE "https://github.com/TriptoAfsin/vlz"
 !define PRODUCT_DIR_REGKEY "Software\VLZ" ; VLZ: own key, so it never reuses a VLC install folder
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
