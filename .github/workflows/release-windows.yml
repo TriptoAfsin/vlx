@@ -68,7 +68,8 @@ jobs:
           # "libgcc_s_seh-1.dll not found" error). Hiding winpthread's import library makes the linker use the
           # static one.
           export LDFLAGS="-static-libgcc -static-libstdc++"
-          for f in $(find /usr -path '*x86_64-w64-mingw32*' -name 'libwinpthread.dll.a' 2>/dev/null); do
+          # (both libwinpthread.dll.a and libpthread.dll.a: GCC's posix threads link -lpthread)
+          for f in $(find /usr -path '*x86_64-w64-mingw32*' -name 'lib*pthread*.dll.a' 2>/dev/null); do
             mv "$f" "$f.vlx-static" && echo "static winpthread: hid $f"
           done
           # VideoLAN's prebuilt dependencies for VLX's upstream base (see UPSTREAM.md); without them
