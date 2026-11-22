@@ -248,6 +248,31 @@ void VLXSettings::setOpenMode(const QString &mode)
     config_SaveConfigFile(m_intf);
 }
 
+bool VLXSettings::memorySaver() const
+{
+    return config_GetInt("qt-vlx-memory-saver") != 0;
+}
+
+void VLXSettings::setMemorySaver(bool on)
+{
+    config_PutInt("qt-vlx-memory-saver", on);
+    /* VLC's own options, so the full preferences show the real values; off restores VLC's defaults */
+    config_PutInt("avcodec-threads", on ? 2 : 0);
+    config_PutInt("file-caching", on ? 300 : 1000);
+    config_SaveConfigFile(m_intf);
+}
+
+bool VLXSettings::mediaLibrary() const
+{
+    return config_GetInt("qt-vlx-media-library") != 0;
+}
+
+void VLXSettings::setMediaLibrary(bool on)
+{
+    config_PutInt("qt-vlx-media-library", on);
+    config_SaveConfigFile(m_intf);
+}
+
 QVariantList VLXSettings::commands() const
 {
     QVariantList out;

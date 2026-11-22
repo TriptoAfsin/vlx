@@ -313,6 +313,10 @@ static const char *const vlx_bar_size_texts[] = { N_("Compact"), N_("Normal"), N
 #define VLX_PIN_CONTROLS_TEXT N_( "Always show the player controls" )
 #define VLX_PIN_CONTROLS_LONGTEXT N_( "Show the controls under the video at all times instead of over it, like VLC 3." )
 #define VLX_PIN_TOPBAR_TEXT N_( "Always show the top bar" )
+#define VLX_MEMORY_SAVER_TEXT N_( "Memory saver" )
+#define VLX_MEMORY_SAVER_LONGTEXT N_( "Decode with 2 threads and read 0.3 s ahead instead of 1 s: about 50 MB less for 1080p. CPU-only decoding of heavy 4K files may stutter." )
+#define VLX_MEDIA_LIBRARY_TEXT N_( "Media library" )
+#define VLX_MEDIA_LIBRARY_LONGTEXT N_( "Index your videos and music for the Video and Music pages. Off saves about 10 MB; takes effect at the next start." )
 #define VLX_PIN_TOPBAR_LONGTEXT N_( "Show the title bar above the video at all times instead of over it." )
 static const char *const vlx_bar_style_values[] = { "island", "docked", "minimal", "pill", "classic" };
 static const char *const vlx_bar_style_texts[] = { N_("Island"), N_("Docked bar"), N_("Minimal"), N_("Compact pill"), N_("Classic") };
@@ -535,6 +539,8 @@ vlc_module_begin ()
         change_string_list( vlx_bar_size_values, vlx_bar_size_texts )
     add_bool( "qt-vlx-pin-controls", false, VLX_PIN_CONTROLS_TEXT, VLX_PIN_CONTROLS_LONGTEXT ) // VLX
     add_bool( "qt-vlx-pin-topbar", false, VLX_PIN_TOPBAR_TEXT, VLX_PIN_TOPBAR_LONGTEXT ) // VLX
+    add_bool( "qt-vlx-memory-saver", false, VLX_MEMORY_SAVER_TEXT, VLX_MEMORY_SAVER_LONGTEXT ) // VLX
+    add_bool( "qt-vlx-media-library", true, VLX_MEDIA_LIBRARY_TEXT, VLX_MEDIA_LIBRARY_LONGTEXT ) // VLX
     add_string( "qt-vlx-start-view", "", N_("Start page"), N_("Page to open at start, for screenshots and tests (e.g. vlxsettings).") ) // VLX
         change_volatile()
     add_string( "qt-vlx-audio-skin", "albumcompact", VLX_AUDIO_SKIN_TEXT, nullptr ) // VLX

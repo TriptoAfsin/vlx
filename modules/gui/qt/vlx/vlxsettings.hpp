@@ -105,6 +105,12 @@ public:
     // Sets VLC's one-instance, one-instance-when-started-from-file and playlist-enqueue; takes effect for the
     // next file opened.
     Q_INVOKABLE QString openMode() const;
+    // Memory saver: 2 decoder threads and 0.3 s read-ahead (VLC's avcodec-threads and file-caching), for the
+    // next file played. Media library: whether it starts with VLX (next start).
+    Q_INVOKABLE bool memorySaver() const;
+    Q_INVOKABLE void setMemorySaver(bool on);
+    Q_INVOKABLE bool mediaLibrary() const;
+    Q_INVOKABLE void setMediaLibrary(bool on);
     Q_INVOKABLE void setOpenMode(const QString &mode);
 
     /* Command palette (Ctrl+K): every VLC hotkey action with its label and current keys,

@@ -45,6 +45,7 @@ FocusScope {
         { id: "player", name: qsTr("Player") },
         { id: "audio", name: qsTr("Audio player") },
         { id: "files", name: qsTr("File icons") },
+        { id: "performance", name: qsTr("Performance") },
         { id: "advanced", name: qsTr("Advanced") }
     ]
 
@@ -101,6 +102,16 @@ FocusScope {
         { id: "fileIconLook", section: "files", name: qsTr("File icon look"), help: qsTr("Light or dark icons, or follow the Windows app theme."), keys: "explorer icons dark light",
           options: [["auto", qsTr("Follow Windows")], ["light", qsTr("Light")], ["dark", qsTr("Dark")]],
           get: () => VLXSettings.fileIconLook, set: (v) => { VLXSettings.fileIconLook = v } },
+        { id: "memorySaver", section: "performance", name: qsTr("Memory saver"),
+          help: qsTr("Decode with 2 threads and read 0.3 s ahead instead of 1 s: about 50 MB less when playing 1080p. Applies to the next file you open. CPU-only decoding of heavy 4K files may stutter."),
+          keys: "memory ram usage lighter low saver threads cache caching buffer performance",
+          options: [["false", qsTr("Off")], ["true", qsTr("On")]],
+          get: () => String(VLXSettings.memorySaver()), set: (v) => VLXSettings.setMemorySaver(v === "true") },
+        { id: "mediaLibrary", section: "performance", name: qsTr("Media library"),
+          help: qsTr("Indexes your videos and music for the Video and Music pages. Off saves about 10 MB; Home then shows a simple open-file page. Takes effect the next time VLX starts."),
+          keys: "media library index videos music collection memory ram performance scan",
+          options: [["true", qsTr("On")], ["false", qsTr("Off")]],
+          get: () => String(VLXSettings.mediaLibrary()), set: (v) => VLXSettings.setMediaLibrary(v === "true") },
         { id: "allSettings", section: "advanced", name: qsTr("Every VLC setting"), help: qsTr("VLC's full preferences, for the rare deep change: codecs, hardware decoding, network caching, hotkeys and more."),
           keys: "advanced preferences expert gpu hardware decoding codec network caching buffer hotkeys shortcuts subtitles audio output video output",
           action: qsTr("Open"), run: () => DialogsProvider.prefsDialog() }

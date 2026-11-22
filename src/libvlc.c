@@ -214,7 +214,11 @@ int libvlc_InternalInit( libvlc_int_t *p_libvlc, int i_argc,
 
     vlc_CPU_dump( VLC_OBJECT(p_libvlc) );
 
-    if( var_InheritBool( p_libvlc, "media-library") )
+    /* VLX: Settings › Performance › Media library ("qt-vlx-media-library"); the launcher always passes
+     * --media-library, so this is where VLX's switch takes effect */
+    if( var_InheritBool( p_libvlc, "media-library")
+     && ( config_FindConfig( "qt-vlx-media-library" ) == NULL
+       || var_InheritBool( p_libvlc, "qt-vlx-media-library" ) ) )
     {
         priv->p_media_library = libvlc_MlCreate( p_libvlc );
         if ( priv->p_media_library == NULL )
