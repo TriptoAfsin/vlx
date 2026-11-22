@@ -63,6 +63,14 @@ jobs:
       - name: Build
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          # Link the MinGW runtime into VLX, as VideoLAN's own builds do: this image's GCC links libgcc, libstdc++
+          # and winpthread as DLLs by default, and VLX doesn't ship them (0.1.0's first build hung on start with a
+          # "libgcc_s_seh-1.dll not found" error). Hiding winpthread's import library makes the linker use the
+          # static one.
+          export LDFLAGS="-static-libgcc -static-libstdc++"
+          for f in $(find /usr -path '*x86_64-w64-mingw32*' -name 'libwinpthread.dll.a' 2>/dev/null); do
+            mv "$f" "$f.vlx-static" && echo "static winpthread: hid $f"
+          done
           # VideoLAN's prebuilt dependencies for VLX's upstream base (see UPSTREAM.md); without them
           # every dependency, Qt included, is compiled from source, which takes hours.
           url="https://artifacts.videolan.org/vlc/win64/vlc-contrib-x86_64-w64-mingw32-$(cat .vlx-contrib-sha).tar.zst"
@@ -90,6 +98,17 @@ jobs:
             ninja package-win32-7zip package-win32-exe
           fi
           ls -la vlx-*-win64.exe vlx-*-win64.7z
+
+      - name: Check DLL imports
+        run: |
+          # nothing may need a MinGW runtime DLL that VLX doesn't ship, or VLX won't start (or a plugin won't load)
+          bad=0
+          for f in $(find win64-meson/vlc-win64 -name '*.exe' -o -name '*.dll'); do
+            deps=$(x86_64-w64-mingw32-objdump -p "$f" | awk '/DLL Name/ {print $3}' | grep -iE '^(libgcc_s|libwinpthread|libstdc\+\+|libssp)' || true)
+            if [ -n "$deps" ]; then echo "::error::$f needs $deps"; bad=1; fi
+          done
+          [ "$bad" = 0 ] && echo "no MinGW runtime DLLs needed"
+          exit $bad
 
       - name: Collect files
         run: |
