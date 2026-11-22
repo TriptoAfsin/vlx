@@ -98,6 +98,10 @@ Defaults are the owner's picks.
 | Bottom bar buttons (play, previous, next always) | Skip 10 s, Speed, Subtitles, Audio track, Playlist, Volume, Picture in picture, Fullscreen, Screenshot, Loop, Shuffle, Equaliser | Skip, Speed, Subtitles, Audio track, Playlist, Volume, PiP, Fullscreen, Screenshot |
 | Time display | Elapsed and remaining, Elapsed and total, Elapsed and ends at | Elapsed and remaining |
 | Seek bar | Chapter marks, Thumbnail on hover, Thicker on hover | Chapter marks, Thumbnail on hover |
+| Controls alignment (where play, previous and next sit) | Centered, Left, Right | Centered |
+| Bar size | Compact, Normal, Large | Normal |
+| Always show the controls (under the video, like VLC 3) | Off (over the video, auto-hide), On | Off |
+| Always show the top bar (above the video) | Off (over the video, auto-hide), On | Off |
 | Hide controls after | 1, 2, 3, 5 s, Never | 2 s |
 | Opening files (from Explorer while VLX runs) | A new window for each file, Play in the open window, Queue in the open window | Play in the open window (VLC's default) |
 | Player buttons | VLC 4's toolbar editor: buttons of the video, audio and mini player bars, with profiles | VLC's default layout |
