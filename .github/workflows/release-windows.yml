@@ -34,23 +34,14 @@ jobs:
       # GitHub mounts its own /github/home, owned by another user; Wine (Meson runs its compiler checks through
       # it) refuses to start there, so give root its own home.
       HOME: /root
-      # A fresh Wine profile otherwise stops at the Wine Mono / Gecko install prompt, which nobody can answer here
-      # (the build hung after "meson setup" until the job timed out). Skip them and keep Wine quiet.
-      WINEPREFIX: /root/.wine
-      WINEDLLOVERRIDES: "mscoree,mshtml="
-      WINEDEBUG: "-all"
+      # Wine can't run in GitHub's containers ("wine: socket: Function not implemented"); Meson used it to run its
+      # compiler checks and hung. Build without it (extras/package/win32/build.sh, VLX_NO_WINE).
+      VLX_NO_WINE: "1"
     steps:
       - name: Check out
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
-
-      - name: Prepare Wine
-        run: |
-          # create the Wine profile up front, never for longer than 5 minutes, and prove Wine can run a program
-          timeout 300 wineboot -i || echo "::warning::wineboot didn't finish cleanly"
-          timeout 60 wineserver -w || true
-          timeout 60 wine cmd /c echo wine-ok
 
       - name: Version
         run: |

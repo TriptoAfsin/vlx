@@ -227,6 +227,12 @@ if [ "$HOST_ARCH" = "$ARCH" ]; then
 elif [ "$HOST_ARCH" = "x86_64" ] && [ "$ARCH" = "i686" ]; then
     VLC_EXE_WRAPPER="wine"
 fi
+# VLX: VLX_NO_WINE=1 builds without running Windows programs (GitHub's containers can't run Wine: no socket).
+# Meson then compiles its checks without running them; with prebuilt contribs nothing else needs Wine.
+if [ -n "$VLX_NO_WINE" ]; then
+    VLC_EXE_WRAPPER=""
+    WIN32_PATH_CMD=""
+fi
 
 cd ../../
 
