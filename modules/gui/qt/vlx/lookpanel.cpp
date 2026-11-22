@@ -452,6 +452,9 @@ QWidget *vlx::createLookPanel(qt_intf_t *intf, QWidget *parent)
               { { "false", qtr("Over the video, auto-hide") }, { "true", qtr("Always, above the video") } },
               s->pinTopBar() ? QStringLiteral("true") : QStringLiteral("false"),
               [s, preview](const QString &v) { s->setPinTopBar(v == "true"); preview->pinTop = v == "true"; preview->update(); });
+    addChoice(form, qtr("When playback ends"),
+              { { "player", qtr("Stay on the player") }, { "home", qtr("Go back to Home") } },
+              s->endView(), [s](const QString &v) { s->setEndView(v); });
     addChoice(form, qtr("Hide controls after"),
               { { "1000", "1 s" }, { "2000", "2 s" }, { "3000", "3 s" }, { "5000", "5 s" }, { "86400000", qtr("Never") } },
               QString::number(s->intOption(QStringLiteral("mouse-hide-timeout"))),

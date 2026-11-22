@@ -313,6 +313,9 @@ static const char *const vlx_bar_size_texts[] = { N_("Compact"), N_("Normal"), N
 #define VLX_PIN_CONTROLS_TEXT N_( "Always show the player controls" )
 #define VLX_PIN_CONTROLS_LONGTEXT N_( "Show the controls under the video at all times instead of over it, like VLC 3." )
 #define VLX_PIN_TOPBAR_TEXT N_( "Always show the top bar" )
+#define VLX_END_VIEW_TEXT N_( "When playback ends" )
+static const char *const vlx_end_view_values[] = { "player", "home" };
+static const char *const vlx_end_view_texts[] = { N_("Stay on the player"), N_("Go back to Home") };
 #define VLX_MEMORY_SAVER_TEXT N_( "Memory saver" )
 #define VLX_MEMORY_SAVER_LONGTEXT N_( "Decode with 2 threads and read 0.3 s ahead instead of 1 s: about 35 MB less for 1080p. CPU-only decoding of heavy 4K files may stutter." )
 #define VLX_MEDIA_LIBRARY_TEXT N_( "Media library" )
@@ -539,6 +542,8 @@ vlc_module_begin ()
         change_string_list( vlx_bar_size_values, vlx_bar_size_texts )
     add_bool( "qt-vlx-pin-controls", false, VLX_PIN_CONTROLS_TEXT, VLX_PIN_CONTROLS_LONGTEXT ) // VLX
     add_bool( "qt-vlx-pin-topbar", false, VLX_PIN_TOPBAR_TEXT, VLX_PIN_TOPBAR_LONGTEXT ) // VLX
+    add_string( "qt-vlx-end-view", "player", VLX_END_VIEW_TEXT, nullptr ) // VLX: VLC 3 stayed on the player
+        change_string_list( vlx_end_view_values, vlx_end_view_texts )
     add_bool( "qt-vlx-memory-saver", false, VLX_MEMORY_SAVER_TEXT, VLX_MEMORY_SAVER_LONGTEXT ) // VLX
     add_bool( "qt-vlx-media-library", true, VLX_MEDIA_LIBRARY_TEXT, VLX_MEDIA_LIBRARY_LONGTEXT ) // VLX
     add_string( "qt-vlx-start-view", "", N_("Start page"), N_("Page to open at start, for screenshots and tests (e.g. vlxsettings).") ) // VLX

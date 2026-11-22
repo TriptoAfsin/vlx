@@ -72,6 +72,7 @@ VLXSettings::VLXSettings(qt_intf_t *intf, QObject *parent)
         m_barSize = "normal";
     m_pinControls = var_InheritBool(m_intf, "qt-vlx-pin-controls");
     m_pinTopBar = var_InheritBool(m_intf, "qt-vlx-pin-topbar");
+    m_endView = readString("qt-vlx-end-view", "player") == "home" ? "home" : "player";
     m_audioBackground = readString("qt-vlx-audio-background", "plain") == "tinted" ? "tinted" : "plain";
     m_audioTheme = readString("qt-vlx-audio-theme", "app");
     if (m_audioTheme != "app" && !kThemes.contains(m_audioTheme))
@@ -154,6 +155,15 @@ void VLXSettings::setPinTopBar(bool pin)
         return;
     m_pinTopBar = pin;
     config_PutInt("qt-vlx-pin-topbar", pin);
+    emit barLayoutChanged();
+}
+
+void VLXSettings::setEndView(const QString &view)
+{
+    if ((view != "player" && view != "home") || view == m_endView)
+        return;
+    m_endView = view;
+    writeString("qt-vlx-end-view", view);
     emit barLayoutChanged();
 }
 

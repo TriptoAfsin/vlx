@@ -45,6 +45,8 @@ class VLXSettings : public QObject
     // always show the controls under the video / the top bar above it (VLC 3 style), each on its own
     Q_PROPERTY(bool pinControls READ pinControls WRITE setPinControls NOTIFY barLayoutChanged FINAL)
     Q_PROPERTY(bool pinTopBar READ pinTopBar WRITE setPinTopBar NOTIFY barLayoutChanged FINAL)
+    // when playback ends: stay on the player ("player", VLC 3) or go back to Home ("home", VLC 4)
+    Q_PROPERTY(QString endView READ endView WRITE setEndView NOTIFY barLayoutChanged FINAL)
     // classic (VLC), albumcompact, album, turntable, turntablecompact, mini
     Q_PROPERTY(QString audioSkin READ audioSkin WRITE setAudioSkin NOTIFY audioSkinChanged FINAL)
     // audio view background ("plain", "tinted") and colours ("app" or a theme id)
@@ -76,6 +78,8 @@ public:
     void setPinControls(bool pin);
     bool pinTopBar() const { return m_pinTopBar; }
     void setPinTopBar(bool pin);
+    QString endView() const { return m_endView; }
+    void setEndView(const QString &view);
 
     QString audioSkin() const { return m_audioSkin; }
     void setAudioSkin(const QString &skin);
@@ -143,6 +147,7 @@ private:
     QString m_barSize;
     bool m_pinControls = false;
     bool m_pinTopBar = false;
+    QString m_endView;
     QString m_audioBackground;
     QString m_audioTheme;
     QString m_theme;

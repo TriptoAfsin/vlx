@@ -237,7 +237,8 @@ Item {
         Connections {
             target: Player
             function onPlayingStateChanged() {
-                if (Player.playingState === Player.PLAYING_STATE_STOPPED) {
+                // VLX: Settings › Player › When playback ends: stay on the player (VLC 3) or go back to Home
+                if (Player.playingState === Player.PLAYING_STATE_STOPPED && VLXSettings.endView === "home") {
                     MainCtx.playerView = false
                 }
             }
