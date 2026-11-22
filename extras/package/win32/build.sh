@@ -677,7 +677,10 @@ if [ -n "$BUILD_MESON" ]; then
             # generate .exe installer
             ninja -C ${BUILD_PATH}/$SHORTARCH-meson package-win32-exe
             # generate .msi installer
-            ninja -C ${BUILD_PATH}/$SHORTARCH-meson package-msi
+            # VLX: only when the MSI target exists (vlx.ini sets wix=disabled)
+            if ninja -C ${BUILD_PATH}/$SHORTARCH-meson -t targets all | grep -q "^package-msi:"; then
+                ninja -C ${BUILD_PATH}/$SHORTARCH-meson package-msi
+            fi
         fi
     elif [ "$INSTALLER" = "r" ]; then
         meson dist -C ${BUILD_PATH}/$SHORTARCH-meson -j$JOBS --no-tests || echo "meson dist skipped"  # VLX: the source archive isn't needed, and newer Meson rejects -j here
@@ -688,7 +691,10 @@ if [ -n "$BUILD_MESON" ]; then
             # generate .exe installer
             ninja -C ${BUILD_PATH}/$SHORTARCH-meson package-win32-exe
             # generate .msi installer
-            ninja -C ${BUILD_PATH}/$SHORTARCH-meson package-msi
+            # VLX: only when the MSI target exists (vlx.ini sets wix=disabled)
+            if ninja -C ${BUILD_PATH}/$SHORTARCH-meson -t targets all | grep -q "^package-msi:"; then
+                ninja -C ${BUILD_PATH}/$SHORTARCH-meson package-msi
+            fi
         fi
     elif [ "$INSTALLER" = "u" ]; then
         meson install -C ${BUILD_PATH}/$SHORTARCH-meson ${MINSTALLFLAGS}
@@ -698,7 +704,10 @@ if [ -n "$BUILD_MESON" ]; then
             # generate .exe installer
             ninja -C ${BUILD_PATH}/$SHORTARCH-meson package-win32-exe
             # generate .msi installer
-            ninja -C ${BUILD_PATH}/$SHORTARCH-meson package-msi
+            # VLX: only when the MSI target exists (vlx.ini sets wix=disabled)
+            if ninja -C ${BUILD_PATH}/$SHORTARCH-meson -t targets all | grep -q "^package-msi:"; then
+                ninja -C ${BUILD_PATH}/$SHORTARCH-meson package-msi
+            fi
             sha512sum vlc-*-*.exe
             sha512sum vlc-*-*.msi
         fi
