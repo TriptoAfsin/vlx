@@ -32,6 +32,11 @@ VLZ builds with a mingw-w64 toolchain inside **WSL (Ubuntu)**. The machine has `
    ./extras/package/win32/build.sh -a x86_64 -p -m -r -t    # release + LTO, what VLZ ships
    ```
 2. **Tests:** `meson test --suite qt` from the build directory (Qt models and QML tests). Run all of `meson test` before taking an upstream update.
+   In the Windows cross-build they run under Wine (installed in WSL), and only `base_model_test` and
+   `test_qt_thread_runner` can pass there. The other Qt tests start libvlc with a fake interface module built into
+   the test executable, which `libvlccore.dll` can't load on Windows, and `test_qt_csd_button_model` needs a Qt
+   platform plugin the static Qt doesn't link in. Upstream runs them only in its native Linux CI job
+   (`debian-meson`); running them for VLZ needs a native Linux build.
 3. **Start it in a scratch profile.** VLZ (like VLC) uses a `portable` folder next to `vlz.exe` as its whole profile when one
    exists (`src/win32/dirs.c`). So run from the scratch copy with an empty `portable\` folder beside the exe:
    ```powershell

@@ -1412,6 +1412,7 @@ if qt6_dep.found()
             'suite': ['qt'],
             'include_directories' : qt_include_dir,
             'link_with': [libvlccore, libvlc],
+            'link_args': qt_link_args, # VLZ: missing upstream; a static Qt needs its libraries (pcre2, png, zlib...)
             'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
         }
 
@@ -1432,6 +1433,7 @@ if qt6_dep.found()
             'suite': ['qt'],
             'include_directories' : qt_include_dir,
             'link_with': [libvlccore, libvlc],
+            'link_args': qt_link_args, # VLZ: missing upstream; a static Qt needs its libraries (pcre2, png, zlib...)
             'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
         }
 
