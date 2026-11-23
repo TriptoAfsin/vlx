@@ -3,7 +3,46 @@
 Measured with [`scripts/bench.ps1`](scripts/bench.ps1) (VERIFY.md §4). Each player is a portable copy with its own
 throwaway profile and a generated plugin cache (`vlc-cache-gen`), run one at a time on the same PC.
 
-## 2026-11-22, precompiled QML (latest)
+## 2026-11-23, Lite mode (latest)
+
+Same PC and sample, 20 s of playback, start-up median of the last 11 of 12 launches. VLZ 0.1.2 plus Lite mode
+(Settings › Performance), one build: "VLZ Lite" is the same folder started with `--qt-vlz-lite`
+(`bench.ps1 -App "VLZ Lite=<folder>|--qt-vlz-lite"`), which is what the setting does at start-up.
+
+| Metric | VLC 3.0.24 | VLC 4.0 nightly | VLZ | VLZ Lite |
+|---|---:|---:|---:|---:|
+| Install size (MB) | 188.2 | 254.5 | 177.3 | 177.3 |
+| Plugins | 360 | 410 | 385 | 385 |
+| Start-up, first (ms) | 167 | 888 | 640 | 444 |
+| Start-up, warm median (ms) | 135 | 481 | 458 | 456 |
+| Idle private (MB) | 10.4 | 137.1 | 144.7 | **67.9** |
+| Idle working set (MB) | 36.9 | 174.5 | 175.9 | 129.9 |
+| Playing private (MB) | 234.6 | 308.5 | 314.5 | **239.0** |
+| Playing peak working set (MB) | 231.9 | 362.4 | 341.6 | 289.4 |
+| Playing CPU (% of all cores) | 0.2 | 0.2 | 0.3 | 0.3 |
+
+`bench.ps1` times start-up to the main window *existing*, which happens before the interface has loaded, so it
+hides Lite's gain. A second pass timed **UI ready** (window exists and the process has used no CPU for 200 ms),
+median of the last 9 of 10 launches:
+
+| | VLC 3.0.24 | VLZ | VLZ Lite |
+|---|---:|---:|---:|
+| UI ready (ms) | 142 | 916 | **611** |
+| vlc-preparser helper while playing (MB) | 0 | 3.5 | 0 |
+
+How to read it:
+
+- **Lite halves idle memory** (145 → 68 MB) and brings playing memory level with VLC 3 (239 vs 235 MB), with
+  the same interface. The UI is ready a third sooner.
+- Where it comes from, each measured on its own against the default (idle / playing private MB):
+  software renderer for the interface 144 → 80 / 321 → 282; Memory saver − / 317 → 275; no media library
+  145 → 136 / −; no background parsing: no helper process. The rest of the gap to VLC 3's idle 10 MB is Qt 6's
+  QML engine and the interface itself.
+- Leads measured and dropped (within noise): no backdrop blur, no tray icon, no Lua extensions, the basic render
+  loop, the QML interpreter. The OpenGL backend costs more (idle 203 MB, playing 438 MB). Minimal view on top of
+  Lite reaches idle 93 / playing 222 MB and UI ready 371 ms, but hides the whole interface, so it isn't part of Lite.
+
+## 2026-11-22, precompiled QML
 
 Same PC and sample, 20 s of playback, start-up median of the last 11 of 12 launches. Changes since the first run:
 QML precompiled with `qmlcachegen` (the Meson build didn't do it; the nightly's autotools build does), the command

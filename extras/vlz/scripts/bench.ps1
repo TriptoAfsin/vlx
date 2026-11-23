@@ -10,11 +10,14 @@
   cache and is reported separately). Memory = private bytes and working set after 10 s idle, and the peak
   working set while playing. CPU = share of all cores, averaged over the playback window after a warm-up.
 
+  An app can carry its own options after a "|", e.g. "VLZ Lite=T:\dev\vlz-bench\vlz|--qt-vlz-lite", to compare
+  settings of one build. They are passed on every launch.
+
 .EXAMPLE
   .\bench.ps1 -App "VLC 3.0.24=T:\dev\vlz-bench\vlc-3.0.24", "VLZ=T:\dev\vlz-bench\vlz" -Sample T:\dev\vlz-bench\bbb-1080p.mp4
 #>
 param(
-    [Parameter(Mandatory)] [string[]] $App,       # "Name=folder with vlz.exe or vlc.exe"
+    [Parameter(Mandatory)] [string[]] $App,       # "Name=folder with vlz.exe or vlc.exe[|--option ...]"
     [Parameter(Mandatory)] [string]   $Sample,    # a video file
     [int] $StartupRuns = 6,
     [int] $PlaySeconds = 60,
@@ -42,9 +45,9 @@ function Stop-Vlc($p) {
     if (-not $p.HasExited) { $p.CloseMainWindow() | Out-Null; if (-not $p.WaitForExit(5000)) { $p.Kill(); $p.WaitForExit() } }
 }
 
-function Measure-Startup($exe) {
+function Measure-Startup($exe, [string[]] $extra) {
     $sw = [System.Diagnostics.Stopwatch]::StartNew()
-    $p = Start-Vlc $exe @()
+    $p = Start-Vlc $exe $extra
     while ($p.MainWindowHandle -eq 0 -and $sw.Elapsed.TotalSeconds -lt 60) { Start-Sleep -Milliseconds 20; $p.Refresh() }
     $ms = $sw.Elapsed.TotalMilliseconds
     Start-Sleep -Milliseconds 500
@@ -55,6 +58,8 @@ function Measure-Startup($exe) {
 $rows = @()
 foreach ($spec in $App) {
     $name, $dir = $spec -split '=', 2
+    $dir, $opts = $dir -split '\|', 2
+    $extra = @(if ($opts) { $opts -split '\s+' | Where-Object { $_ } })
     # VLZ builds are vlz.exe; VLC (and VLZ builds before 0.1.0) are vlc.exe
     $exe = @('vlz.exe', 'vlc.exe') | ForEach-Object { Join-Path $dir $_ } | Where-Object { Test-Path $_ } | Select-Object -First 1
     if (-not $exe) { throw "No vlz.exe or vlc.exe in $dir" }
@@ -70,19 +75,19 @@ foreach ($spec in $App) {
     $plugins = ($files | Where-Object { $_.FullName -like '*\plugins\*' -and $_.Extension -eq '.dll' }).Count
 
     # Start-up
-    $times = 1..$StartupRuns | ForEach-Object { Measure-Startup $exe }
+    $times = 1..$StartupRuns | ForEach-Object { Measure-Startup $exe $extra }
     $first = $times[0]
     $warm = ($times | Select-Object -Skip 1 | Sort-Object)[[math]::Floor(($StartupRuns - 1) / 2)]
 
     # Idle memory
-    $p = Start-Vlc $exe @()
+    $p = Start-Vlc $exe $extra
     Start-Sleep -Seconds 10; $p.Refresh()
     $idlePrivate = [math]::Round($p.PrivateMemorySize64 / 1MB, 1)
     $idleWs = [math]::Round($p.WorkingSet64 / 1MB, 1)
     Stop-Vlc $p
 
     # Playback
-    $p = Start-Vlc $exe @('--loop', $Sample)
+    $p = Start-Vlc $exe (@('--loop') + $extra + $Sample)
     Start-Sleep -Seconds $WarmupSeconds; $p.Refresh()
     $cpu0 = $p.TotalProcessorTime; $t0 = Get-Date; $peakWs = 0
     while (((Get-Date) - $t0).TotalSeconds -lt $PlaySeconds) {

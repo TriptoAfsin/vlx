@@ -159,11 +159,19 @@ Settings › Performance. Measured on a 1080p H.264 clip (Task Manager's memory 
 
 | Setting | Effect | Default |
 |---|---|---|
+| **Lite mode** | One switch for the lightest VLZ (2026-11-23, private bytes): the interface drawn by Qt Quick's software renderer (video stays on the GPU), Memory saver, no media library, no background parsing or online metadata. Idle 145 → 68 MB, playing 315 → 239 MB (VLC 3.0.24: 235), UI ready 916 → 611 ms; next start. Overrides those settings at start-up without saving them, so turning it off restores them; their rows say so and are locked | Off |
 | Memory saver | 2 decoder threads and 0.3 s read-ahead instead of VLC's automatic threads and 1 s: playing 209 → 173 MB | Off (CPU-only 4K decoding may stutter) |
 | Media library | Off: no indexing, Home becomes the open-file page, idle 85 → 75 MB; next start | On |
 
 - Floors: VLC 3.0.24 needs 124 MB to play the same clip with the same savings; VLZ's interface (Qt Quick) adds
   about 35 MB on top while playing. Under 100 MB while playing 1080p isn't reachable for a VLC-based player.
+- Lite mode, as the software renderer draws it: no window backdrop is possible there, so the sidebar and bars use
+  their no-backdrop colour, which VLZ lifts one step off the page (10 % white on dark themes, 4 % black on light)
+  to match the backdrop's look; Windows with transparency effects off gets the same. Shader effects (soft
+  shadows) aren't drawn. Everything else looks the same.
+- Lite mode is in `src/vlz_lite.c` (its option table, with the reason for each entry) and one hook in `qt.cpp`
+  for the renderer. Measured and left out because they saved nothing: no backdrop blur, no tray icon, no Lua
+  extensions, the basic render loop, the QML interpreter. OpenGL instead of Direct3D 11 costs more (idle 203 MB).
 
 ## File icons
 
