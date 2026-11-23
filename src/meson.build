@@ -90,6 +90,8 @@ libvlccore_sources_base = files(
     'libvlc.c',
     'libvlc.h',
     'libvlc-module.c',
+    'vlz_lite.c', # VLZ: Lite mode
+    'vlz_lite.h', # VLZ
     'missing.c',
     'version.c',
     'config/cat.c',

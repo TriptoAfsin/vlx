@@ -42,6 +42,7 @@
 #include "modules/modules.h"
 #include "config/configuration.h"
 #include "media_source/media_source.h"
+#include "vlz_lite.h" // VLZ: Lite mode
 
 #include <stdio.h>                                              /* sprintf() */
 #include <string.h>
@@ -182,6 +183,8 @@ int libvlc_InternalInit( libvlc_int_t *p_libvlc, int i_argc,
 
     vlc_LogInit(p_libvlc);
 
+    vlz_LiteApply(VLC_OBJECT(p_libvlc)); // VLZ: Lite mode, now that the config is loaded
+
     char *tracer_name = var_InheritString(p_libvlc, "tracer");
     priv->tracer = vlc_tracer_Create(VLC_OBJECT(p_libvlc), tracer_name);
     free(tracer_name);
@@ -218,7 +221,8 @@ int libvlc_InternalInit( libvlc_int_t *p_libvlc, int i_argc,
      * --media-library, so this is where VLZ's switch takes effect */
     if( var_InheritBool( p_libvlc, "media-library")
      && ( config_FindConfig( "qt-vlz-media-library" ) == NULL
-       || var_InheritBool( p_libvlc, "qt-vlz-media-library" ) ) )
+       || var_InheritBool( p_libvlc, "qt-vlz-media-library" ) )
+     && !vlz_LiteEnabled( VLC_OBJECT(p_libvlc) ) ) /* VLZ: Lite mode has no media library */
     {
         priv->p_media_library = libvlc_MlCreate( p_libvlc );
         if ( priv->p_media_library == NULL )

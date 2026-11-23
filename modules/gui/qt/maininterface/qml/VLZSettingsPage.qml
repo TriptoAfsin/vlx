@@ -110,16 +110,23 @@ FocusScope {
         { id: "fileIconLook", section: "files", name: qsTr("File icon look"), help: qsTr("Light or dark icons, or follow the Windows app theme."), keys: "explorer icons dark light",
           options: [["auto", qsTr("Follow Windows")], ["light", qsTr("Light")], ["dark", qsTr("Dark")]],
           get: () => VLZSettings.fileIconLook, set: (v) => { VLZSettings.fileIconLook = v } },
+        { id: "liteMode", section: "performance", name: qsTr("Lite mode"),
+          help: qsTr("Starts faster and uses about half the memory when idle: the interface is drawn without the GPU (video still uses it), decoding uses less memory, and the media library and online cover art are off. Some soft shadows are not drawn. Takes effect the next time VLZ starts."),
+          keys: "lite light lightweight fast faster quick startup start memory ram low old slow pc laptop battery vlc 3 classic performance",
+          options: [["false", qsTr("Off")], ["true", qsTr("On")]],
+          get: () => String(VLZSettings.liteMode()), set: (v) => VLZSettings.setLiteMode(v === "true") },
         { id: "memorySaver", section: "performance", name: qsTr("Memory saver"),
+          locked: () => VLZSettings.liteMode(),
           help: qsTr("Decode with 2 threads and read 0.3 s ahead instead of 1 s: about 35 MB less when playing 1080p. Applies to the next file you open. CPU-only decoding of heavy 4K files may stutter."),
           keys: "memory ram usage lighter low saver threads cache caching buffer performance",
           options: [["false", qsTr("Off")], ["true", qsTr("On")]],
-          get: () => String(VLZSettings.memorySaver()), set: (v) => VLZSettings.setMemorySaver(v === "true") },
+          get: () => String(VLZSettings.liteMode() || VLZSettings.memorySaver()), set: (v) => VLZSettings.setMemorySaver(v === "true") },
         { id: "mediaLibrary", section: "performance", name: qsTr("Media library"),
+          locked: () => VLZSettings.liteMode(),
           help: qsTr("Indexes your videos and music for the Video and Music pages. Off saves about 10 MB; Home then shows a simple open-file page. Takes effect the next time VLZ starts."),
           keys: "media library index videos music collection memory ram performance scan",
           options: [["true", qsTr("On")], ["false", qsTr("Off")]],
-          get: () => String(VLZSettings.mediaLibrary()), set: (v) => VLZSettings.setMediaLibrary(v === "true") },
+          get: () => String(!VLZSettings.liteMode() && VLZSettings.mediaLibrary()), set: (v) => VLZSettings.setMediaLibrary(v === "true") },
         { id: "allSettings", section: "advanced", name: qsTr("Every VLC setting"), help: qsTr("VLC's full preferences, for the rare deep change: codecs, hardware decoding, network caching, hotkeys and more."),
           keys: "advanced preferences expert gpu hardware decoding codec network caching buffer hotkeys shortcuts subtitles audio output video output",
           action: qsTr("Open"), run: () => DialogsProvider.prefsDialog() }
@@ -570,10 +577,21 @@ FocusScope {
                                     spacing: VLCStyle.margin_xsmall
                                     Widgets.ListLabel { text: modelData.name; color: theme.fg.primary; font.weight: Font.DemiBold }
                                     Widgets.CaptionLabel { width: parent.width; text: modelData.help; color: theme.fg.secondary; wrapMode: Text.Wrap }
+                                    // VLZ: a setting that Lite mode overrides says so, and its chips can't be changed
+                                    readonly property bool locked: (root.revision, modelData.locked !== undefined && modelData.locked())
+                                    Widgets.CaptionLabel {
+                                        visible: cardCol.locked
+                                        width: parent.width
+                                        text: qsTr("Lite mode is on, so this is on its Lite setting. Turn Lite mode off to change it.")
+                                        color: theme.accent
+                                        wrapMode: Text.Wrap
+                                    }
                                     Flow {
                                         width: parent.width
                                         spacing: VLCStyle.margin_xsmall
                                         visible: modelData.options !== undefined
+                                        enabled: !cardCol.locked
+                                        opacity: cardCol.locked ? 0.45 : 1
                                         Repeater {
                                             model: modelData.options ?? []
                                             delegate: Rectangle {

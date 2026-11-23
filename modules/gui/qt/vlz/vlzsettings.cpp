@@ -292,6 +292,15 @@ void VLZSettings::setMediaLibrary(bool on)
     config_PutInt("qt-vlz-media-library", on);
     config_SaveConfigFile(m_intf);
 }
+bool VLZSettings::liteMode() const
+{
+    return config_GetInt("qt-vlz-lite") != 0;
+}
+void VLZSettings::setLiteMode(bool on)
+{
+    config_PutInt("qt-vlz-lite", on);
+    config_SaveConfigFile(m_intf);
+}
 
 QVariantList VLZSettings::commands() const
 {

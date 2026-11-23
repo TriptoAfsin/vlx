@@ -119,6 +119,10 @@ public:
     Q_INVOKABLE void setMemorySaver(bool on);
     Q_INVOKABLE bool mediaLibrary() const;
     Q_INVOKABLE void setMediaLibrary(bool on);
+    // Lite mode: one switch for the lighter set of options in src/vlz_lite.c (next start). It overrides them at
+    // start-up without saving them, so turning it off brings back exactly what was set before.
+    Q_INVOKABLE bool liteMode() const;
+    Q_INVOKABLE void setLiteMode(bool on);
     Q_INVOKABLE void setOpenMode(const QString &mode);
 
     /* Command palette (Ctrl+K): every VLC hotkey action with its label and current keys,

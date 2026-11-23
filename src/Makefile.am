@@ -223,6 +223,8 @@ libvlccore_la_SOURCES = \
 	libvlc.c \
 	libvlc.h \
 	libvlc-module.c \
+	vlz_lite.c \
+	vlz_lite.h \
 	missing.c \
 	revision.c \
 	version.c \
