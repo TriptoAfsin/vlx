@@ -43,6 +43,11 @@ T.ProgressBar {
 
     property color backgroundColor: theme.bg.primary
     property real touchHandlerMargin: VLCStyle.touchHandlerMargin
+    // VLZ: invisible reach around the thin line, so the wheel, hover and clicks still land on it when the
+    // pointer drifts a little (DESIGN.md › 44 px hit targets in the player). Clicks reach less far, to leave
+    // the buttons under the line alone.
+    property real wheelHandlerMargin: VLCStyle.dp(14, VLCStyle.scale)
+    property real mouseHandlerMargin: VLCStyle.dp(8, VLCStyle.scale)
 
     Keys.onRightPressed: Player.jumpFwd()
     Keys.onLeftPressed: Player.jumpBwd()
@@ -207,6 +212,8 @@ T.ProgressBar {
     HoverHandler {
         id: hoverHandler
 
+        margin: control.wheelHandlerMargin // VLZ: thickens before the pointer is exactly on the line
+
         onHoveredChanged: () => {
             if (hovered) {
                 if(Player.hasChapters)
@@ -229,7 +236,7 @@ T.ProgressBar {
             gesturePolicy: TapHandler.WithinBounds
 
             // Make it easier to tap with touch screen:
-            margin: MainCtx.usingTouch ? control.touchHandlerMargin : 0.0
+            margin: MainCtx.usingTouch ? control.touchHandlerMargin : control.mouseHandlerMargin // VLZ: was 0
 
             onPressedChanged: {
                 if (pressed) {
@@ -246,7 +253,7 @@ T.ProgressBar {
             acceptedButtons: Qt.LeftButton
 
             // Make it easier to drag with touch screen:
-            margin: MainCtx.usingTouch ? control.touchHandlerMargin : 0
+            margin: MainCtx.usingTouch ? control.touchHandlerMargin : control.mouseHandlerMargin // VLZ: was 0
 
             target: null
             dragThreshold: 0
@@ -282,6 +289,8 @@ T.ProgressBar {
             orientation: Qt.Vertical | Qt.Horizontal
 
             acceptedDevices: PointerDevice.AllDevices
+
+            margin: control.wheelHandlerMargin // VLZ: a slight drift off the line still seeks, not changes volume
 
             onWheel: (wheel) => {
                 wheelToVLC.qmlWheelEvent(wheel)
