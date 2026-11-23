@@ -36,6 +36,14 @@ ViewBlockingRectangle {
 
     readonly property color _actualTintColor: tintColor.alpha(0.7)
 
-    color: root._actualTintColor.tint(Qt.alpha(root.alternativeColor,
+    // VLZ: with no backdrop at all (Lite mode's software renderer, Windows transparency effects off), the
+    // fallback is the page colour itself, so the sidebar and bars melt into the page. Lift it one step instead,
+    // close to what the backdrop shows: about 10 % white over a dark theme, 4 % black over a light one.
+    readonly property color _vlzFlatColor: root.alternativeColor.tint(root.alternativeColor.hslLightness < 0.5
+                                                                     ? Qt.rgba(1, 1, 1, 0.1)
+                                                                     : Qt.rgba(0, 0, 0, 0.04))
+
+    color: !AcrylicController.enabled ? root._vlzFlatColor // VLZ
+         : root._actualTintColor.tint(Qt.alpha(root.alternativeColor,
                                                1 - (usingAcrylic ? AcrylicController.uiTransluency : 0)))
 }

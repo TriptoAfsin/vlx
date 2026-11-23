@@ -517,14 +517,21 @@ FocusScope {
                     anchors.top: stackView.top
 
                     // (-1) is to prevent seams
-                    width: stackViewTopLeftRadiusRectangle.width - 1
-                    height: stackViewTopLeftRadiusRectangle.height - 1
+                    width: stackViewTopLeftRadiusRectangle.implicitTopLeftRadius * 2 - 1 // VLZ: was the child's size, which grows below
+                    height: stackViewTopLeftRadiusRectangle.implicitTopLeftRadius * 2 - 1 // VLZ
+
+                    // VLZ: Qt's software renderer (Lite mode) paints the area outside a per-corner radius white.
+                    // There, the child uses a uniform radius on a larger rectangle, and this square clips it to its
+                    // top-left corner. The GPU path is unchanged.
+                    clip: stackViewTopLeftRadiusRectangle.vlzUniformRadius
 
                     Rectangle {
                         id: stackViewTopLeftRadiusRectangle
 
-                        width: (stackViewTopLeftRadiusRectangle.topLeftRadius * 2)
-                        height: (stackViewTopLeftRadiusRectangle.topLeftRadius * 2)
+                        readonly property bool vlzUniformRadius: (GraphicsInfo.api === GraphicsInfo.Software) // VLZ
+
+                        width: (stackViewTopLeftRadiusRectangle.implicitTopLeftRadius * (vlzUniformRadius ? 4 : 2)) // VLZ: was topLeftRadius * 2
+                        height: (stackViewTopLeftRadiusRectangle.implicitTopLeftRadius * (vlzUniformRadius ? 4 : 2)) // VLZ
 
                         anchors.top: parent.top
                         anchors.left: parent.left
@@ -534,7 +541,8 @@ FocusScope {
 
                         property real implicitTopLeftRadius: VLCStyle.mainView_topLeftRadius
 
-                        topLeftRadius: implicitTopLeftRadius
+                        radius: vlzUniformRadius ? implicitTopLeftRadius : 0 // VLZ
+                        topLeftRadius: vlzUniformRadius ? undefined : implicitTopLeftRadius // VLZ: undefined resets it to radius
                     }
                 }
 
