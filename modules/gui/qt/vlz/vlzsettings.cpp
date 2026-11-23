@@ -72,6 +72,7 @@ VLZSettings::VLZSettings(qt_intf_t *intf, QObject *parent)
         m_barSize = "normal";
     m_pinControls = var_InheritBool(m_intf, "qt-vlz-pin-controls");
     m_pinTopBar = var_InheritBool(m_intf, "qt-vlz-pin-topbar");
+    m_showFileName = var_InheritBool(m_intf, "qt-vlz-topbar-filename");
     m_endView = readString("qt-vlz-end-view", "player") == "home" ? "home" : "player";
     m_audioBackground = readString("qt-vlz-audio-background", "plain") == "tinted" ? "tinted" : "plain";
     m_audioTheme = readString("qt-vlz-audio-theme", "app");
@@ -155,6 +156,15 @@ void VLZSettings::setPinTopBar(bool pin)
         return;
     m_pinTopBar = pin;
     config_PutInt("qt-vlz-pin-topbar", pin);
+    emit barLayoutChanged();
+}
+
+void VLZSettings::setShowFileName(bool show)
+{
+    if (show == m_showFileName)
+        return;
+    m_showFileName = show;
+    config_PutInt("qt-vlz-topbar-filename", show);
     emit barLayoutChanged();
 }
 

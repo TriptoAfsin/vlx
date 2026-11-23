@@ -313,6 +313,8 @@ static const char *const vlz_bar_size_texts[] = { N_("Compact"), N_("Normal"), N
 #define VLZ_PIN_CONTROLS_TEXT N_( "Always show the player controls" )
 #define VLZ_PIN_CONTROLS_LONGTEXT N_( "Show the controls under the video at all times instead of over it, like VLC 3." )
 #define VLZ_PIN_TOPBAR_TEXT N_( "Always show the top bar" )
+#define VLZ_TOPBAR_FILENAME_TEXT N_( "Show the file name in the top bar" )
+#define VLZ_TOPBAR_FILENAME_LONGTEXT N_( "Show the playing file's name beside the logo in the player's top bar, instead of the media title." )
 #define VLZ_END_VIEW_TEXT N_( "When playback ends" )
 static const char *const vlz_end_view_values[] = { "player", "home" };
 static const char *const vlz_end_view_texts[] = { N_("Stay on the player"), N_("Go back to Home") };
@@ -542,6 +544,7 @@ vlc_module_begin ()
         change_string_list( vlz_bar_size_values, vlz_bar_size_texts )
     add_bool( "qt-vlz-pin-controls", false, VLZ_PIN_CONTROLS_TEXT, VLZ_PIN_CONTROLS_LONGTEXT ) // VLZ
     add_bool( "qt-vlz-pin-topbar", false, VLZ_PIN_TOPBAR_TEXT, VLZ_PIN_TOPBAR_LONGTEXT ) // VLZ
+    add_bool( "qt-vlz-topbar-filename", true, VLZ_TOPBAR_FILENAME_TEXT, VLZ_TOPBAR_FILENAME_LONGTEXT ) // VLZ
     add_string( "qt-vlz-end-view", "player", VLZ_END_VIEW_TEXT, nullptr ) // VLZ: VLC 3 stayed on the player
         change_string_list( vlz_end_view_values, vlz_end_view_texts )
     add_bool( "qt-vlz-memory-saver", false, VLZ_MEMORY_SAVER_TEXT, VLZ_MEMORY_SAVER_LONGTEXT ) // VLZ

@@ -77,6 +77,10 @@ FocusScope {
         { id: "pinTopBar", section: "player", name: qsTr("Always show the top bar"), help: qsTr("Keep the title bar above the video, always visible. Off: it floats over the video and hides."), keys: "always show pin pinned top bar title visible hide",
           options: [["false", qsTr("Over the video, auto-hide")], ["true", qsTr("Always, above the video")]],
           get: () => String(VLZSettings.pinTopBar), set: (v) => { VLZSettings.pinTopBar = (v === "true") } },
+        { id: "showFileName", section: "player", name: qsTr("Title bar"), help: qsTr("Show the playing file's name beside the logo in the player's top bar, or VLC's media title."),
+          keys: "file name filename title bar top bar caption show name window title",
+          options: [["true", qsTr("File name")], ["false", qsTr("Media title (VLC)")]],
+          get: () => String(VLZSettings.showFileName), set: (v) => { VLZSettings.showFileName = (v === "true") } },
         { id: "endView", section: "player", name: qsTr("When playback ends"), help: qsTr("Stay on the player with its controls, as VLC 3 did, or go back to Home."),
           keys: "end ends finished stop stopped done playback player home library return back vlc 3",
           options: [["player", qsTr("Stay on the player")], ["home", qsTr("Go back to Home")]],
@@ -428,13 +432,14 @@ FocusScope {
 
                             Item { // player preview: bar style, position, alignment, size and the always-show switches
                                 id: barPreview
-                                visible: modelData.id === "barStyle"
+                                visible: modelData.id === "barStyle" || modelData.id === "showFileName"
                                 width: Math.min(parent.width, VLCStyle.dp(420, VLCStyle.scale))
                                 height: visible ? width * 0.5 : 0
                                 readonly property string s: VLZSettings.barStyle
                                 readonly property string align: VLZSettings.barAlign
                                 readonly property bool pinBar: VLZSettings.pinControls
                                 readonly property bool pinTop: VLZSettings.pinTopBar
+                                readonly property bool fileName: VLZSettings.showFileName
                                 readonly property bool atTop: VLZSettings.barPosition === "top"
                                 readonly property bool floating: (s === "island" || s === "pill") && !pinBar
                                 readonly property real sizeK: VLZSettings.barSize === "compact" ? 0.62 : VLZSettings.barSize === "large" ? 1.25 : 1
@@ -462,11 +467,27 @@ FocusScope {
                                     Behavior on y { NumberAnimation { duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter } }
                                     Behavior on height { NumberAnimation { duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter } }
                                 }
-                                Rectangle { // top bar, when always shown
-                                    visible: barPreview.pinTop
+                                Rectangle { // top bar, when always shown (and over the video while the bar shows, if not)
+                                    visible: barPreview.pinTop || barPreview.fileName
                                     width: parent.width; height: barPreview.topH
-                                    color: theme.bg.secondary
-                                    Rectangle { x: parent.height * 0.6; anchors.verticalCenter: parent.verticalCenter; width: parent.width * 0.3; height: parent.height * 0.22; radius: height / 2; color: Qt.alpha(theme.fg.primary, 0.5) }
+                                    radius: barPreview.pinTop ? 0 : barPreview.r
+                                    color: barPreview.pinTop ? theme.bg.secondary : "transparent"
+                                    Rectangle { // logo
+                                        x: parent.height * 0.4; anchors.verticalCenter: parent.verticalCenter
+                                        width: parent.height * 0.4; height: width; radius: width * 0.3; color: theme.accent
+                                    }
+                                    Text { // file name beside the logo
+                                        visible: barPreview.fileName
+                                        x: parent.height * 1.0; anchors.verticalCenter: parent.verticalCenter
+                                        text: "big_buck_bunny_1080p.mp4"
+                                        color: theme.fg.primary
+                                        font.pixelSize: Math.max(8, parent.height * 0.42); font.weight: Font.DemiBold
+                                    }
+                                    Rectangle { // VLC's media title, centred
+                                        visible: !barPreview.fileName && barPreview.pinTop
+                                        anchors.centerIn: parent
+                                        width: parent.width * 0.3; height: parent.height * 0.22; radius: height / 2; color: Qt.alpha(theme.fg.primary, 0.5)
+                                    }
                                 }
                                 Rectangle { // the bar
                                     id: pBar

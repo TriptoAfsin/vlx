@@ -23,6 +23,7 @@ import QtQuick.Window
 
 
 import VLC.MainInterface
+import VLC.Player // VLZ: for the file name
 import VLC.Style
 import VLC.PlayerControls
 import VLC.Playlist
@@ -47,6 +48,19 @@ FocusScope{
     property int sideMargin: 0
 
     property string title
+
+    // VLZ: the playing file's name (local files), else the media title
+    readonly property string fileName: {
+        const url = Player.url.toString()
+        if (!url.startsWith("file:"))
+            return title
+        const name = url.substring(url.lastIndexOf("/") + 1)
+        try {
+            return decodeURIComponent(name)
+        } catch (e) {
+            return name
+        }
+    }
 
     property bool showCSD: false
     property bool showToolbar: false
@@ -343,7 +357,7 @@ FocusScope{
         readonly property bool _alignHCenter: _centerX > _leftLimit
                                               && _centerX + centerTitleText.implicitWidth < _rightLimit
 
-        visible: (_showCenterText && root.resumeVisible === false)
+        visible: (_showCenterText && root.resumeVisible === false && !fileNameText.visible) // VLZ: not with the file name
 
         enabled: visible
 
@@ -383,7 +397,7 @@ FocusScope{
 
         width: root.textWidth - VLCStyle.margin_normal
 
-        visible: !root.pinControls
+        visible: !root.pinControls && !fileNameText.visible // VLZ: not with the file name
 
         enabled: visible
 
@@ -396,6 +410,32 @@ FocusScope{
         font.weight: Font.DemiBold
         font.pixelSize: VLCStyle.dp(18, VLCStyle.scale)
         elide: Text.ElideRight
+    }
+
+    // VLZ: the file name beside the logo, on the title bar line (Settings › Player)
+    T.Label {
+        id: fileNameText
+
+        readonly property real _rightLimit: Math.min(root.showCSD ? csdDecorations.x : root.width,
+                                                     playlistGroup.visible ? playlistGroup.x : root.width)
+
+        x: logoOrResume.x + logoOrResume.width
+        y: logoOrResume.y
+        height: logoOrResume.height
+        width: Math.max(0, Math.min(implicitWidth, _rightLimit - x))
+
+        visible: VLZSettings.showFileName && root._showTopBar && !root.resumeVisible && text !== ""
+        enabled: visible
+
+        leftPadding: VLCStyle.margin_small
+        rightPadding: VLCStyle.margin_small
+
+        text: root.fileName
+        color: theme.fg.primary
+        font.pixelSize: VLCStyle.dp(13, VLCStyle.scale)
+        font.weight: Font.DemiBold
+        elide: Text.ElideMiddle // keeps the extension and the end of long names
+        verticalAlignment: Text.AlignVCenter
     }
 
     Loader {

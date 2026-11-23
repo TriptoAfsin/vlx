@@ -45,6 +45,8 @@ class VLZSettings : public QObject
     // always show the controls under the video / the top bar above it (VLC 3 style), each on its own
     Q_PROPERTY(bool pinControls READ pinControls WRITE setPinControls NOTIFY barLayoutChanged FINAL)
     Q_PROPERTY(bool pinTopBar READ pinTopBar WRITE setPinTopBar NOTIFY barLayoutChanged FINAL)
+    // the playing file's name beside the logo in the player's top bar
+    Q_PROPERTY(bool showFileName READ showFileName WRITE setShowFileName NOTIFY barLayoutChanged FINAL)
     // when playback ends: stay on the player ("player", VLC 3) or go back to Home ("home", VLC 4)
     Q_PROPERTY(QString endView READ endView WRITE setEndView NOTIFY barLayoutChanged FINAL)
     // classic (VLC), albumcompact, album, turntable, turntablecompact, mini
@@ -78,6 +80,8 @@ public:
     void setPinControls(bool pin);
     bool pinTopBar() const { return m_pinTopBar; }
     void setPinTopBar(bool pin);
+    bool showFileName() const { return m_showFileName; }
+    void setShowFileName(bool show);
     QString endView() const { return m_endView; }
     void setEndView(const QString &view);
 
@@ -147,6 +151,7 @@ private:
     QString m_barSize;
     bool m_pinControls = false;
     bool m_pinTopBar = false;
+    bool m_showFileName = true;
     QString m_endView;
     QString m_audioBackground;
     QString m_audioTheme;
