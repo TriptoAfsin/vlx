@@ -58,7 +58,9 @@ namespace WSS = ABI::Windows::Storage::Streams;
 /* Windows 8+ exports that VLC's Windows 7 target hides in the headers */
 extern "C" HRESULT WINAPI CreateRandomAccessStreamOnFile(PCWSTR filePath, DWORD accessMode, REFIID riid, void **ppv);
 
-namespace {
+/* WinRT interfaces declared here (see below). They live in a named namespace on purpose: in an anonymous one, GCC
+ * sees that nothing in this file implements them and, at -O3, turns calls through them into unreachable code. */
+namespace vlz_winrt {
 
 /* Windows.Media.IVideoDisplayProperties, which this MinGW only forward-declares: the methods in Windows' order. The
  * object comes from the display updater's typed getter, so only this order matters. */
@@ -69,6 +71,49 @@ struct VideoDisplayProperties : public IInspectable
     virtual HRESULT STDMETHODCALLTYPE get_Subtitle(HSTRING *value) = 0;
     virtual HRESULT STDMETHODCALLTYPE put_Subtitle(HSTRING value) = 0;
 };
+
+/* Three interfaces that older MinGW headers (VideoLAN's build image) lack, declared here so every header version
+ * builds: the methods in Windows' order, with their IIDs. Enum arguments are 32-bit integers in the ABI. */
+struct StreamReferenceStatics : public IInspectable /* Windows.Storage.Streams.IRandomAccessStreamReferenceStatics */
+{
+    /* The result is an IRandomAccessStreamReference, which those headers only forward-declare */
+    virtual HRESULT STDMETHODCALLTYPE CreateFromFile(IUnknown *file, IUnknown **out) = 0;
+    virtual HRESULT STDMETHODCALLTYPE CreateFromUri(IUnknown *uri, IUnknown **out) = 0;
+    virtual HRESULT STDMETHODCALLTYPE CreateFromStream(WSS::IRandomAccessStream *stream, IUnknown **out) = 0;
+};
+const IID kStreamReferenceStaticsIid = { 0x857309dc, 0x3fbf, 0x4e7d, { 0x98, 0x6f, 0xef, 0x3b, 0x1a, 0x07, 0xa9, 0x64 } };
+
+struct TimelineProperties : public IInspectable /* Windows.Media.ISystemMediaTransportControlsTimelineProperties */
+{
+    virtual HRESULT STDMETHODCALLTYPE get_StartTime(WF::TimeSpan *value) = 0;
+    virtual HRESULT STDMETHODCALLTYPE put_StartTime(WF::TimeSpan value) = 0;
+    virtual HRESULT STDMETHODCALLTYPE get_EndTime(WF::TimeSpan *value) = 0;
+    virtual HRESULT STDMETHODCALLTYPE put_EndTime(WF::TimeSpan value) = 0;
+    virtual HRESULT STDMETHODCALLTYPE get_MinSeekTime(WF::TimeSpan *value) = 0;
+    virtual HRESULT STDMETHODCALLTYPE put_MinSeekTime(WF::TimeSpan value) = 0;
+    virtual HRESULT STDMETHODCALLTYPE get_MaxSeekTime(WF::TimeSpan *value) = 0;
+    virtual HRESULT STDMETHODCALLTYPE put_MaxSeekTime(WF::TimeSpan value) = 0;
+    virtual HRESULT STDMETHODCALLTYPE get_Position(WF::TimeSpan *value) = 0;
+    virtual HRESULT STDMETHODCALLTYPE put_Position(WF::TimeSpan value) = 0;
+};
+const IID kTimelinePropertiesIid = { 0x5125316a, 0xc3a2, 0x475b, { 0x85, 0x07, 0x93, 0x53, 0x4d, 0xc8, 0x8f, 0x15 } };
+
+struct TransportControls2 : public IInspectable /* Windows.Media.ISystemMediaTransportControls2, up to the one VLZ uses */
+{
+    virtual HRESULT STDMETHODCALLTYPE get_AutoRepeatMode(INT32 *value) = 0;
+    virtual HRESULT STDMETHODCALLTYPE put_AutoRepeatMode(INT32 value) = 0;
+    virtual HRESULT STDMETHODCALLTYPE get_ShuffleEnabled(boolean *value) = 0;
+    virtual HRESULT STDMETHODCALLTYPE put_ShuffleEnabled(boolean value) = 0;
+    virtual HRESULT STDMETHODCALLTYPE get_PlaybackRate(DOUBLE *value) = 0;
+    virtual HRESULT STDMETHODCALLTYPE put_PlaybackRate(DOUBLE value) = 0;
+    virtual HRESULT STDMETHODCALLTYPE UpdateTimelineProperties(TimelineProperties *timeline) = 0;
+};
+const IID kTransportControls2Iid = { 0xea98d2f6, 0x7f3c, 0x4af2, { 0xa5, 0x86, 0x72, 0x88, 0x98, 0x08, 0xef, 0xb1 } };
+
+} // namespace vlz_winrt
+using namespace vlz_winrt;
+
+namespace {
 
 /* An HSTRING for the WinRT calls, released when it goes out of scope. */
 class HString
@@ -214,13 +259,14 @@ struct vlz::MediaControlsWin32::Private
         if (FAILED(CreateRandomAccessStreamOnFile(path.c_str(), 0 /* FileAccessMode_Read */,
                                                   IID_PPV_ARGS(&stream))))
             return;
-        ComPtr<WSS::IRandomAccessStreamReferenceStatics> statics;
-        if (FAILED(RoGetActivationFactory(HString(RuntimeClass_Windows_Storage_Streams_RandomAccessStreamReference),
-                                          IID_PPV_ARGS(&statics))))
+        ComPtr<StreamReferenceStatics> statics;
+        if (FAILED(RoGetActivationFactory(HString(L"Windows.Storage.Streams.RandomAccessStreamReference"),
+                                          kStreamReferenceStaticsIid,
+                                          reinterpret_cast<void **>(statics.ReleaseAndGetAddressOf()))))
             return;
-        ComPtr<WSS::IRandomAccessStreamReference> reference;
+        ComPtr<IUnknown> reference;
         if (SUCCEEDED(statics->CreateFromStream(stream.Get(), &reference)))
-            updater->put_Thumbnail(reference.Get());
+            updater->put_Thumbnail(reinterpret_cast<WSS::IRandomAccessStreamReference *>(reference.Get()));
     }
 
     /* Windows 11 shows a progress bar: length and position, refreshed at most once a second while playing */
@@ -229,14 +275,14 @@ struct vlz::MediaControlsWin32::Private
         if (!force && sinceTimeline.isValid() && sinceTimeline.elapsed() < 1000)
             return;
         sinceTimeline.restart();
-        ComPtr<WM::ISystemMediaTransportControls2> smtc2;
-        if (FAILED(smtc.As(&smtc2)))
+        ComPtr<TransportControls2> smtc2;
+        if (FAILED(smtc->QueryInterface(kTransportControls2Iid, reinterpret_cast<void **>(smtc2.ReleaseAndGetAddressOf()))))
             return;
         ComPtr<IInspectable> instance;
-        if (FAILED(RoActivateInstance(HString(RuntimeClass_Windows_Media_SystemMediaTransportControlsTimelineProperties), &instance)))
+        if (FAILED(RoActivateInstance(HString(L"Windows.Media.SystemMediaTransportControlsTimelineProperties"), &instance)))
             return;
-        ComPtr<WM::ISystemMediaTransportControlsTimelineProperties> timeline;
-        if (FAILED(instance.As(&timeline)))
+        ComPtr<TimelineProperties> timeline;
+        if (FAILED(instance->QueryInterface(kTimelinePropertiesIid, reinterpret_cast<void **>(timeline.ReleaseAndGetAddressOf()))))
             return;
         PlayerController *player = THEMIM;
         const vlc_tick_t length = player->getLength().valid() ? player->getLength().toVLCTick() : 0;
