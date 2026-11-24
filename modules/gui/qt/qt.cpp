@@ -679,19 +679,6 @@ public:
 static void *Thread( void * );
 static void *ThreadCleanup( qt_intf_t *p_intf, CleanupReason cleanupReason );
 
-#ifdef _WIN32
-/* VLZ: end the Qt thread without the thread-exit callbacks. In the release build (GCC posix threads, emulated TLS)
- * Qt's thread_local objects (the regular expression JIT stacks, the animation timers) are destroyed after their
- * storage has already been freed, which crashed on every close and could leave the process hanging. Qt is fully
- * shut down by now and vlc_join only waits for the thread handle, so nothing is lost. */
-static void *ThreadWin32( void *obj )
-{
-    void *ret = Thread( obj );
-    TerminateThread( GetCurrentThread(), 0 );
-    return ret;
-}
-#endif
-
 #ifdef Q_OS_MAC
 /* Used to abort the app.exec() on OSX after libvlc_Quit is called */
 #include <CoreFoundation/CFRunLoop.h>
@@ -756,11 +743,7 @@ static int OpenInternal( qt_intf_t *p_intf )
     });
     CFRunLoopWakeUp(CFRunLoopGetMain());
 #else
-#ifdef _WIN32
-    if( vlc_clone( &p_intf->thread, ThreadWin32, p_intf ) ) // VLZ: see ThreadWin32
-#else
     if( vlc_clone( &p_intf->thread, Thread, p_intf ) )
-#endif
     {
         return VLC_ENOMEM;
     }
