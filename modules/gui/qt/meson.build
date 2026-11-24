@@ -562,7 +562,6 @@ if host_system == 'windows'
         'vlz/fileicons_win32.hpp', # VLZ
         'vlz/mediacontrols_win32.cpp', # VLZ: Windows media controls
         'vlz/mediacontrols_win32.hpp', # VLZ
-        'vlz/thread_atexit_win32.cpp', # VLZ: thread_local destructors before their storage is freed
         'util/csdmenu_win32.c',
         'util/csdmenu_win32.h',
         'maininterface/compositor_dcomp.cpp',
