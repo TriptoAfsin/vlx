@@ -241,5 +241,10 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
         free (argv[i]);
 
     (void)hInstance; (void)hPrevInstance; (void)lpCmdLine; (void)nCmdShow;
+    /* VLZ: VLC has shut down cleanly by now. Leave without unloading the plugin DLLs: in the release build (GCC
+     * posix threads, static winpthreads) a static destructor in the Qt plugin waits on a lock that a thread killed by
+     * ExitProcess may hold, and the process then never ends (one thread left, no window). */
+    fflush (NULL);
+    TerminateProcess (GetCurrentProcess (), 0);
     return 0;
 }
