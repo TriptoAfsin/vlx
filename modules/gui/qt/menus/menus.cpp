@@ -49,6 +49,8 @@
 #include "util/varchoicemodel.hpp"
 #include "util/color_scheme_model.hpp"
 #include "util/colorizedsvgicon.hpp"
+#include "vlz/menuicons.hpp" // VLZ
+#include "vlz/vlzsettings.hpp" // VLZ: Settings entry
 #include "medialibrary/medialib.hpp"
 #include "medialibrary/mlrecentmediamodel.hpp"
 #include "medialibrary/mlbookmarkmodel.hpp"
@@ -266,6 +268,10 @@ void VLCMenuBar::ToolsMenu( qt_intf_t *p_intf, QMenu *menu )
     addDPStaticEntry( menu, qtr( "Plu&gins and extensions" ),
         "", &DialogsProvider::pluginDialog );
     menu->addSeparator();
+
+    /* VLZ: the Settings page, from anywhere (the player too); Ctrl+P keeps opening VLC's preferences */
+    addDPStaticEntry( menu, qtr( "&Settings" ), ":/menu/vlz-settings.svg",
+        []() { if( VLZSettings *s = VLZSettings::instance() ) s->requestOpenSettings(); }, "Ctrl+," );
 
     if( !p_intf->b_isDialogProvider )
         addDPStaticEntry( menu, qtr( "Customi&ze Interface..." ),
@@ -706,6 +712,7 @@ QMenu* VLCMenuBar::VideoPopupMenu( qt_intf_t *p_intf, bool show )
 {
     QMenu* menu = new VLCMenu(p_intf);
     VideoMenu(p_intf, menu);
+    vlz::decorateMenu( menu ); // VLZ: an icon for every entry
     if( show )
         menu->popup( QCursor::pos() );
     return menu;
@@ -716,6 +723,7 @@ QMenu* VLCMenuBar::AudioPopupMenu( qt_intf_t *p_intf, bool show )
 {
     QMenu* menu = new VLCMenu(p_intf);
     AudioMenu(p_intf, menu);
+    vlz::decorateMenu( menu ); // VLZ: an icon for every entry
     if( show )
         menu->popup( QCursor::pos() );
     return menu;
@@ -735,6 +743,7 @@ QMenu* VLCMenuBar::MiscPopupMenu( qt_intf_t *p_intf, bool show )
     menu->addSeparator();
     PopupMenuStaticEntries( menu );
 
+    vlz::decorateMenu( menu ); // VLZ: an icon for every entry
     if( show )
         menu->popup( QCursor::pos() );
     return menu;
@@ -865,6 +874,7 @@ QMenu* VLCMenuBar::PopupMenu( qt_intf_t *p_intf, bool show )
     else
         PopupMenuStaticEntries( menu );
 
+    vlz::decorateMenu( menu ); // VLZ: an icon for every entry
     if( show )
         menu->popup( QCursor::pos() );
     return menu;

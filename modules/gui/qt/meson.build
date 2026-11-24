@@ -414,6 +414,10 @@ qt_plugin_sources = files(
     'vlz/vlzsettings.cpp', # VLZ: look-and-layout settings for QML
     'vlz/lookpanel.cpp', # VLZ: look settings in the preferences dialog
     'vlz/lookpanel.hpp',
+    'vlz/menuicons.cpp', # VLZ: an icon for every menu entry
+    'vlz/menuicons.hpp',
+    'vlz/quitfade.cpp', # VLZ: fade the sound out before quitting
+    'vlz/quitfade.hpp',
     'style/systempalette.hpp',
     'vlz/vlzsettings.hpp', # VLZ
     'style/vlcicons.cpp',
@@ -556,6 +560,8 @@ if host_system == 'windows'
         'style/windowsthemeprovider.cpp',
         'vlz/fileicons_win32.cpp', # VLZ: file icons that follow the theme
         'vlz/fileicons_win32.hpp', # VLZ
+        'vlz/mediacontrols_win32.cpp', # VLZ: Windows media controls
+        'vlz/mediacontrols_win32.hpp', # VLZ
         'util/csdmenu_win32.c',
         'util/csdmenu_win32.h',
         'maininterface/compositor_dcomp.cpp',
@@ -1144,6 +1150,8 @@ if qt6_dep.found()
             cc.find_library('dwmapi'),
             cc.find_library('comctl32'),
             cc.find_library('shell32'), # VLZ: SHChangeNotify for file icons
+            cc.find_library('runtimeobject'), # VLZ: Windows media controls (WinRT activation, HSTRING)
+            cc.find_library('shcore'), # VLZ: the cover for Windows media controls
         ]
     endif
 

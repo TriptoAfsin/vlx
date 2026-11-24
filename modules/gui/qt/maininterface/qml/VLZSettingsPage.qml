@@ -81,6 +81,22 @@ FocusScope {
           keys: "file name filename title bar top bar caption show name window title",
           options: [["true", qsTr("File name")], ["false", qsTr("Media title (VLC)")]],
           get: () => String(VLZSettings.showFileName), set: (v) => { VLZSettings.showFileName = (v === "true") } },
+        { id: "queueButton", section: "player", name: qsTr("Play queue button"), help: qsTr("The play queue button in the title bar. The queue also opens from the player's buttons and the View menu."),
+          keys: "title bar titlebar top bar playlist play queue button hide show",
+          options: [["true", qsTr("Shown")], ["false", qsTr("Hidden")]],
+          get: () => String(VLZSettings.showQueueButton), set: (v) => { VLZSettings.showQueueButton = (v === "true") } },
+        { id: "menuButton", section: "player", name: qsTr("Menu button"), help: qsTr("The ⋮ menu in the title bar. When hidden, the same menu opens with a right-click on the video, and Ctrl+K finds every action."),
+          keys: "title bar titlebar top bar menu dots kebab three button hide show",
+          options: [["true", qsTr("Shown")], ["false", qsTr("Hidden")]],
+          get: () => String(VLZSettings.showMenuButton), set: (v) => { VLZSettings.showMenuButton = (v === "true") } },
+        { id: "mediaControls", section: "player", name: qsTr("Windows media controls"), help: qsTr("Show what plays in Windows' media flyout and on the lock screen, and control it with the keyboard's media keys."),
+          keys: "windows media controls keys flyout lock screen smtc now playing system integration",
+          options: [["true", qsTr("On")], ["false", qsTr("Off")]],
+          get: () => String(VLZSettings.mediaControls), set: (v) => { VLZSettings.mediaControls = (v === "true") } },
+        { id: "barBackground", section: "player", name: qsTr("Bar background"), help: qsTr("Behind the player controls over the video. A stronger fade or a solid bar keeps them readable over bright video."),
+          keys: "bar background fade gradient transparent transparency solid opaque contrast readable controls overlay dark",
+          options: [["fade", qsTr("Fade over the video")], ["strong", qsTr("Stronger fade")], ["solid", qsTr("Solid bar")]],
+          get: () => VLZSettings.barBackground, set: (v) => { VLZSettings.barBackground = v } },
         { id: "endView", section: "player", name: qsTr("When playback ends"), help: qsTr("Stay on the player with its controls, as VLC 3 did, or go back to Home."),
           keys: "end ends finished stop stopped done playback player home library return back vlc 3",
           options: [["player", qsTr("Stay on the player")], ["home", qsTr("Go back to Home")]],
@@ -133,6 +149,28 @@ FocusScope {
     ]
 
     property int revision: 0 // bumped after a change so option chips re-read their state
+
+    // The section whose settings are at the top of the view, for the marker in the section list. At the end of the
+    // page, the last section (it may be too short to reach the top).
+    readonly property string activeSection: {
+        const y = flick.contentY + VLCStyle.dp(24, VLCStyle.scale)
+        if (rowRepeater.count === 0)
+            return sections[0].id
+        if (flick.contentY >= flick.contentHeight - flick.height - 2 && flick.contentHeight > flick.height)
+            return settings[settings.length - 1].section
+        let current = settings[0].section
+        for (let i = 0; i < settings.length; ++i) {
+            const item = rowRepeater.itemAt(i)
+            if (item && item.y <= y)
+                current = settings[i].section
+        }
+        return current
+    }
+
+    // A step off the surface behind it, in either theme: lighter on dark, darker on light
+    function lift(base, amount) {
+        return Qt.tint(base, Qt.alpha(theme.fg.primary, amount))
+    }
     property string flashId: ""
 
     function sectionName(id) {
@@ -189,12 +227,29 @@ FocusScope {
                     model: root.sections
                     delegate: Rectangle {
                         required property var modelData
+                        readonly property bool current: root.activeSection === modelData.id
                         width: parent.width
                         height: VLCStyle.dp(34, VLCStyle.scale)
                         radius: VLCStyle.button_radius
-                        color: secHover.hovered ? theme.bg.primary : "transparent"
+                        color: current ? root.lift(theme.bg.secondary, 0.09)
+                                       : (secHover.hovered ? root.lift(theme.bg.secondary, 0.05) : "transparent")
                         Behavior on color { ColorAnimation { duration: VLCStyle.duration_short } }
-                        Widgets.ListLabel { anchors.verticalCenter: parent.verticalCenter; x: VLCStyle.margin_small; text: modelData.name; color: theme.fg.primary }
+                        Rectangle { // the current section's marker, as on the play queue's playing row
+                            visible: parent.current
+                            x: 0
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: VLCStyle.dp(3, VLCStyle.scale)
+                            height: parent.height - VLCStyle.dp(16, VLCStyle.scale)
+                            radius: width / 2
+                            color: theme.accent
+                        }
+                        Widgets.ListLabel {
+                            anchors.verticalCenter: parent.verticalCenter
+                            x: VLCStyle.margin_small
+                            text: modelData.name
+                            color: parent.current ? theme.fg.primary : theme.fg.secondary
+                            font.weight: parent.current ? Font.DemiBold : Font.Normal
+                        }
                         HoverHandler { id: secHover }
                         TapHandler {
                             onTapped: {
@@ -217,14 +272,22 @@ FocusScope {
                 anchors { left: parent.left; right: parent.right; top: parent.top; margins: VLCStyle.margin_normal }
                 height: VLCStyle.dp(40, VLCStyle.scale)
                 radius: VLCStyle.button_radius
-                color: theme.bg.secondary
-                border.width: VLCStyle.border
+                color: root.lift(theme.bg.primary, 0.07) // raised, so it reads as a field before it has focus
+                border.width: search.activeFocus ? VLCStyle.dp(2, VLCStyle.scale) : VLCStyle.border
                 border.color: search.activeFocus ? theme.accent : theme.border
                 Behavior on border.color { ColorAnimation { duration: VLCStyle.duration_short } }
 
+                Widgets.IconLabel {
+                    id: searchGlyph
+                    anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: VLCStyle.margin_normal }
+                    text: VLCIcons.search
+                    font.pixelSize: VLCStyle.dp(18, VLCStyle.scale)
+                    color: search.activeFocus ? theme.fg.primary : theme.fg.secondary
+                }
+
                 TextInput {
                     id: search
-                    anchors { fill: parent; leftMargin: VLCStyle.margin_normal; rightMargin: VLCStyle.margin_normal }
+                    anchors { fill: parent; leftMargin: searchGlyph.x + searchGlyph.width + VLCStyle.margin_small; rightMargin: VLCStyle.margin_normal }
                     verticalAlignment: TextInput.AlignVCenter
                     color: theme.fg.primary
                     selectionColor: theme.accent
@@ -239,7 +302,7 @@ FocusScope {
                     Keys.onEscapePressed: text = ""
                 }
                 Widgets.ListLabel {
-                    anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: VLCStyle.margin_normal }
+                    anchors { verticalCenter: parent.verticalCenter; left: search.left }
                     visible: search.text === ""
                     text: qsTr("Search settings: try gpu, subtitles, dark, buffer")
                     color: theme.fg.secondary

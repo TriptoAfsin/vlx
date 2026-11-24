@@ -85,6 +85,9 @@
 #include "mainctx_win32.hpp"
 #endif
 #include "mainctx_submodels.hpp"
+#ifdef _WIN32
+#include "vlz/mediacontrols_win32.hpp" // VLZ
+#endif
 
 static bool g_qmlTypesAreRegistered = false;
 static bool g_qmlTypesClearPending = false;
@@ -102,6 +105,9 @@ MainUI::MainUI(qt_intf_t *p_intf, MainCtx *mainCtx, QWindow* interfaceWindow,  Q
     assert(m_interfaceWindow);
 
     registerQMLTypes();
+#ifdef _WIN32
+    new vlz::MediaControlsWin32(m_intf, m_interfaceWindow, this); // VLZ: Windows media controls
+#endif
 
     // FIXME: Since Qt 6.6, Qt follows a different approach for scrolling. This new approach has
     //        caused a lot of frustration (QTBUG-116388, QTBUG-129948, QTBUG-120038). However,

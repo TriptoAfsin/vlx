@@ -74,6 +74,7 @@ extern "C" char **environ;
 #endif
 
 #include "qt.hpp"
+#include "vlz/lookpanel.hpp" // VLZ: applyWidgetTheme
 
 #include "player/player_controller.hpp"    /* THEMIM destruction */
 #include "playlist/playlist_controller.hpp" /* THEMPL creation */
@@ -324,6 +325,8 @@ static const char *const vlz_end_view_texts[] = { N_("Stay on the player"), N_("
 #define VLZ_FONT_ENGINE_LONGTEXT N_( "How the interface finds fonts on Windows. GDI uses less memory and starts faster; DirectWrite is Qt's default. Takes effect at the next start." )
 static const char *const vlz_font_engine_values[] = { "gdi", "directwrite" };
 static const char *const vlz_font_engine_texts[] = { N_("GDI (lighter)"), N_("DirectWrite") };
+static const char *const vlz_bar_background_values[] = { "fade", "strong", "solid" };
+static const char *const vlz_bar_background_texts[] = { N_("Fade over the video"), N_("Stronger fade"), N_("Solid bar") };
 #define VLZ_LITE_TEXT N_( "Lite mode" )
 #define VLZ_LITE_LONGTEXT N_( "Start and run lighter: the interface is drawn without the GPU, decoding uses 2 threads and 0.3 s of read-ahead, and there is no media library and no metadata from the internet. Takes effect at the next start." )
 #define VLZ_MEDIA_LIBRARY_TEXT N_( "Media library" )
@@ -551,6 +554,11 @@ vlc_module_begin ()
     add_bool( "qt-vlz-pin-controls", false, VLZ_PIN_CONTROLS_TEXT, VLZ_PIN_CONTROLS_LONGTEXT ) // VLZ
     add_bool( "qt-vlz-pin-topbar", false, VLZ_PIN_TOPBAR_TEXT, VLZ_PIN_TOPBAR_LONGTEXT ) // VLZ
     add_bool( "qt-vlz-topbar-filename", true, VLZ_TOPBAR_FILENAME_TEXT, VLZ_TOPBAR_FILENAME_LONGTEXT ) // VLZ
+    add_bool( "qt-vlz-topbar-queue", true, N_("Play queue button in the title bar"), nullptr ) // VLZ
+    add_bool( "qt-vlz-media-controls", true, N_("Windows media controls"), N_("Show what plays in Windows' media controls (media keys, the volume flyout, the lock screen) and control it from there.") ) // VLZ
+    add_bool( "qt-vlz-topbar-menu", true, N_("Menu button in the title bar"), N_("The same menu also opens with a right-click on the video.") ) // VLZ
+    add_string( "qt-vlz-bar-background", "fade", N_("Player bar background"), N_("Behind the player controls over the video: a fade, a stronger fade or a solid bar.") ) // VLZ
+        change_string_list( vlz_bar_background_values, vlz_bar_background_texts )
     add_string( "qt-vlz-end-view", "player", VLZ_END_VIEW_TEXT, nullptr ) // VLZ: VLC 3 stayed on the player
         change_string_list( vlz_end_view_values, vlz_end_view_texts )
     add_bool( "qt-vlz-memory-saver", false, VLZ_MEMORY_SAVER_TEXT, VLZ_MEMORY_SAVER_LONGTEXT ) // VLZ
@@ -1546,6 +1554,8 @@ static void *Thread( void *obj )
         }
     }
 #undef QTSTYLE_KEY
+
+    vlz::applyWidgetTheme(p_intf); // VLZ: widget dialogs follow the VLZ theme, not only Windows
 
     /* Launch */
     app.exec();

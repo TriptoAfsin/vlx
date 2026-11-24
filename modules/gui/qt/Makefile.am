@@ -891,6 +891,68 @@ libqt_plugin_la_RES = \
 	pixmaps/icons/ic_fluent_arrow_sync_24_regular.svg \
 	pixmaps/icons/regex.svg \
 	pixmaps/icons/ic_fluent_text_change_case_24_regular.svg \
+	pixmaps/menu/vlz/3d.svg \
+	pixmaps/menu/vlz/aspect.svg \
+	pixmaps/menu/vlz/audio-device.svg \
+	pixmaps/menu/vlz/audio-track.svg \
+	pixmaps/menu/vlz/bookmark.svg \
+	pixmaps/menu/vlz/capture-card.svg \
+	pixmaps/menu/vlz/chapter.svg \
+	pixmaps/menu/vlz/clipboard.svg \
+	pixmaps/menu/vlz/codec.svg \
+	pixmaps/menu/vlz/color-scheme.svg \
+	pixmaps/menu/vlz/convert.svg \
+	pixmaps/menu/vlz/crop.svg \
+	pixmaps/menu/vlz/customize.svg \
+	pixmaps/menu/vlz/deinterlace.svg \
+	pixmaps/menu/vlz/disc.svg \
+	pixmaps/menu/vlz/epg.svg \
+	pixmaps/menu/vlz/exit.svg \
+	pixmaps/menu/vlz/file-multiple.svg \
+	pixmaps/menu/vlz/file.svg \
+	pixmaps/menu/vlz/fit.svg \
+	pixmaps/menu/vlz/folder.svg \
+	pixmaps/menu/vlz/goto-time.svg \
+	pixmaps/menu/vlz/help.svg \
+	pixmaps/menu/vlz/ic_fluent_options.svg \
+	pixmaps/menu/vlz/ic_playlist.svg \
+	pixmaps/menu/vlz/info.svg \
+	pixmaps/menu/vlz/menu-audio.svg \
+	pixmaps/menu/vlz/menu-media.svg \
+	pixmaps/menu/vlz/menu-playback.svg \
+	pixmaps/menu/vlz/menu-subtitle.svg \
+	pixmaps/menu/vlz/menu-tools.svg \
+	pixmaps/menu/vlz/menu-video.svg \
+	pixmaps/menu/vlz/menu-view.svg \
+	pixmaps/menu/vlz/messages.svg \
+	pixmaps/menu/vlz/mix.svg \
+	pixmaps/menu/vlz/network.svg \
+	pixmaps/menu/vlz/open-media.svg \
+	pixmaps/menu/vlz/plugins.svg \
+	pixmaps/menu/vlz/preferences.svg \
+	pixmaps/menu/vlz/program.svg \
+	pixmaps/menu/vlz/recent.svg \
+	pixmaps/menu/vlz/renderer.svg \
+	pixmaps/menu/vlz/save.svg \
+	pixmaps/menu/vlz/settings.svg \
+	pixmaps/menu/vlz/snapshot.svg \
+	pixmaps/menu/vlz/speed-normal.svg \
+	pixmaps/menu/vlz/speed.svg \
+	pixmaps/menu/vlz/stereo.svg \
+	pixmaps/menu/vlz/stream.svg \
+	pixmaps/menu/vlz/subtitle-add.svg \
+	pixmaps/menu/vlz/subtitle-track.svg \
+	pixmaps/menu/vlz/sync.svg \
+	pixmaps/menu/vlz/title.svg \
+	pixmaps/menu/vlz/update.svg \
+	pixmaps/menu/vlz/video-track.svg \
+	pixmaps/menu/vlz/visualization.svg \
+	pixmaps/menu/vlz/vlm.svg \
+	pixmaps/menu/vlz/volume-high.svg \
+	pixmaps/menu/vlz/volume-low.svg \
+	pixmaps/menu/vlz/volume-muted.svg \
+	pixmaps/menu/vlz/window.svg \
+	pixmaps/menu/vlz/zoom.svg \
 	pixmaps/menu/add.svg \
 	pixmaps/menu/capture-card.svg \
 	pixmaps/menu/clear.svg \

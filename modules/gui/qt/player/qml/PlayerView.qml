@@ -352,9 +352,12 @@ FocusScope {
 
                     opacity: controlBar.opacity
 
+                    // VLZ: Settings › Player › Bar background: VLC's fade, a stronger one (dark sooner, so the
+                    // controls stay readable over bright video), or none under a solid bar
                     gradient: Gradient {
                         GradientStop { position: 0; color: "transparent" }
-                        GradientStop { position: .64; color: Qt.rgba(0, 0, 0, .8) }
+                        GradientStop { position: VLZSettings.barBackground === "strong" ? .35 : .64
+                                       color: Qt.rgba(0, 0, 0, VLZSettings.barBackground === "strong" ? .9 : .8) }
                         GradientStop { position: 1; color: "black" }
                     }
 
@@ -1333,7 +1336,7 @@ FocusScope {
         leftPadding: rootPlayer.vlzFloatingBar ? VLCStyle.margin_normal : VLCStyle.applicationHorizontalMargin // VLZ
         bottomPadding: rootPlayer.vlzFloatingBar ? VLCStyle.margin_xsmall : (VLCStyle.applicationVerticalMargin + VLCStyle.margin_xsmall) // VLZ
         // VLZ: panel styles wrap the seek bar and times too, instead of starting at the seek line
-        topInset: (rootPlayer.vlzFloatingBar || rootPlayer.vlzBarStyle === "docked") ? 0 : sliderY
+        topInset: (rootPlayer.vlzFloatingBar || rootPlayer.vlzBarStyle === "docked" || VLZSettings.barBackground === "solid") ? 0 : sliderY // VLZ: a solid bar covers the seek line too
         topPadding: rootPlayer.vlzFloatingBar ? VLCStyle.margin_xsmall : 0
 
         textPosition: (rootPlayer._barUnderVideo) // VLZ
@@ -1378,6 +1381,8 @@ FocusScope {
 
             // VLZ: island and pill are always a panel, minimal never is, docked is always solid
             visible: {
+                if (VLZSettings.barBackground === "solid") // VLZ: Settings › Player › Bar background
+                    return true
                 if (rootPlayer.vlzBarStyle === "minimal")
                     return !MainCtx.hasEmbededVideo
                 if (rootPlayer.vlzFloatingBar || rootPlayer.vlzBarStyle === "docked")
@@ -1393,7 +1398,7 @@ FocusScope {
             opacity: {
                 if (rootPlayer.vlzFloatingBar) // VLZ: a near-solid panel, no blur (DESIGN.md › Components)
                     return 0.94
-                if (rootPlayer.vlzBarStyle === "docked") // VLZ
+                if (rootPlayer.vlzBarStyle === "docked" || VLZSettings.barBackground === "solid") // VLZ
                     return 1.0
                 if (MainCtx.hasEmbededVideo && !rootPlayer._barUnderVideo && !rootPlayer.displayFadeRectangles) { // VLZ
                     return 0.6

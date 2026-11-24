@@ -31,12 +31,13 @@ Widgets.SplitButton {
     iconSize: VLCStyle.fontSize_xxlarge
 
     model: [
-        { text: qsTr("Open Multiple Files"), icon_svg: ":/menu/file.svg" },
-        { text: qsTr("Open Directory"), icon_svg: ":/menu/folder.svg" },
-        { text: qsTr("Open Disc"), icon_svg: ":/menu/disc.svg" },
-        { text: qsTr("Open Network Stream"), icon_svg: ":/menu/network.svg" },
-        { text: qsTr("Open Capture Device"), icon_svg: ":/menu/capture-card.svg" },
-        qsTr("Open Location from clipboard"),
+        // VLZ: the monochrome menu icons, and one for every entry
+        { text: qsTr("Open Multiple Files"), icon_svg: ":/menu/vlz-file-multiple.svg" },
+        { text: qsTr("Open Directory"), icon_svg: ":/menu/vlz-folder.svg" },
+        { text: qsTr("Open Disc"), icon_svg: ":/menu/vlz-disc.svg" },
+        { text: qsTr("Open Network Stream"), icon_svg: ":/menu/vlz-network.svg" },
+        { text: qsTr("Open Capture Device"), icon_svg: ":/menu/vlz-capture-card.svg" },
+        { text: qsTr("Open Location from clipboard"), icon_svg: ":/menu/vlz-clipboard.svg" },
     ]
 
     AccessibleCompat.id: "openFileButton"

@@ -37,6 +37,13 @@ struct ThemeColors
 };
 ThemeColors themeColors(const QString &theme, const QString &accentOption);
 
+/* Windows' own accent colour, as it was before VLZ themed the widgets (for the "Windows" accent option). */
+QColor systemAccent();
+
+/* Make the widget dialogs (preferences, About, media information...) follow the VLZ theme and accent.
+ * Call once the QApplication exists, and again when the theme or the accent changes. */
+void applyWidgetTheme(qt_intf_t *intf);
+
 /* "Look (VLZ)": theme, accent, size, player bar, audio skin and file icons with a live preview.
  * Every change applies at once, like the VLZ Settings page. */
 QWidget *createLookPanel(qt_intf_t *intf, QWidget *parent);

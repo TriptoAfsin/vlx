@@ -16,6 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 #include "qml_menu_wrapper.hpp"
+#include "vlz/menuicons.hpp" // VLZ
 #include "menus.hpp"
 #include "medialibrary/medialib.hpp"
 #include "medialibrary/mlplaylistlistmodel.hpp"
@@ -312,6 +313,7 @@ void QmlGlobalMenu::popup(QPoint pos)
     submenu = m_menu->addMenu(qtr( "&Help" ));
     HelpMenu( p_intf, submenu );
 
+    vlz::decorateMenu(m_menu.get()); // VLZ: an icon for every entry
     m_menu->popup(pos);
 }
 
@@ -400,6 +402,7 @@ void QmlMenuBar::popupMenuCommon( QQuickItem* button, std::function<void(QMenu*)
 
     m_menu = std::make_unique<QmlMenuBarMenu>(this);
     createMenuFunc(m_menu.get());
+    vlz::decorateMenu(m_menu.get()); // VLZ: an icon for every entry
     m_button = button;
     m_openMenuOnHover = false;
     connect(m_menu.get(), &QMenu::aboutToHide, this, &QmlMenuBar::onMenuClosed);

@@ -361,6 +361,25 @@ Item {
             sourceComponent: Component { VLZCommandPalette { } }
         }
 
+        // VLZ: Ctrl+, and Tools › Settings open the Settings page from anywhere, the player included
+        Shortcut {
+            sequence: "Ctrl+,"
+            context: Qt.ApplicationShortcut
+            onActivated: VLZSettings.requestOpenSettings()
+        }
+
+        Connections {
+            target: VLZSettings
+            function onOpenSettingsRequested() {
+                if (MainCtx.minimalView)
+                    MainCtx.minimalView = false
+                if (MainCtx.playerView) // the player is shown by this flag, not by the history
+                    MainCtx.playerView = false
+                if (!History.match(History.viewPath, ["vlzsettings"]))
+                    History.push(["vlzsettings"])
+            }
+        }
+
         Loader {
             active: {
                 const windowVisibility = MainCtx.intfMainWindow.visibility

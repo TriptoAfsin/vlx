@@ -21,6 +21,7 @@
 #define VLZ_VLZSETTINGS_HPP
 
 #include <QObject>
+#include <QAbstractNativeEventFilter>
 #include <QString>
 #include <QVariantList>
 
@@ -31,9 +32,13 @@ struct qt_intf_t;
  * ("qt-vlz-*" options declared in qt.cpp). Setters save at once and notify, so a
  * settings page can preview a change live.
  */
-class VLZSettings : public QObject
+class VLZSettings : public QObject, public QAbstractNativeEventFilter
 {
     Q_OBJECT
+
+    // true while the user drags or resizes a window (Windows' move loop): continuous animations pause, since every
+    // frame they render holds up the drag
+    Q_PROPERTY(bool windowMoving READ windowMoving NOTIFY windowMovingChanged FINAL)
 
     // island, docked, minimal, pill, classic
     Q_PROPERTY(QString barStyle READ barStyle WRITE setBarStyle NOTIFY barStyleChanged FINAL)
@@ -47,6 +52,11 @@ class VLZSettings : public QObject
     Q_PROPERTY(bool pinTopBar READ pinTopBar WRITE setPinTopBar NOTIFY barLayoutChanged FINAL)
     // the playing file's name beside the logo in the player's top bar
     Q_PROPERTY(bool showFileName READ showFileName WRITE setShowFileName NOTIFY barLayoutChanged FINAL)
+    // title bar buttons: the play queue toggle and the menu (⋮), each can be hidden
+    Q_PROPERTY(bool showQueueButton READ showQueueButton WRITE setShowQueueButton NOTIFY barLayoutChanged FINAL)
+    Q_PROPERTY(bool showMenuButton READ showMenuButton WRITE setShowMenuButton NOTIFY barLayoutChanged FINAL)
+    // behind the player controls over the video: "fade" (VLC's), "strong" or "solid"
+    Q_PROPERTY(QString barBackground READ barBackground WRITE setBarBackground NOTIFY barLayoutChanged FINAL)
     // when playback ends: stay on the player ("player", VLC 3) or go back to Home ("home", VLC 4)
     Q_PROPERTY(QString endView READ endView WRITE setEndView NOTIFY barLayoutChanged FINAL)
     // classic (VLC), albumcompact, album, turntable, turntablecompact, mini
@@ -66,6 +76,10 @@ class VLZSettings : public QObject
 
 public:
     explicit VLZSettings(qt_intf_t *intf, QObject *parent = nullptr);
+    ~VLZSettings() override;
+
+    bool windowMoving() const { return m_windowMoving; }
+    bool nativeEventFilter(const QByteArray &eventType, void *message, qintptr *result) override;
 
     QString barStyle() const { return m_barStyle; }
     void setBarStyle(const QString &style);
@@ -82,6 +96,12 @@ public:
     void setPinTopBar(bool pin);
     bool showFileName() const { return m_showFileName; }
     void setShowFileName(bool show);
+    bool showQueueButton() const { return m_showQueueButton; }
+    void setShowQueueButton(bool show);
+    bool showMenuButton() const { return m_showMenuButton; }
+    void setShowMenuButton(bool show);
+    QString barBackground() const { return m_barBackground; }
+    void setBarBackground(const QString &background);
     QString endView() const { return m_endView; }
     void setEndView(const QString &view);
 
@@ -123,6 +143,10 @@ public:
     // start-up without saving them, so turning it off brings back exactly what was set before.
     Q_INVOKABLE bool liteMode() const;
     Q_INVOKABLE void setLiteMode(bool on);
+    // Windows media controls (media keys, the volume flyout, the lock screen); applies at once.
+    Q_PROPERTY(bool mediaControls READ mediaControls WRITE setMediaControls NOTIFY mediaControlsChanged FINAL)
+    bool mediaControls() const { return m_mediaControls; }
+    void setMediaControls(bool on);
     Q_INVOKABLE void setOpenMode(const QString &mode);
 
     /* Command palette (Ctrl+K): every VLC hotkey action with its label and current keys,
@@ -130,6 +154,9 @@ public:
      * exactly as if its keys were pressed. */
     Q_INVOKABLE QVariantList commands() const;
     Q_INVOKABLE bool runCommand(const QString &id);
+
+    /* Opens the Settings page from anywhere (the Tools menu, Ctrl+,): the main view listens for it. */
+    Q_INVOKABLE void requestOpenSettings() { emit openSettingsRequested(); }
 
     /* The interface's instance, for C++ code that reacts to changes (the palette). */
     static VLZSettings *instance() { return s_instance; }
@@ -142,6 +169,9 @@ signals:
     void audioLookChanged();
     void themeChanged();
     void fileIconsChanged();
+    void openSettingsRequested();
+    void windowMovingChanged();
+    void mediaControlsChanged();
 
 private:
     QString readString(const char *name, const QString &fallback) const;
@@ -156,6 +186,10 @@ private:
     bool m_pinControls = false;
     bool m_pinTopBar = false;
     bool m_showFileName = true;
+    bool m_showQueueButton = true;
+    bool m_mediaControls = true;
+    bool m_showMenuButton = true;
+    QString m_barBackground;
     QString m_endView;
     QString m_audioBackground;
     QString m_audioTheme;
@@ -164,6 +198,8 @@ private:
     QString m_fileIcons;
     QString m_fileIconLook;
     QString m_startView;
+
+    bool m_windowMoving = false;
 
     static VLZSettings *s_instance;
 };

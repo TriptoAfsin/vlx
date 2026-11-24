@@ -98,6 +98,8 @@ Defaults are the owner's picks.
 | Bottom bar buttons (play, previous, next always) | Skip 10 s, Speed, Subtitles, Audio track, Playlist, Volume, Picture in picture, Fullscreen, Screenshot, Loop, Shuffle, Equaliser | Skip, Speed, Subtitles, Audio track, Playlist, Volume, PiP, Fullscreen, Screenshot |
 | Time display | Elapsed and remaining, Elapsed and total, Elapsed and ends at | Elapsed and remaining |
 | Seek bar | Chapter marks, Thumbnail on hover, Thicker on hover | Chapter marks, Thumbnail on hover |
+| Title bar buttons | Play queue button and menu button (⋮), each Shown or Hidden. Hidden, the menu still opens with a right-click on the video, and Ctrl+K finds every action | Both shown |
+| Bar background (overlay styles) | Fade over the video (VLC's), Stronger fade (dark from a third of the way up, 90 %), Solid bar | Fade over the video |
 | Controls alignment (where play, previous and next sit) | Centered, Left, Right | Centered |
 | Bar size | Compact, Normal, Large | Normal |
 | Always show the controls (under the video, like VLC 3) | Off (over the video, auto-hide), On | Off |
@@ -122,9 +124,33 @@ A grid view stays available. Artwork stays small, so untagged folders still look
 ## Settings
 
 - A sidebar of sections with 15 px icons: Interface, Player, Playback, Video, Audio, Subtitles, Input and codecs, Hotkeys, Library, Advanced.
-- **Search** at the top (Ctrl F): results list the setting and its section; Up/Down and Enter, Esc closes. Choosing one scrolls to the setting and outlines it in `accent` for 1.4 s. It matches everyday words too ("gpu" finds Hardware decoding, "subs" finds subtitles, "buffer" finds Network caching).
+- **Search** at the top, drawn as a field even before it has focus: a magnifier, the `raised` fill and a 1 px `line` border (2 px `accent` when focused). Results list the setting and its section; Up/Down and Enter, Esc closes. Choosing one scrolls to the setting and outlines it in `accent` for 1.4 s. It matches everyday words too ("gpu" finds Hardware decoding, "subs" finds subtitles, "buffer" finds Network caching).
 - Groups are `panel` cards with the title above. Every look and layout setting shows its live preview at the top of its page (a mini player that redraws as you change theme, accent, size, bar style, positions and buttons).
 - **Advanced › Show every VLC setting** opens VLC's full preferences tree, for the rare deep change.
+
+- **Where you are:** the section list follows scrolling. The section at the top of the view gets a fill one step off the
+  list (`text` at 9 % over it) and a 3 px `accent` bar on its left, the play queue's playing-row marker; the others are
+  `muted`. At the end of the page, the last section.
+- **Opening it:** the sidebar's gear, Tools › Settings and **Ctrl+,** from anywhere, the player included. Ctrl+P keeps
+  opening VLC's full Preferences, which carry the same VLZ settings (Interface › Look (VLZ)), Performance included.
+
+## Menus
+
+- Every entry and submenu has an icon: monochrome line icons (Fluent UI System Icons, MIT, `pixmaps/menu/vlz/`) in the
+  menu's text colour. VLC's coloured menu icons are gone from menus; the colour stays with the video and cover art.
+- Checkable entries keep their check mark in the icon column instead of an icon, as Windows menus do. Lists of
+  tracks, devices and modes stay text.
+- One table in `vlz/menuicons.cpp` maps each entry (by its translated text) to its icon, so VLC's menu code only has
+  one-line hooks. A new VLC entry without a mapping shows no icon until it gets one.
+
+## Dialogs
+
+- The widget dialogs (Preferences, About, Help, Media Information…) follow the VLZ theme, not Windows' light or dark
+  setting: the theme's colours, its colour scheme (so the title bar matches) and the accent. "VLC default" leaves them
+  to VLC and Windows.
+- On the accent, text and marks are near-black or white, whichever reads better (Emerald: near-black, 7.5:1). Links are
+  the accent lifted toward `text` until they reach 4.5:1 on the surface behind them.
+- Help is VLZ's own: its shortcuts and settings, VLC's documentation for the engine, and VLZ issues on GitHub.
 
 ## Audio player
 
@@ -152,6 +178,17 @@ and a skin button in the player cycles through them.
 - Cover art comes from the file or folder; without one, a tile coloured from the file name.
 - Spinning and the arm stop with Windows' "Animation effects" off. The record turns at one revolution per 3.2 s.
 - Format chips: codec, bit depth, sample rate, channels, ReplayGain when present.
+- The record stops redrawing while it is hidden or while the window is dragged (it holds its angle), so dragging
+  stays smooth: frames where the window didn't follow the cursor went from 47 of 120 to 4 of 120.
+
+## System integration
+
+- **Windows media controls** (`qt-vlz-media-controls`, on by default): VLZ shows in the media flyout, the lock screen
+  and on media keys with title, artist, album, cover and progress; play, pause, stop, previous and next work from
+  there. Video shows its title; the controls are on only while something is playing or paused.
+- **Closing while audio plays** fades the volume out over about 90 ms, stops, then quits, so no tail of sound is left
+  in the device buffer (Bluetooth headsets held about a second of it). The volume is restored before quitting.
+- The Windows volume mixer lists the app as VLZ.
 
 ## Performance
 

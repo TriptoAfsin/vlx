@@ -218,7 +218,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
         libvlc_SetExitHandler(vlc->p_libvlc_int, vlc_kill, &sem);
         libvlc_set_app_id (vlc, "org.VideoLAN.VLC", PACKAGE_VERSION,
                            PACKAGE_NAME);
-        libvlc_set_user_agent (vlc, "VLC media player", "VLC/"PACKAGE_VERSION);
+        libvlc_set_user_agent (vlc, "VLZ", "VLC/"PACKAGE_VERSION); /* VLZ: the name in the Windows volume mixer; HTTP keeps VLC's */
         libvlc_InternalAddIntf (vlc->p_libvlc_int, NULL);
         libvlc_InternalPlay (vlc->p_libvlc_int);
 

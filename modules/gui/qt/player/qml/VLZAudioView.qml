@@ -208,7 +208,11 @@ FocusScope {
                 to: 360
                 duration: 3200
                 loops: Animation.Infinite
-                running: root.playing && root.visible
+                // Its own visibility, not the view's: both turntable skins exist all the time and are only hidden,
+                // and a running animator redraws the whole window at the display's rate (about 160 times a second
+                // here), which made dragging the window stutter during audio with any skin
+                running: root.playing && disc.visible
+                paused: VLZSettings.windowMoving // holds its angle (no jump) and stops redrawing while the window is dragged
             }
         }
 

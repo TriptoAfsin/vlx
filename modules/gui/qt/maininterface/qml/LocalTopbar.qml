@@ -186,6 +186,7 @@ T.ToolBar {
                 PlaylistPane.PlaylistToggleButton {
                     id: playlistBtn
 
+                    visible: VLZSettings.showQueueButton // VLZ: the title bar buttons are a setting
                     plListView: root.plListView
 
                     Navigation.parentItem: playqueueButtonsTop
@@ -198,7 +199,7 @@ T.ToolBar {
                 Widgets.IconToolButton {
                     id: menuBtn
 
-                    visible: !MainCtx.hasToolbarMenu
+                    visible: !MainCtx.hasToolbarMenu && VLZSettings.showMenuButton // VLZ: a setting
                     font.pixelSize: VLCStyle.icon_banner
                     text: VLCIcons.more
                     description: qsTr("Menu")

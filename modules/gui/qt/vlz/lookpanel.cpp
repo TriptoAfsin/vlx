@@ -455,6 +455,28 @@ QWidget *vlz::createLookPanel(qt_intf_t *intf, QWidget *parent)
     addChoice(form, qtr("When playback ends"),
               { { "player", qtr("Stay on the player") }, { "home", qtr("Go back to Home") } },
               s->endView(), [s](const QString &v) { s->setEndView(v); });
+    addChoice(form, qtr("Title bar"),
+              { { "true", qtr("File name") }, { "false", qtr("Media title (VLC)") } },
+              s->showFileName() ? QStringLiteral("true") : QStringLiteral("false"),
+              [s](const QString &v) { s->setShowFileName(v == "true"); });
+    addChoice(form, qtr("Play queue button"), { { "true", qtr("Shown") }, { "false", qtr("Hidden") } },
+              s->showQueueButton() ? QStringLiteral("true") : QStringLiteral("false"),
+              [s](const QString &v) { s->setShowQueueButton(v == "true"); });
+    addChoice(form, qtr("Menu button"), { { "true", qtr("Shown") }, { "false", qtr("Hidden") } },
+              s->showMenuButton() ? QStringLiteral("true") : QStringLiteral("false"),
+              [s](const QString &v) { s->setShowMenuButton(v == "true"); });
+    addChoice(form, qtr("Bar background"),
+              { { "fade", qtr("Fade over the video") }, { "strong", qtr("Stronger fade") }, { "solid", qtr("Solid bar") } },
+              s->barBackground(), [s](const QString &v) { s->setBarBackground(v); });
+#ifdef _WIN32
+    addChoice(form, qtr("Windows media controls"), { { "true", qtr("On") }, { "false", qtr("Off") } },
+              s->mediaControls() ? QStringLiteral("true") : QStringLiteral("false"),
+              [s](const QString &v) { s->setMediaControls(v == "true"); });
+#endif
+    addChoice(form, qtr("Opening files"),
+              { { "new", qtr("A new window for each file") }, { "running", qtr("Play in the open window") },
+                { "queue", qtr("Queue in the open window") } },
+              s->openMode(), [s](const QString &v) { s->setOpenMode(v); });
     addChoice(form, qtr("Hide controls after"),
               { { "1000", "1 s" }, { "2000", "2 s" }, { "3000", "3 s" }, { "5000", "5 s" }, { "86400000", qtr("Never") } },
               QString::number(s->intOption(QStringLiteral("mouse-hide-timeout"))),
@@ -479,6 +501,32 @@ QWidget *vlz::createLookPanel(qt_intf_t *intf, QWidget *parent)
               { { "auto", qtr("Follow Windows") }, { "light", qtr("Light") }, { "dark", qtr("Dark") } },
               s->fileIconLook(), [s](const QString &v) { s->setFileIconLook(v); });
 #endif
+
+    /* Performance, as on the Settings page: Lite mode overrides the other two, which then show its values */
+    QComboBox *memorySaver = nullptr, *mediaLibrary = nullptr;
+    addChoice(form, qtr("Lite mode (next start)"), { { "false", qtr("Off") }, { "true", qtr("On") } },
+              s->liteMode() ? QStringLiteral("true") : QStringLiteral("false"),
+              [s, group](const QString &v) {
+                  s->setLiteMode(v == "true");
+                  for (QComboBox *box : group->findChildren<QComboBox *>(QStringLiteral("vlzLiteLocked")))
+                  {
+                      box->setEnabled(v != "true");
+                      box->setToolTip(v == "true" ? qtr("Lite mode is on, so this is on its Lite setting.") : QString());
+                  }
+              });
+    memorySaver = addChoice(form, qtr("Memory saver"), { { "false", qtr("Off") }, { "true", qtr("On") } },
+              (s->liteMode() || s->memorySaver()) ? QStringLiteral("true") : QStringLiteral("false"),
+              [s](const QString &v) { s->setMemorySaver(v == "true"); });
+    mediaLibrary = addChoice(form, qtr("Media library (next start)"), { { "true", qtr("On") }, { "false", qtr("Off") } },
+              (!s->liteMode() && s->mediaLibrary()) ? QStringLiteral("true") : QStringLiteral("false"),
+              [s](const QString &v) { s->setMediaLibrary(v == "true"); });
+    for (QComboBox *box : { memorySaver, mediaLibrary })
+    {
+        box->setObjectName(QStringLiteral("vlzLiteLocked"));
+        box->setEnabled(!s->liteMode());
+        if (s->liteMode())
+            box->setToolTip(qtr("Lite mode is on, so this is on its Lite setting."));
+    }
 
     auto *note = new QLabel(qtr("Changes apply at once. The same settings, with search, are on the Settings page."));
     note->setWordWrap(true);

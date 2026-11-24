@@ -28,6 +28,8 @@
 
 #include <QApplication>
 #include <QPalette>
+#include <QStyleHints>
+#include <QHash>
 
 #include <cmath>
 #include <cstring>
@@ -83,6 +85,116 @@ QColor readableAccent(const QColor &accent, const QColor &bg, bool dark)
 
 } // namespace
 
+namespace {
+/* The application palette as Qt first set it, before VLZ themed the widgets: Windows' own colours and accent. */
+const QPalette &originalPalette()
+{
+    static const QPalette p = qApp->palette();
+    return p;
+}
+
+/* Qt also keeps palettes per widget class, from Windows' theme, on top of the application palette (with Windows'
+ * own text-on-accent colour, for example). VLZ sets those too, and keeps Qt's to restore them. */
+const char *const kWidgetClasses[] = {
+    "QAbstractButton", "QCheckBox", "QRadioButton", "QToolButton", "QPushButton", "QComboBox", "QGroupBox",
+    "QLabel", "QHeaderView", "QAbstractItemView", "QTabBar", "QMenu", "QMenuBar", "QTextEdit", "QTextControl",
+    "QLineEdit", "QMessageBoxLabel",
+};
+
+const QHash<QByteArray, QPalette> &originalClassPalettes()
+{
+    static const QHash<QByteArray, QPalette> palettes = [] {
+        QHash<QByteArray, QPalette> h;
+        for (const char *cls : kWidgetClasses)
+            h.insert(cls, QApplication::palette(cls));
+        return h;
+    }();
+    return palettes;
+}
+}
+
+QColor vlz::systemAccent()
+{
+    return qApp ? originalPalette().color(QPalette::Normal, QPalette::Accent) : QColor("#FF8800");
+}
+
+/* Widget dialogs (preferences, About, media information...) take the VLZ theme instead of Windows' light or dark
+ * setting: the colour scheme (which also picks their title bar) and a palette from the theme's table, with text and
+ * marks on the accent and links made readable on the surface behind them. "default" leaves them to VLC and Windows. */
+void vlz::applyWidgetTheme(qt_intf_t *intf)
+{
+    if (!qApp || !intf)
+        return;
+    (void)originalPalette(); /* capture before the first change */
+    (void)originalClassPalettes();
+    static bool applied = false;
+
+    char *themeId = var_InheritString(intf, "qt-vlz-theme");
+    char *accentOpt = var_InheritString(intf, "qt-accent-color");
+    const QString id = themeId ? QString::fromUtf8(themeId) : QString();
+    const QString accentOption = accentOpt ? QString::fromUtf8(accentOpt) : QStringLiteral("default");
+    free(themeId);
+    free(accentOpt);
+
+    bool known = false;
+    for (const VlzTheme &t : kThemes)
+        known = known || id == QLatin1String(t.id);
+    if (!known)
+    {
+        if (applied)
+        {
+            qApp->styleHints()->unsetColorScheme();
+            qApp->setPalette(originalPalette());
+            for (auto it = originalClassPalettes().cbegin(); it != originalClassPalettes().cend(); ++it)
+                QApplication::setPalette(it.value(), it.key().constData());
+            applied = false;
+        }
+        return;
+    }
+
+    const ThemeColors c = themeColors(id, accentOption);
+    qApp->styleHints()->setColorScheme(c.dark ? Qt::ColorScheme::Dark : Qt::ColorScheme::Light);
+
+    const QColor nearBlack("#0B0B0C");
+    const QColor onAccent = contrast(Qt::white, c.accent) >= contrast(nearBlack, c.accent) ? QColor(Qt::white) : nearBlack;
+    QColor link = c.accent;
+    for (double t = 0.05; contrast(link, c.panel) < 4.5 && t <= 1.0; t += 0.05)
+        link = mix(c.accent, c.text, t);
+    const QColor disabled = mix(c.muted, c.panel, 0.35);
+
+    QPalette p(originalPalette());
+    auto set = [&p](QPalette::ColorRole role, const QColor &normal, const QColor &off) {
+        p.setColor(QPalette::Active, role, normal);
+        p.setColor(QPalette::Inactive, role, normal);
+        p.setColor(QPalette::Disabled, role, off);
+    };
+    set(QPalette::Window, c.panel, c.panel);
+    set(QPalette::WindowText, c.text, disabled);
+    set(QPalette::Base, c.bg, c.bg);
+    set(QPalette::AlternateBase, c.raised, c.raised);
+    set(QPalette::Text, c.text, disabled);
+    set(QPalette::PlaceholderText, c.muted, disabled);
+    set(QPalette::Button, c.raised, c.raised);
+    set(QPalette::ButtonText, c.text, disabled);
+    set(QPalette::BrightText, c.dark ? QColor(Qt::white) : QColor(Qt::black), disabled);
+    set(QPalette::ToolTipBase, c.raised, c.raised);
+    set(QPalette::ToolTipText, c.text, c.text);
+    set(QPalette::Light, mix(c.raised, c.text, 0.12), mix(c.raised, c.text, 0.12));
+    set(QPalette::Midlight, mix(c.raised, c.line, 0.5), mix(c.raised, c.line, 0.5));
+    set(QPalette::Mid, c.line, c.line);
+    set(QPalette::Dark, mix(c.line, c.bg, 0.5), mix(c.line, c.bg, 0.5));
+    set(QPalette::Shadow, QColor(0, 0, 0), QColor(0, 0, 0));
+    set(QPalette::Highlight, c.accent, c.line);
+    set(QPalette::HighlightedText, onAccent, disabled);
+    set(QPalette::Accent, c.accent, c.line);
+    set(QPalette::Link, link, link);
+    set(QPalette::LinkVisited, link, link);
+    qApp->setPalette(p);
+    for (const char *cls : kWidgetClasses)
+        QApplication::setPalette(p, cls);
+    applied = true;
+}
+
 /* For previews (the preferences dialog): a theme's colours as the app would apply them. "default" is VLC's own
  * dark palette with its orange. */
 vlz::ThemeColors vlz::themeColors(const QString &themeId, const QString &accentOption)
@@ -100,7 +212,7 @@ vlz::ThemeColors vlz::themeColors(const QString &themeId, const QString &accentO
     c.line = QColor(theme->line); c.text = QColor(theme->text); c.muted = QColor(theme->muted);
     QColor accent(theme->accent);
     if (accentOption == QLatin1String("system") && qApp)
-        accent = qApp->palette().color(QPalette::Normal, QPalette::Accent);
+        accent = vlz::systemAccent();
     else if (accentOption != QLatin1String("default") && QColor::isValidColorName(accentOption))
         accent = QColor(accentOption);
     c.accent = theme == &vlcDefault ? accent : readableAccent(accent, c.bg, c.dark);
@@ -139,7 +251,7 @@ bool SystemPalette::applyVlzTheme()
             if (char *opt = var_InheritString(m_ctx->getIntf(), "qt-accent-color"))
             {
                 if (!strcmp(opt, "system") && qApp)
-                    orange500 = qApp->palette().color(QPalette::Normal, QPalette::Accent);
+                    orange500 = vlz::systemAccent();
                 else if (strcmp(opt, "default") != 0 && QColor::isValidColorName(QString::fromUtf8(opt)))
                     orange500 = QColor(QString::fromUtf8(opt));
                 orange800 = orange500.lighter(150);
@@ -159,7 +271,7 @@ bool SystemPalette::applyVlzTheme()
     if (char *opt = var_InheritString(m_ctx->getIntf(), "qt-accent-color"))
     {
         if (!strcmp(opt, "system") && qApp)
-            accent = qApp->palette().color(QPalette::Normal, QPalette::Accent);
+            accent = vlz::systemAccent();
         else if (strcmp(opt, "default") != 0 && QColor::isValidColorName(QString::fromUtf8(opt)))
             accent = QColor(QString::fromUtf8(opt));
         free(opt);

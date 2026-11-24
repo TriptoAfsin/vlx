@@ -32,6 +32,7 @@
 
 #include "qt.hpp"
 #include "dialogs_provider.hpp"
+#include "vlz/quitfade.hpp" // VLZ
 #include "player/player_controller.hpp" /* Load Subtitles */
 #include "playlist/playlist_controller.hpp"
 #include "menus/menus.hpp"
@@ -155,9 +156,12 @@ void DialogsProvider::quit()
     if (b_isDying)
         return;
     b_isDying = true;
-    assert(qApp);
-    qApp->setProperty("isDying", true);
-    libvlc_Quit( vlc_object_instance(p_intf) );
+    // VLZ: fade the sound out before quitting, so there is no click and no stale audio at the next start
+    vlz::quitAfterFade( p_intf, [this]() {
+        assert(qApp);
+        qApp->setProperty("isDying", true);
+        libvlc_Quit( vlc_object_instance(p_intf) );
+    } );
 }
 
 void DialogsProvider::customEvent( QEvent *event )

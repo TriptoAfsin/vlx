@@ -478,7 +478,7 @@ FocusScope{
             id: menuSelector
 
             anchors.verticalCenter: parent.verticalCenter
-            visible: !root.showToolbar
+            visible: !root.showToolbar && VLZSettings.showMenuButton // VLZ: the title bar buttons are a setting
             enabled: visible
             focus: visible
             font.pixelSize: VLCStyle.icon_banner
@@ -522,6 +522,7 @@ FocusScope{
         PlaylistPane.PlaylistToggleButton {
             id: playlistButton
 
+            visible: VLZSettings.showQueueButton // VLZ: a setting
             anchors.verticalCenter: parent.verticalCenter
             objectName: ControlListModel.PLAYLIST_BUTTON
             font.pixelSize: VLCStyle.icon_banner

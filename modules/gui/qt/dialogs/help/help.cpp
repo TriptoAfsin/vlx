@@ -63,7 +63,28 @@ HelpDialog::HelpDialog( qt_intf_t *_p_intf ) : QVLCFrame( _p_intf )
 
     QTextBrowser *helpBrowser = new QTextBrowser( this );
     helpBrowser->setOpenExternalLinks( true );
-    helpBrowser->setHtml( qfut(I_LONGHELP) );
+    // VLZ: VLZ's own help: its shortcuts and settings, VLC's documentation for the engine, and where to ask
+    helpBrowser->setHtml( "<html><body>" + qtr(
+        "<h2>VLZ Help</h2>"
+        "<p>VLZ is a personal fork of VLC media player with its own interface. It plays everything VLC plays and "
+        "keeps VLC's keyboard shortcuts.</p>"
+        "<h3>Getting around</h3>"
+        "<p><b>Ctrl+,</b> opens Settings. The search box at its top understands everyday words, such as gpu, subtitles or dark.</p>"
+        "<p><b>Ctrl+K</b> opens the command palette: every action, by name, with its shortcut.</p>"
+        "<p><b>Ctrl+P</b> opens every VLC setting, for the rare deep change.</p>"
+        "<p>Settings › Performance › <b>Lite mode</b> makes VLZ start faster and use about half the memory.</p>"
+        "<h3>VLC's documentation</h3>"
+        "<p>VLZ uses VLC's engine, so VideoLAN's documentation applies to playback, formats and streaming: the "
+        "<a href=\"https://wiki.videolan.org/Documentation:VLC_for_dummies\">introduction</a>, "
+        "<a href=\"https://wiki.videolan.org/Documentation:Play_HowTo\">playing files</a>, "
+        "<a href=\"https://wiki.videolan.org/Documentation:Streaming_HowTo\">converting and streaming</a> and the "
+        "<a href=\"https://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</p>"
+        "<h3>Getting help</h3>"
+        "<p>For VLZ itself (its interface, settings, installer or a bug), open an issue on "
+        "<a href=\"https://github.com/TriptoAfsin/vlz/issues\">GitHub</a>.</p>"
+        "<p>For playback and formats in general, VideoLAN's <a href=\"https://www.videolan.org/support/faq.html\">FAQ</a> "
+        "and <a href=\"https://forum.videolan.org\">forums</a> may already have the answer. VLZ is not affiliated with "
+        "VideoLAN, so please don't report VLZ problems there.</p>" ) + "</body></html>" );
 
     QDialogButtonBox *closeButtonBox = new QDialogButtonBox( this );
     closeButtonBox->addButton(
@@ -87,12 +108,16 @@ AboutDialog::AboutDialog( qt_intf_t *_p_intf)
 {
     /* Build UI */
     ui.setupUi( this );
+    // VLZ: take the app's palette, so the VLZ theme, instead of a hard-coded light page and scroll bars
+    setStyleSheet( QString() );
+    ui.horizontalFrame->setStyleSheet( QStringLiteral( "background-color: palette(window); color: palette(window-text);" ) );
+    ui.footer->setStyleSheet( QStringLiteral( "background-color: palette(alternate-base); color: palette(window-text);" ) );
     setWindowTitle( qtr( "About" ) );
     setWindowRole( "vlc-about" );
     setWindowModality( Qt::WindowModal );
 
     ui.version->setText(qfu( " " VLZ_VERSION ", based on VLC " VERSION_MESSAGE ) ); // VLZ
-    ui.title->setText("<html><head/><body><p><span style=\" font-size:26pt; color:#353535;\"> " + qtr( "VLZ" ) + " </span></p></body></html>");
+    ui.title->setText("<html><head/><body><p><span style=\" font-size:26pt;\"> " + qtr( "VLZ" ) + " </span></p></body></html>"); // VLZ: theme colours, not hard-coded
 
     ui.MainBlabla->setText("<html><head/><body>" +
     qtr( "<p>VLZ is a personal, open source fork of <a href=\"https://www.videolan.org/vlc/\">VLC media player</a>. All credit for the engine and codecs goes to the volunteers of the <a href=\"https://www.videolan.org/\">VideoLAN</a> community.</p><p>VLZ is not affiliated with VideoLAN.</p><p><a href=\"https://github.com/TriptoAfsin/vlz\">VLZ on GitHub</a>" ) +
@@ -114,13 +139,13 @@ AboutDialog::AboutDialog( qt_intf_t *_p_intf)
     /* People who wrote the software */
     ui.authorsPage->setText( qfu( psz_authors ) );
 
-    ui.licenseButton->setText( "<html><head/><body><p><span style=\" text-decoration: underline; color:#0057ae;\">"+qtr( "License" )+"</span></p></body></html>");
+    ui.licenseButton->setText( "<html><head/><body><p><span style=\" text-decoration: underline; color:" + palette().color( QPalette::Link ).name() + ";\">"+qtr( "License" )+"</span></p></body></html>"); // VLZ: theme colours, not hard-coded
     ui.licenseButton->installEventFilter( this );
 
-    ui.authorsButton->setText( "<html><head/><body><p><span style=\" text-decoration: underline; color:#0057ae;\">"+qtr( "Authors" )+"</span></p></body></html>");
+    ui.authorsButton->setText( "<html><head/><body><p><span style=\" text-decoration: underline; color:" + palette().color( QPalette::Link ).name() + ";\">"+qtr( "Authors" )+"</span></p></body></html>"); // VLZ: theme colours, not hard-coded
     ui.authorsButton->installEventFilter( this );
 
-    ui.creditsButton->setText( "<html><head/><body><p><span style=\" text-decoration: underline; color:#0057ae;\">"+qtr( "Credits" )+"</span></p></body></html>");
+    ui.creditsButton->setText( "<html><head/><body><p><span style=\" text-decoration: underline; color:" + palette().color( QPalette::Link ).name() + ";\">"+qtr( "Credits" )+"</span></p></body></html>"); // VLZ: theme colours, not hard-coded
     ui.creditsButton->installEventFilter( this );
 
     ui.version->installEventFilter( this );

@@ -34,6 +34,10 @@
 #include <vlc_actions.h>
 
 #include <QVariantMap>
+#include <QCoreApplication>
+#ifdef _WIN32
+# include <windows.h>
+#endif
 
 namespace {
 const QStringList kBarStyles { "island", "docked", "minimal", "pill", "classic" };
@@ -53,6 +57,8 @@ VLZSettings::VLZSettings(qt_intf_t *intf, QObject *parent)
     , m_intf(intf)
 {
     s_instance = this;
+    if (QCoreApplication::instance())
+        QCoreApplication::instance()->installNativeEventFilter(this);
     m_theme = readString("qt-vlz-theme", "ink");
     m_accent = readString("qt-accent-color", "default");
     m_fileIcons = readString("qt-vlz-file-icons", "band");
@@ -73,6 +79,10 @@ VLZSettings::VLZSettings(qt_intf_t *intf, QObject *parent)
     m_pinControls = var_InheritBool(m_intf, "qt-vlz-pin-controls");
     m_pinTopBar = var_InheritBool(m_intf, "qt-vlz-pin-topbar");
     m_showFileName = var_InheritBool(m_intf, "qt-vlz-topbar-filename");
+    m_showQueueButton = var_InheritBool(m_intf, "qt-vlz-topbar-queue");
+    m_mediaControls = var_InheritBool(m_intf, "qt-vlz-media-controls");
+    m_showMenuButton = var_InheritBool(m_intf, "qt-vlz-topbar-menu");
+    m_barBackground = readString("qt-vlz-bar-background", "fade");
     m_endView = readString("qt-vlz-end-view", "player") == "home" ? "home" : "player";
     m_audioBackground = readString("qt-vlz-audio-background", "plain") == "tinted" ? "tinted" : "plain";
     m_audioTheme = readString("qt-vlz-audio-theme", "app");
@@ -81,6 +91,33 @@ VLZSettings::VLZSettings(qt_intf_t *intf, QObject *parent)
     m_audioSkin = readString("qt-vlz-audio-skin", "albumcompact");
     if (!kAudioSkins.contains(m_audioSkin))
         m_audioSkin = "albumcompact";
+}
+
+VLZSettings::~VLZSettings()
+{
+    if (QCoreApplication::instance())
+        QCoreApplication::instance()->removeNativeEventFilter(this);
+    if (s_instance == this)
+        s_instance = nullptr;
+}
+
+bool VLZSettings::nativeEventFilter(const QByteArray &, void *message, qintptr *)
+{
+#ifdef _WIN32
+    const MSG *msg = static_cast<const MSG *>(message);
+    if (msg->message == WM_ENTERSIZEMOVE || msg->message == WM_EXITSIZEMOVE)
+    {
+        const bool moving = msg->message == WM_ENTERSIZEMOVE;
+        if (moving != m_windowMoving)
+        {
+            m_windowMoving = moving;
+            emit windowMovingChanged();
+        }
+    }
+#else
+    (void)message;
+#endif
+    return false;
 }
 
 QString VLZSettings::readString(const char *name, const QString &fallback) const
@@ -159,6 +196,34 @@ void VLZSettings::setPinTopBar(bool pin)
     emit barLayoutChanged();
 }
 
+void VLZSettings::setShowQueueButton(bool show)
+{
+    if (show == m_showQueueButton)
+        return;
+    m_showQueueButton = show;
+    config_PutInt("qt-vlz-topbar-queue", show);
+    emit barLayoutChanged();
+}
+
+void VLZSettings::setShowMenuButton(bool show)
+{
+    if (show == m_showMenuButton)
+        return;
+    m_showMenuButton = show;
+    config_PutInt("qt-vlz-topbar-menu", show);
+    emit barLayoutChanged();
+}
+
+void VLZSettings::setBarBackground(const QString &background)
+{
+    static const QStringList kBackgrounds { "fade", "strong", "solid" };
+    if (!kBackgrounds.contains(background) || background == m_barBackground)
+        return;
+    m_barBackground = background;
+    writeString("qt-vlz-bar-background", background);
+    emit barLayoutChanged();
+}
+
 void VLZSettings::setShowFileName(bool show)
 {
     if (show == m_showFileName)
@@ -208,6 +273,7 @@ void VLZSettings::setTheme(const QString &theme)
         return;
     m_theme = theme;
     writeString("qt-vlz-theme", theme);
+    vlz::applyWidgetTheme(m_intf);
     emit themeChanged();
 }
 
@@ -217,6 +283,7 @@ void VLZSettings::setAccent(const QString &accent)
         return;
     m_accent = accent;
     writeString("qt-accent-color", accent);
+    vlz::applyWidgetTheme(m_intf);
     emit themeChanged();
 }
 
@@ -292,6 +359,16 @@ void VLZSettings::setMediaLibrary(bool on)
     config_PutInt("qt-vlz-media-library", on);
     config_SaveConfigFile(m_intf);
 }
+void VLZSettings::setMediaControls(bool on)
+{
+    if (on == m_mediaControls)
+        return;
+    m_mediaControls = on;
+    config_PutInt("qt-vlz-media-controls", on);
+    config_SaveConfigFile(m_intf);
+    emit mediaControlsChanged();
+}
+
 bool VLZSettings::liteMode() const
 {
     return config_GetInt("qt-vlz-lite") != 0;
