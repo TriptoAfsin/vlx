@@ -157,10 +157,27 @@ FocusScope {
 
                 height: parent.height
                 // the volume slider shrinks (down to the group's minimum) before any playback button hides
-                width: Math.min(implicitWidth, Math.max(Layout.minimumWidth,
+                width: Math.min(implicitWidth, Math.max(vlzMinimumWidth,
                                                         twoZones.width - leftGroup.implicitWidth - playerControlLayout.layoutSpacing),
                                 twoZones.width)
                 spacing: playerControlLayout.spacing
+
+                // VLZ: the group's minimum, summed from its visible buttons (their Loaders set Layout.minimumWidth).
+                // Not the RowLayout's own Layout.minimumWidth: unset, Qt computes it from the layout's item list,
+                // which can still hold a button the repeater has just destroyed when the buttons change (a video
+                // starting), and VLZ crashed.
+                readonly property real vlzMinimumWidth: {
+                    let size = 0
+                    let shown = 0
+                    for (let i = 0; i < rightRepeater.count; ++i) {
+                        const loader = rightRepeater.itemAt(i)
+                        if (!loader || !loader.visible)
+                            continue
+                        size += Math.max(0, loader.Layout.minimumWidth)
+                        ++shown
+                    }
+                    return size + Math.max(0, shown - 1) * spacing
+                }
 
                 x: playerControlLayout.vlzAlign === "right" ? 0 : twoZones.width - width
                 Behavior on x { enabled: twoZones.width > 0; NumberAnimation { duration: VLCStyle.duration_long; easing.type: VLCStyle.easing_enter } }
