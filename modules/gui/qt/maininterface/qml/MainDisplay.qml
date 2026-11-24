@@ -755,7 +755,12 @@ FocusScope {
             visible: false
             height: parent.height - g_mainDisplay.displayMargin
 
-            active: MainCtx.playqueuePanel.docked
+            // VLZ: build the play queue the first time it is shown, not at start-up, and keep it after that
+            property bool vlzUsed: false
+            readonly property bool vlzNeeded: pannelVisiblity.showPlayqueue || vlzUsed
+            onVlzNeededChanged: if (vlzNeeded) vlzUsed = true
+
+            active: MainCtx.playqueuePanel.docked && vlzNeeded // VLZ: was MainCtx.playqueuePanel.docked
 
             state: ((status === Loader.Ready) && pannelVisiblity.showPlayqueue) ? "expanded" : ""
 
