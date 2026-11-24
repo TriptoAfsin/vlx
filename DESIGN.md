@@ -159,9 +159,10 @@ Settings › Performance. Measured on a 1080p H.264 clip (Task Manager's memory 
 
 | Setting | Effect | Default |
 |---|---|---|
-| **Lite mode** | One switch for the lightest VLZ (2026-11-23, private bytes): the interface drawn by Qt Quick's software renderer (video stays on the GPU), Memory saver, no media library, no background parsing or online metadata. Idle 145 → 68 MB, playing 315 → 239 MB (VLC 3.0.24: 235), UI ready 916 → 611 ms; next start. Overrides those settings at start-up without saving them, so turning it off restores them; their rows say so and are locked | Off |
+| **Lite mode** | One switch for the lightest VLZ (2026-11-24, private bytes, with the GDI font engine below): the interface drawn by Qt Quick's software renderer (video stays on the GPU), Memory saver, no media library, no background parsing or online metadata. Idle 119 → 42 MB, playing 294 → 217 MB (VLC 3.0.24: 236), UI ready 684 → 400 ms; next start. Overrides those settings at start-up without saving them, so turning it off restores them; their rows say so and are locked | Off |
 | Memory saver | 2 decoder threads and 0.3 s read-ahead instead of VLC's automatic threads and 1 s: playing 209 → 173 MB | Off (CPU-only 4K decoding may stutter) |
 | Media library | Off: no indexing, Home becomes the open-file page, idle 85 → 75 MB; next start | On |
+| Font engine (`qt-vlz-font-engine`, advanced only) | GDI's font database instead of DirectWrite's, which maps every installed font file (394 files, 529 MB on the test PC) and an 85 MB shared cache at start-up. Both modes: idle −23 MB, working set −54 MB, start-up 35-80 ms sooner. Text, CJK, Arabic, Indic scripts and colour emoji look the same. `directwrite` goes back to Qt's default; next start | GDI |
 
 - Floors: VLC 3.0.24 needs 124 MB to play the same clip with the same savings; VLZ's interface (Qt Quick) adds
   about 35 MB on top while playing. Under 100 MB while playing 1080p isn't reachable for a VLC-based player.
@@ -172,6 +173,10 @@ Settings › Performance. Measured on a 1080p H.264 clip (Task Manager's memory 
 - Lite mode is in `src/vlz_lite.c` (its option table, with the reason for each entry) and one hook in `qt.cpp`
   for the renderer. Measured and left out because they saved nothing: no backdrop blur, no tray icon, no Lua
   extensions, the basic render loop, the QML interpreter. OpenGL instead of Direct3D 11 costs more (idle 203 MB).
+- The play queue panel is built the first time it opens, not at start-up (a panel left open still opens at start).
+- Decoder threads stay automatic in normal mode. Capping them only while the GPU decodes would save about 18 MB,
+  but VLC fixes the thread count before it picks hardware decoding, so doing it without a glitch needs a restart
+  inside the decoder module. Left out (2026-11-24) to keep the decoder untouched.
 
 ## File icons
 

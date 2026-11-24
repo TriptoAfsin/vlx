@@ -3,7 +3,41 @@
 Measured with [`scripts/bench.ps1`](scripts/bench.ps1) (VERIFY.md §4). Each player is a portable copy with its own
 throwaway profile and a generated plugin cache (`vlc-cache-gen`), run one at a time on the same PC.
 
-## 2026-11-23, Lite mode (latest)
+## 2026-11-24, GDI font engine (latest)
+
+Same PC, sample and method as the Lite mode run below. VLZ 0.2.1: Qt uses the GDI font database instead of
+DirectWrite's in both modes, and the play queue panel loads when first opened.
+
+| Metric | VLC 3.0.24 | VLC 4.0 nightly | VLZ | VLZ Lite |
+|---|---:|---:|---:|---:|
+| Install size (MB) | 188.2 | 254.5 | 177.3 | 177.3 |
+| Start-up, first (ms) | 136 | 725 | 546 | 320 |
+| Start-up, warm median (ms) | 100 | 416 | 367 | 345 |
+| Idle private (MB) | 10.3 | 138.8 | **119.0** | **42.4** |
+| Idle working set (MB) | 36.5 | 176.7 | 120.4 | 74.0 |
+| Playing private (MB) | 236.2 | 307.8 | **293.6** | **216.9** |
+| Playing peak working set (MB) | 232.2 | 350.1 | 287.9 | 230.8 |
+| Playing CPU (% of all cores) | 0.2 | 0.3 | 0.3 | 0.2 |
+| UI ready, second pass (ms) | 142* | – | 684 | 400 |
+
+\* from the 2026-11-23 run.
+
+How to read it:
+
+- **VLZ now beats the VLC 4 nightly on every line**, and **Lite uses less memory than VLC 3 while playing**
+  (216.9 vs 236.2 MB, peak working set 230.8 vs 232.2 MB).
+- Against 0.2.0: VLZ idle 144.7 → 119.0 MB and working set 175.9 → 120.4 MB; Lite idle 67.9 → 42.4 MB and
+  working set 129.9 → 74.0 MB; UI ready 916 → 684 ms and 611 → 400 ms.
+- Why: Qt 6's DirectWrite font database opens and maps every installed font file at start-up (394 files,
+  529 MB here) plus Windows' 85 MB shared font cache. GDI's asks Windows for names and opens a font when it is
+  drawn (8 files here). VLC 3's Qt 5 already worked that way.
+- Playback cost checked on 25 s runs (CPU as % of one core, dropped frames): 1080p fullscreen with controls
+  always shown, VLZ 7.0 % / 2, Lite 5.2 % / 0. Audio with the spinning turntable skin, VLZ 7.0 %, Lite 25.4 %:
+  the software renderer costs CPU when the interface animates. Video decoding stays on the GPU in both modes.
+- What's left, measured with a timed log: libvlc 28 ms, Qt start 70 ms, loading the QML interface about 245 ms,
+  first frames about 120 ms. QML can't be compiled ahead of time while VLC registers 130 types at run time.
+
+## 2026-11-23, Lite mode
 
 Same PC and sample, 20 s of playback, start-up median of the last 11 of 12 launches. VLZ 0.1.2 plus Lite mode
 (Settings › Performance), one build: "VLZ Lite" is the same folder started with `--qt-vlz-lite`
