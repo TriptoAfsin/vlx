@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { RELEASE, SITE, GOALS, PREVIEWS, ROADMAP, FUTURE, BUILD_CMD, installerMB, releaseDate, mb, type Asset } from "./content";
 import { Mark, GitHub, ArrowRight, Download, Copy, Check } from "./components/Icons";
 import { useDownload, useSystem, osName } from "./download";
+import { AppSwitcher } from "./components/AppSwitcher";
 
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -14,9 +15,12 @@ function Nav() {
   return (
     <header className="nav" data-scrolled={scrolled}>
       <div className="nav-inner">
-        <a className="brand" href="#top" aria-label="VLZ, back to top">
-          <Mark /> <span>VLZ</span>
-        </a>
+        <div className="brand-group">
+          <a className="brand" href="#top" aria-label="VLZ, back to top">
+            <Mark /> <span>VLZ</span>
+          </a>
+          <AppSwitcher current="vlz" />
+        </div>
         <nav aria-label="Sections" className="nav-links">
           <a href="#goals">Goals</a>
           <a href="#previews">Design</a>
