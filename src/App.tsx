@@ -287,9 +287,6 @@ function Downloads() {
             {other && <span className="yours-tag">Your system</span>}
           </h3>
           <p>There are no Linux or macOS builds. VLZ is made for Windows.</p>
-          <p className="dl-note">
-            On those systems, <a href={SITE.vlc}>VLC media player</a> itself is the one to use.
-          </p>
         </div>
         <div className="dl-col rise">
           <h3>Build it yourself</h3>
