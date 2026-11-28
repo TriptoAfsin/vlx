@@ -1,0 +1,22 @@
+{
+  "version": "0.2.3",
+  "date": "2026-11-24",
+  "page": "https://github.com/TriptoAfsin/vlz/releases/tag/v0.2.3",
+  "assets": {
+    "windows": {
+      "name": "VLZ-0.2.3-windows-x64-setup.exe",
+      "url": "https://github.com/TriptoAfsin/vlz/releases/download/v0.2.3/VLZ-0.2.3-windows-x64-setup.exe",
+      "size": 50240647
+    },
+    "windowsPortable": {
+      "name": "VLZ-0.2.3-windows-x64-portable.7z",
+      "url": "https://github.com/TriptoAfsin/vlz/releases/download/v0.2.3/VLZ-0.2.3-windows-x64-portable.7z",
+      "size": 44621549
+    },
+    "checksums": {
+      "name": "sha256-0.2.3.txt",
+      "url": "https://github.com/TriptoAfsin/vlz/releases/download/v0.2.3/sha256-0.2.3.txt",
+      "size": 198
+    }
+  }
+}
